@@ -1,17 +1,27 @@
 import {Controller} from "../controller/controller.component";
 
 export class Main {
-    controllers = new Map<string,Controller>;
+    public controllers = new Map<string,Controller>;
 
-    constructor() {
-        let settings = this.loadSettings();
-        for (let e of settings){
-            this.addController(e.id, e.inputs, e.outputs);
+    constructor(
+        controllerSettings?: string[],
+        inputSettings?: string[],
+        outputSettings?: string[]
+
+    ) {
+        for (let e of controllerSettings??[]){
+            this.addController(e);
+        }
+        for (let e of inputSettings??[]){
+            this.addController(e);
+        }
+        for (let e of controllerSettings??[]){
+            this.addController(e);
         }
     }
 
-    addController(id: string, inputs: string[], outputs: string[]): void {
-        this.controllers.set(id, new Controller(inputs, outputs));
+    addController(id: string): void {
+        this.controllers.set(id, new Controller(id));
     }
 
     removeController(id: string): void {
@@ -23,6 +33,7 @@ export class Main {
     }
 
     loadSettings(){
+        // TODO: Load from Database
         return [
             {id: "1", inputs: ["1"], outputs: ["1"]},
             {id: "2", inputs: ["2","3"], outputs: ["2","3"]},
