@@ -1,0 +1,50 @@
+<%- include('../template.ejs',{mode:"header"}); %>
+
+<h1>Settings: Controllers</h1>
+
+<%- include('settings-template.ejs'); %>
+
+<p>
+    A Controller is everything between a button press and a bell ring, so all the settings.<br>
+    Click on an entry to edit or delete it or create a new entry.<br>
+</p>
+
+<p>
+    These are all controllers:
+</p>
+
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Inputs</th>
+        <th>Outputs</th>
+        <th>Conditions</th>
+        <th>Time</th>
+        <th>Enabled</th>
+        <th></th>
+    </tr>
+
+    <% for (let controller of controllers.values()){ %>
+    <tr>
+        <th><%= controller.id %></th>
+        <th><%= controller.name %></th>
+        <th><%= controller.inputs %></th>
+        <th><%= controller.outputs %></th>
+        <th><%= controller.conditionFrom %>&le;n&lt;<%= controller.conditionTo %></th>
+        <th><%= controller.timeFrom %> - <%= controller.timeTo %></th>
+        <th><%= controller.enabled ? 'Yes' : 'No' %></th>
+        <th>
+            <%# WARNING! Make sure the user can't specify the id to avoid xss attacks! %>
+            <a href="/settings/controller/edit?id=<%- controller.id %>">Edit</a>
+            <a href="/settings/controller/edit?id=<%- controller.id %>">Delete</a>
+        </th>
+    </tr>
+    <% } %>
+</table>
+
+<p>
+    <a href="/settings/controller/edit">Add controller</a>
+</p>
+
+<%- include('../template.ejs',{mode:"footer"}); %>

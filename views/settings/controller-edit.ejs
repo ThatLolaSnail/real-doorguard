@@ -1,0 +1,54 @@
+<%- include('../template.ejs',{mode:"header"}); %>
+
+<h1>Settings: Edit a Controller</h1>
+
+<%- include('settings-template.ejs'); %>
+
+<p>
+    A Controller is everything between a button press and a bell ring, so all the settings.<br>
+    Click on an entry to edit or delete it or create a new entry.<br>
+</p>
+
+<form action="/settings/controller">
+    <table>
+        <tr>
+            <th>Id</th>
+            <th><%= controller.id %></th>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <th><label for="name"></label><input type="text" id="name" value="<%= controller.name %>"></th>
+        </tr>
+        <tr>
+            <th>Inputs</th>
+            <th><label for="inputs"></label><input type="text" id="inputs" value="<%= controller.inputs %>"></th>
+        </tr>
+        <tr>
+            <th>Outputs</th>
+            <th><label for="outputs"></label><input type="text" id="outputs" value="<%= controller.outputs %>"></th>
+        </tr>
+        <tr>
+            <th>Conditions</th>
+            <th><label for="conditionFrom"></label><input type="text" id="conditionFrom" value="<%= controller.conditionFrom %>">&le;n&lt;<label
+                        for="conditionTo"></label><input type="text" id="conditionTo" value="<%= controller.conditionTo %>"></th>
+        </tr>
+        <tr>
+            <th>Time</th>
+            <th><label for="timeFrom"></label><input type="time" id="timeFrom" value="<%= controller.timeFrom %>"> -
+                <label for="timeTo"></label><input type="time" id="timeTo" value="<%= controller.timeTo %>"></th>
+        </tr>
+        <tr>
+            <th>Enabled</th>
+            <th><label for="enabled"></label><input type="checkbox" id="enabled" value="<% controller.enabled %>"></th>
+        </tr>
+
+    </table>
+
+    <p>
+        <input type="submit" value="Submit">
+        <a href="/settings/controller"> Cancel </a>
+    </p>
+</form>
+
+
+<%- include('../template.ejs',{mode:"footer"}); %>
