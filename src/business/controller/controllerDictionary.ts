@@ -1,14 +1,24 @@
 import {Controller} from "./controller";
+import {Container} from "typedi";
+import {IdService} from "../tools/IdService";
 
 export class ControllerDictionary extends Map<string,Controller> {
+    private idService = Container.get(IdService);
+
     constructor() {
         super();
-        this.set("0", new Controller("0"));
-        this.set("1", new Controller("1"));
-        this.set("4", new Controller("4"));
+
+        // TODO: Read controllers from database
+        for(let i = 0; i < 3; i++){
+            const id = this.idService.getNewId();
+
+            //super.set won't add things to the database
+            this.idService.registerId(id);
+            super.set(id, new Controller(id));
+        }
     }
+
     public set(key: string, value: Controller): this {
-        value ??= new Controller(key);
         super.set(key,value);
         // TODO: Add controller to database
 
@@ -19,14 +29,15 @@ export class ControllerDictionary extends Map<string,Controller> {
 
         return super.delete(key);
     }
-    public get(key: string): Controller | undefined {
-        return super.get(key);
-    }
-    public getFromQuery(query: any | null | undefined): Controller | null {
-        if (typeof query.id === 'string'){
-            return this.get(query.id) || null;
-        } else {
-            return null;
-        }
+
+    // public get(key: string): Controller | undefined {
+    //     return super.get(key);
+    // }
+
+    public createNew(){
+        const id = this.idService.getNewId();
+        const controller = new Controller(id);
+        this.set(id, controller);
+        return controller;
     }
 }

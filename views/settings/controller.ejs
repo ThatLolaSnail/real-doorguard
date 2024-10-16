@@ -6,7 +6,8 @@
 
 <p>
     A Controller is everything between a button press and a bell ring, so all the settings.<br>
-    Click on an entry to edit or delete it or create a new entry.<br>
+    You can edit or delete the entries.<br>
+    Click "Test" to fire the controller for testing the outputs.
 </p>
 
 <p>
@@ -36,8 +37,9 @@
         <th><%= controller.enabled ? 'Yes' : 'No' %></th>
         <th>
             <%# WARNING! Make sure the user can't specify the id to avoid xss attacks! %>
-            <a href="/settings/controller/edit?id=<%- controller.id %>">Edit</a>
-            <a href="/settings/controller/edit?id=<%- controller.id %>">Delete</a>
+            <a href="/settings/controller/edit?id=<%= controller.id %>">Edit</a>
+            <a href="/settings/controller/delete?id=<%= controller.id %>">Delete</a>
+            <a href="/settings/controller/test?id=<%= controller.id %>">Test</a>
         </th>
     </tr>
     <% } %>

@@ -6,40 +6,44 @@
 
 <p>
     A Controller is everything between a button press and a bell ring, so all the settings.<br>
-    Click on an entry to edit or delete it or create a new entry.<br>
+    Don't forget to save after editing changes.
 </p>
 
-<form action="/settings/controller">
+<form action="/settings/controller/edit" method="post">
+    <input type="hidden" id="id" name="id" value="<%= controller.id %>">
     <table>
         <tr>
             <th>Id</th>
             <th><%= controller.id %></th>
         </tr>
         <tr>
-            <th>Name</th>
-            <th><label for="name"></label><input type="text" id="name" value="<%= controller.name %>"></th>
+            <th><label for="name">Name</label></th>
+            <th><input type="text" id="name" name="name" value="<%= controller.name %>"></th>
         </tr>
         <tr>
-            <th>Inputs</th>
-            <th><label for="inputs"></label><input type="text" id="inputs" value="<%= controller.inputs %>"></th>
+            <th><label for="description">Description</label></th>
+            <th><textarea id="description" name="description" rows="2" cols="40"><%= controller.description %></textarea></th>
         </tr>
         <tr>
-            <th>Outputs</th>
-            <th><label for="outputs"></label><input type="text" id="outputs" value="<%= controller.outputs %>"></th>
+            <th><label for="inputs">Inputs</label></th>
+            <th><input type="text" id="inputs" name="inputs" value="<%= controller.inputs %>"></th>
         </tr>
         <tr>
-            <th>Conditions</th>
-            <th><label for="conditionFrom"></label><input type="text" id="conditionFrom" value="<%= controller.conditionFrom %>">&le;n&lt;<label
-                        for="conditionTo"></label><input type="text" id="conditionTo" value="<%= controller.conditionTo %>"></th>
+            <th><label for="outputs">Outputs</label></th>
+            <th><input type="text" id="outputs" name="outputs" value="<%= controller.outputs %>"></th>
         </tr>
         <tr>
-            <th>Time</th>
-            <th><label for="timeFrom"></label><input type="time" id="timeFrom" value="<%= controller.timeFrom %>"> -
-                <label for="timeTo"></label><input type="time" id="timeTo" value="<%= controller.timeTo %>"></th>
+            <th><label for="conditionFrom">Conditions (from</label>/<label for="conditionTo">to</label>)</th>
+            <th><input type="number" id="conditionFrom" name="conditionFrom" value="<%= controller.conditionFrom %>">&le;n&lt;<input type="number" id="conditionTo" name="conditionTo" value="<%= controller.conditionTo %>"></th>
         </tr>
         <tr>
-            <th>Enabled</th>
-            <th><label for="enabled"></label><input type="checkbox" id="enabled" value="<% controller.enabled %>"></th>
+            <th><label for="timeFrom">Time (from</label>/<label for="timeTo">to)</label></th>
+            <th><input type="time" id="timeFrom" name="timeFrom" value="<%= controller.timeFrom %>"> -
+                <input type="time" id="timeTo" name="timeTo" value="<%= controller.timeTo %>"></th>
+        </tr>
+        <tr>
+            <th><label for="enabled">Enabled</label></th>
+            <th><input type="checkbox" id="enabled" name="enabled" value="enabled" <%= controller.enabled ? 'checked="true"' : ""%>></th>
         </tr>
 
     </table>
