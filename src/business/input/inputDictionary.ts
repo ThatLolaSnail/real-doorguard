@@ -11,19 +11,21 @@ export class InputDictionary extends Map<string,Input> {
         // TODO: Read inputs from database
         let id = this.idService.getNewId();
         let input = new Input(id);
-        input.name = "Input One"
+        input.name = "Just for testing"
         super.set(id, input);
 
         id = this.idService.getNewId();
         input = new Input(id);
-        input.name = "Input Two"
-        super.set(id, input);
-
-        id = this.idService.getNewId();
-        input = new Input(id);
-        input.name = "Input Three"
+        input.name = "Hardware Button"
         input.type = InputType.HARDWARE;
-        input.settings = "42";
+        input.settings = "02";
+        super.set(id, input);
+
+        id = this.idService.getNewId();
+        input = new Input(id);
+        input.name = "Discord"
+        input.type = InputType.DISCORD;
+        input.settings = "@ThatLolaSnail";
         super.set(id, input);
 
         //super.set won't add things to the database

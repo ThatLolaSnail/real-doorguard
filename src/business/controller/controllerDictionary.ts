@@ -11,21 +11,29 @@ export class ControllerDictionary extends Map<string,Controller> {
         // TODO: Read controllers from database
         let id = this.idService.getNewId();
         let controller = new Controller(id);
-        controller.name = "Controller One"
+        controller.name = "only a few times";
+        controller.setCondition(1,3);
+        controller.inputs = ["4","5","6"];
+        controller.outputs = ["7"];
         controller.setTimeFromStrings("06:00","21:59");
         super.set(id, controller);
 
         id = this.idService.getNewId();
         controller = new Controller(id);
-        controller.name = "Controller Two"
-        controller.setCondition(3,5);
+        controller.name = "more than 3 times => unlock";
+        controller.setCondition(3,7);
+        controller.inputs = ["4","5","6"];
+        controller.outputs = ["8","11"];
         controller.setTimeFromStrings("06:00","21:59");
         super.set(id, controller);
 
         id = this.idService.getNewId();
         controller = new Controller(id);
-        controller.name = "Controller Three"
-        controller.setCondition(5,0);
+        controller.name = "a lot (must be my friend)";
+        controller.setCondition(7,0);
+        controller.inputs = ["4","5","6"];
+        controller.outputs = ["9","11"];
+        controller.setTimeFromStrings("00:00","23:59");
         super.set(id, controller);
 
         //super.set won't add things to the database

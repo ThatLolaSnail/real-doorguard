@@ -22,7 +22,7 @@
         }
     </style>
 </head>
-<body>
+<body <%= (typeof onload !== 'undefined') ? "onload="+onload : "" %>>
 <p>
     The Doorguard System
 </p>

@@ -1,4 +1,24 @@
-<%- include('../template.ejs',{mode:"header"}); %>
+<%- include('../template.ejs',{
+    mode:"header",
+    onload: "onLoad(" + Object.values(types).indexOf(output.type) + ")"
+}); %>
+
+<script>
+    function onLoad(selectedIndex){
+        document.getElementById('type').selectedIndex = selectedIndex;
+
+        onChange();
+    }
+
+    function onChange() {
+        const settings = document.getElementById('settings');
+        settings.style.display = "";
+        const type = document.getElementById('type');
+        if (type.value === "virtual"){
+            settings.style.display = "none";
+        }
+    }
+</script>
 
 <h1>Settings: Edit a Output</h1>
 
@@ -28,14 +48,14 @@
         <tr>
             <th><label for="type">Type</label></th>
             <th>
-                <select id="type" name="type">
+                <select id="type" name="type" onchange=onChange()>
                     <% for (let t of Object.values(types)) { %>
                         <option value="<%= t %>"><%= t %></option>
                     <% } %>
                 </select>
             </th>
         </tr>
-        <tr>
+        <tr id="settings">
             <th><label for="settings">Settings</label></th>
             <th><input type="text" id="settings" name="settings" value="<%= output.settings %>"></th>
         </tr>

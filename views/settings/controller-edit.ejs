@@ -27,11 +27,11 @@
         </tr>
         <tr>
             <th><label for="inputs">Inputs (by id)</label></th>
-            <th><input type="text" id="inputs" name="inputs" value="<%= controller.inputs %>"></th>
+            <th><input type="text" id="inputs" name="inputs" value="<%= controller.inputs.join(",") %>"></th>
         </tr>
         <tr>
             <th><label for="outputs">Outputs (by id)</label></th>
-            <th><input type="text" id="outputs" name="outputs" value="<%= controller.outputs %>"></th>
+            <th><input type="text" id="outputs" name="outputs" value="<%= controller.outputs.join(",") %>"></th>
         </tr>
         <tr>
             <th><label for="conditionFrom">Conditions (from</label>/<label for="conditionTo">to</label>)</th>

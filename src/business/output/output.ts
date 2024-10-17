@@ -24,6 +24,23 @@ export class Output extends doorguardObject {
         });
     }
 
+    public fire() {
+        super.fire();
+
+         switch (this.type){
+             case OutputType.VIRTUAL:
+                 break;
+             case OutputType.AUDIO:
+                 var player = require('play-sound')();
+                 player.play("audio/" + this.settings);
+                 break;
+             case OutputType.HARDWARE:
+                 break;
+             case OutputType.DISCORD:
+                 break;
+         }
+    }
+
     public set type(type: string) {
         if (isOutputType(type)) {
             this._type = type;
@@ -42,4 +59,5 @@ export class Output extends doorguardObject {
     public get settings() {
         return this._settings;
     }
+
 }

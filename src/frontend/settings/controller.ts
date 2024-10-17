@@ -51,8 +51,8 @@ export function controller(app: Application) {
             controller = api.controllers.createNew();
         }
         controller.name = req.body.name;
-        controller.inputs = req.body.inputs;
-        controller.outputs = req.body.outputs;
+        controller.inputs = req.body.inputs.split(",");
+        controller.outputs = req.body.outputs.split(",");
         controller.setCondition(req.body.conditionFrom, req.body.conditionTo);
         controller.setTimeFromStrings(req.body.timeFrom, req.body.timeTo);
         controller.enabled = !!req.body.enabled;

@@ -9,23 +9,38 @@ export class OutputDictionary extends Map<string,Output> {
         super();
 
         // TODO: Read outputs from database
+
         let id = this.idService.getNewId();
         let output = new Output(id);
-        output.name = "Output One"
-        super.set(id, output);
-
-        id = this.idService.getNewId();
-        output = new Output(id);
-        output.name = "Output Two"
+        output.name = "My Great Doorbell"
         output.type = OutputType.AUDIO;
-        output.settings = "test.wav";
+        output.settings = "bell.wav";
         super.set(id, output);
 
         id = this.idService.getNewId();
         output = new Output(id);
-        output.name = "Output Three"
+        output.name = "My Great Doorbell 2"
         output.type = OutputType.HARDWARE;
-        output.settings = "42";
+        output.settings = "06,1x1000ms";
+        super.set(id, output);
+
+        id = this.idService.getNewId();
+        output = new Output(id);
+        output.name = "Door Buzzer"
+        output.type = OutputType.HARDWARE;
+        output.settings = "17,1x2000ms";
+        super.set(id, output);
+
+        id = this.idService.getNewId();
+        output = new Output(id);
+        output.name = "Secret Boobietrap";
+        super.set(id, output);
+
+        id = this.idService.getNewId();
+        output = new Output(id);
+        output.name = "Long Bell"
+        output.type = OutputType.AUDIO;
+        output.settings = "long.wav";
         super.set(id, output);
 
         //super.set won't add things to the database
