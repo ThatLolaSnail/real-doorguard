@@ -1,6 +1,6 @@
 import {Controller} from "./controller";
 import {Container} from "typedi";
-import {IdService} from "../tools/IdService";
+import {IdService} from "../tools/idService";
 
 export class ControllerDictionary extends Map<string,Controller> {
     private idService = Container.get(IdService);
@@ -9,13 +9,28 @@ export class ControllerDictionary extends Map<string,Controller> {
         super();
 
         // TODO: Read controllers from database
-        for(let i = 0; i < 3; i++){
-            const id = this.idService.getNewId();
+        let id = this.idService.getNewId();
+        let controller = new Controller(id);
+        controller.name = "Controller One"
+        controller.setTimeFromStrings("06:00","21:59");
+        super.set(id, controller);
 
-            //super.set won't add things to the database
-            this.idService.registerId(id);
-            super.set(id, new Controller(id));
-        }
+        id = this.idService.getNewId();
+        controller = new Controller(id);
+        controller.name = "Controller Two"
+        controller.setCondition(3,5);
+        controller.setTimeFromStrings("06:00","21:59");
+        super.set(id, controller);
+
+        id = this.idService.getNewId();
+        controller = new Controller(id);
+        controller.name = "Controller Three"
+        controller.setCondition(5,0);
+        super.set(id, controller);
+
+        //super.set won't add things to the database
+        //this.idService.registerId(id);
+
     }
 
     public set(key: string, value: Controller): this {
@@ -29,10 +44,6 @@ export class ControllerDictionary extends Map<string,Controller> {
 
         return super.delete(key);
     }
-
-    // public get(key: string): Controller | undefined {
-    //     return super.get(key);
-    // }
 
     public createNew(){
         const id = this.idService.getNewId();

@@ -1,39 +1,62 @@
-export class Controller {
-    private _id: string;
-    private _name = "New Controller";
-    private _inputs = "[]";
-    private _outputs = "[]";
+import {clearTimeout} from "node:timers";
+import {doorguardObject} from "../doorguardObject/doorguardObject";
+
+export class Controller extends doorguardObject {
+    protected doorguardObjectType = "controller";
+    public DELAY = 1000;
+    private _inputs : string[] = ["4","5"];
+    private _outputs : string[] = ["7"];
     private _conditionFrom = 1;
     private _conditionTo = 3;
-    private _timeFrom = "06:00";
-    private _timeTo = "21:59";
-    private _enabled = true;
-    private _description = "Please edit this controller's settings to your liking.";
+
+    private numberOfPresses = 0;
+    private lastPressTimer: NodeJS.Timeout | undefined;
 
     constructor(id: string) {
-        this._id = id;
+        super(id);
+        this.eventHandler.addListener("input", (id: string) => {
+            if (this.inputs.includes(id)){
+                this.handleInput();
+            }
+        });
+    }
+
+    private handleInput(): void {
+        // since the button was pressed, we need to cancel the last timeout, we'll create a new one at the end
+        clearTimeout(this.lastPressTimer);
+        this.numberOfPresses++;
+
+        // if we have no upper limit, we don't need to wait for the timeout
+        if (this.conditionTo == 0 && this.conditionFrom == this.numberOfPresses) {
+            this.fireIf(this.checkTime());
+        }
+        // if we have an upper limit, we have to make sure a timeout has passed before checking it.
+        this.lastPressTimer = setTimeout(()=>{
+            if (this.numberOfPresses < this.conditionTo && this.numberOfPresses >= this.conditionFrom){
+                this.fireIf(this.checkTime());
+            }
+
+            // after the timeout when the button has been evaluated, reset the counter.
+            this.numberOfPresses = 0;
+        }, this.DELAY);
     }
 
     public fire(){
-        console.log("Controller " + this.id + " was fired.");
+        super.fire();
+        for (let output of this.outputs){
+            this.eventHandler.emit("ring", output);
+        }
     }
 
-    public get id(): string {
-        return this._id;
-    }
-    public set name(name: string) {
-        this._name = name;
-    }
-    public get name() {
-        return this._name;
-    }
-    public set inputs(inputs: string) {
+    public set inputs(inputs: string[]) {
+        // TODO: Change in Database
         this._inputs = inputs;
     }
     public get inputs() {
         return this._inputs;
     }
-    public set outputs(outputs: string) {
+    public set outputs(outputs: string[]) {
+        // TODO: Change in Database
         this._outputs = outputs;
     }
     public get outputs() {
@@ -44,10 +67,12 @@ export class Controller {
         this.conditionTo = to;
     }
     public set conditionFrom(from: number) {
-        this._conditionFrom = from;
+        // TODO: Change in Database
+        this._conditionFrom = from > 0 ? from : 0;
     }
     public set conditionTo(to: number) {
-        this._conditionTo = to;
+        // TODO: Change in Database
+        this._conditionTo = to > 0 ? to : 0;
     }
     public get conditionFrom() {
         return this._conditionFrom;
@@ -55,35 +80,9 @@ export class Controller {
     public get conditionTo() {
         return this._conditionTo;
     }
-    public setTime(from: string, to: string) {
-        this.timeFrom = from;
-        this.timeTo = to;
-    }
-    public set timeFrom(from: string) {
-        this._timeFrom = from;
-    }
-    public set timeTo(to: string) {
-        this._timeTo = to;
-    }
-    public getTime(){
-        return {from: this.timeFrom, to: this.timeTo};
-    }
-    public get timeFrom(){
-        return this._timeFrom;
-    }
-    public get timeTo(){
-        return this._timeTo;
-    }
-    public set enabled(enabled: boolean) {
-        this._enabled = enabled;
-    }
-    public get enabled(){
-        return this._enabled;
-    }
-    public set description(description: string) {
-        this._description = description;
-    }
-    public get description(){
-        return this._description;
+    public getConditionAsString(){
+        const from = this.conditionFrom.toString();
+        const to = this.conditionTo == 0 ? "∞" : this.conditionTo.toString();
+        return from + "≤n<" + to;
     }
 }

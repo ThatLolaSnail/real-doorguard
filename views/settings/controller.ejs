@@ -32,11 +32,10 @@
         <th><%= controller.name %></th>
         <th><%= controller.inputs %></th>
         <th><%= controller.outputs %></th>
-        <th><%= controller.conditionFrom %>&le;n&lt;<%= controller.conditionTo %></th>
-        <th><%= controller.timeFrom %> - <%= controller.timeTo %></th>
+        <th><%= controller.getConditionAsString() %></th>
+        <th><%= controller.getTimeAsString() %></th>
         <th><%= controller.enabled ? 'Yes' : 'No' %></th>
         <th>
-            <%# WARNING! Make sure the user can't specify the id to avoid xss attacks! %>
             <a href="/settings/controller/edit?id=<%= controller.id %>">Edit</a>
             <a href="/settings/controller/delete?id=<%= controller.id %>">Delete</a>
             <a href="/settings/controller/test?id=<%= controller.id %>">Test</a>

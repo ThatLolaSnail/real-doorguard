@@ -1,13 +1,9 @@
 import {Application, Request, Response} from "express";
-import {Api} from "../../api/api";
-import {Container} from "typedi";
 import {controller} from "./controller";
+import {input} from "./input";
+import {output} from "./output";
 
 export function settings(app: Application) {
-    var api = Container.get(Api);
-    var bodyParser = require("body-parser");
-    var urlencodedParser = bodyParser.urlencoded({extended: false})
-
     app.get("/settings", (req: Request, res: Response) => {
         res.render("settings/settings", {});
     });
@@ -17,6 +13,8 @@ export function settings(app: Application) {
     });
 
     controller(app);
+    input(app);
+    output(app);
 
     app.get("/settings/input", (req: Request, res: Response) => {
         res.status(501).render("work-in-progress", {});

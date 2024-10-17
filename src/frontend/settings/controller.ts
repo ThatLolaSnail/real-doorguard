@@ -54,7 +54,7 @@ export function controller(app: Application) {
         controller.inputs = req.body.inputs;
         controller.outputs = req.body.outputs;
         controller.setCondition(req.body.conditionFrom, req.body.conditionTo);
-        controller.setTime(req.body.timeFrom, req.body.timeTo);
+        controller.setTimeFromStrings(req.body.timeFrom, req.body.timeTo);
         controller.enabled = !!req.body.enabled;
         controller.description = req.body.description;
 

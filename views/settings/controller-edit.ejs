@@ -6,7 +6,8 @@
 
 <p>
     A Controller is everything between a button press and a bell ring, so all the settings.<br>
-    Don't forget to save after editing changes.
+    Don't forget to save after editing changes.<br>
+    To disable the condition upper limit, set it to 0.
 </p>
 
 <form action="/settings/controller/edit" method="post">
@@ -25,21 +26,25 @@
             <th><textarea id="description" name="description" rows="2" cols="40"><%= controller.description %></textarea></th>
         </tr>
         <tr>
-            <th><label for="inputs">Inputs</label></th>
+            <th><label for="inputs">Inputs (by id)</label></th>
             <th><input type="text" id="inputs" name="inputs" value="<%= controller.inputs %>"></th>
         </tr>
         <tr>
-            <th><label for="outputs">Outputs</label></th>
+            <th><label for="outputs">Outputs (by id)</label></th>
             <th><input type="text" id="outputs" name="outputs" value="<%= controller.outputs %>"></th>
         </tr>
         <tr>
             <th><label for="conditionFrom">Conditions (from</label>/<label for="conditionTo">to</label>)</th>
-            <th><input type="number" id="conditionFrom" name="conditionFrom" value="<%= controller.conditionFrom %>">&le;n&lt;<input type="number" id="conditionTo" name="conditionTo" value="<%= controller.conditionTo %>"></th>
+            <th>
+                <input type="number" id="conditionFrom" name="conditionFrom" min="1" value="<%= controller.conditionFrom %>">
+                &le;n&lt;
+                <input type="number" id="conditionTo" name="conditionTo" min="0" value="<%= controller.conditionTo %>">
+            </th>
         </tr>
         <tr>
             <th><label for="timeFrom">Time (from</label>/<label for="timeTo">to)</label></th>
-            <th><input type="time" id="timeFrom" name="timeFrom" value="<%= controller.timeFrom %>"> -
-                <input type="time" id="timeTo" name="timeTo" value="<%= controller.timeTo %>"></th>
+            <th><input type="time" id="timeFrom" name="timeFrom" value="<%= controller.timeFrom.toString() %>"> -
+                <input type="time" id="timeTo" name="timeTo" value="<%= controller.timeTo.toString() %>"></th>
         </tr>
         <tr>
             <th><label for="enabled">Enabled</label></th>
@@ -53,6 +58,32 @@
         <a href="/settings/controller"> Cancel </a>
     </p>
 </form>
+
+<p>
+    Info:<br>
+    Currently, the following inputs and outputs are configured for this controller:
+</p>
+<table>
+    <tr>
+        <th></th>
+        <th>Id</th>
+        <th>Name</th>
+    </tr>
+    <% for(let input of controller.inputs) { %>
+        <tr>
+            <th>input</th>
+            <th><%= input %></th>
+            <th><%= input %></th>
+        </tr>
+    <% } for(let output of controller.outputs) { %>
+        <tr>
+            <th>output</th>
+            <th><%= output %></th>
+            <th><%= output %></th>
+        </tr>
+    <% } %>
+
+</table>
 
 
 <%- include('../template.ejs',{mode:"footer"}); %>

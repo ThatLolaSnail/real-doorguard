@@ -1,0 +1,49 @@
+<%- include('../template.ejs',{mode:"header"}); %>
+
+<h1>Settings: Inputs</h1>
+
+<%- include('settings-template.ejs'); %>
+
+<p>
+    A Input is something that a user interacts with, for example the doorbell button at your front door.<br>
+    You can edit or delete the entries.<br>
+    Click "Test" to fire the input for testing.
+</p>
+
+<p>
+    These are all inputs:
+</p>
+
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Settings/Port</th>
+        <th>Time</th>
+        <th>Enabled</th>
+        <th></th>
+    </tr>
+
+    <% for (let input of inputs.values()){ %>
+    <tr>
+        <th><%= input.id %></th>
+        <th><%= input.name %></th>
+        <th><%= input.type %></th>
+        <th><%= input.settings %></th>
+        <th><%= input.getTimeAsString() %></th>
+        <th><%= input.enabled ? 'Yes' : 'No' %></th>
+        <th>
+            <a href="/settings/input/edit?id=<%= input.id %>">Edit</a>
+            <a href="/settings/input/delete?id=<%= input.id %>">Delete</a>
+            <a href="/settings/input/test?id=<%= input.id %>">Test</a>
+        </th>
+    </tr>
+    <% } %>
+</table>
+
+<p>
+    <a href="/settings/input/edit">Add input</a>
+</p>
+
+<%- include('../template.ejs',{mode:"footer"}); %>
