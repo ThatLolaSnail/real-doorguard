@@ -1,10 +1,10 @@
 import {Application, Request, Response} from "express";
 import {Controller} from "../../business/controller/controller";
 import {Api} from "../../api/api";
-import {Container} from "typedi";
+import {container} from "tsyringe";
 
 export function controller(app: Application) {
-    var api = Container.get(Api);
+    var api = container.resolve(Api);
     var bodyParser = require("body-parser");
     var urlencodedParser = bodyParser.urlencoded({extended: false})
 

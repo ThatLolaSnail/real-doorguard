@@ -1,9 +1,9 @@
 import {Controller} from "./controller";
-import {Container} from "typedi";
 import {IdService} from "../tools/idService";
+import {container} from "tsyringe";
 
 export class ControllerDictionary extends Map<string,Controller> {
-    private idService = Container.get(IdService);
+    private idService = container.resolve(IdService);
 
     constructor() {
         super();

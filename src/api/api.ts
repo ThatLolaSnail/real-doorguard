@@ -1,9 +1,9 @@
-import {Service} from "typedi";
 import {Main} from "../business/main/main";
 import {InputType} from "../business/input/input";
 import {OutputType} from "../business/output/output";
+import {singleton} from "tsyringe";
 
-@Service()
+@singleton()
 export class Api {
     constructor(private main: Main) {
 

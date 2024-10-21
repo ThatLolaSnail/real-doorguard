@@ -1,7 +1,7 @@
-import {Service} from "typedi"
 import EventEmitter from "node:events";
+import {singleton} from "tsyringe";
 
-@Service()
+@singleton()
 export class EventHandler extends EventEmitter {
     public emit(eventName: string | symbol, ...args: any): boolean {
         console.log("EventHandler emit: ", eventName, args);
