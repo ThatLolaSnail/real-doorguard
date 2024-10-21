@@ -1,9 +1,9 @@
 import {Output, OutputType} from "./output";
-import {Container} from "typedi";
 import {IdService} from "../tools/idService";
+import {container} from "tsyringe";
 
 export class OutputDictionary extends Map<string,Output> {
-    private idService = Container.get(IdService);
+    private idService = container.resolve(IdService);
 
     constructor() {
         super();

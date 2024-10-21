@@ -1,10 +1,10 @@
 import {Time} from "../tools/time";
-import {Container} from "typedi";
 import {EventHandler} from "../eventHandler/eventHandler";
+import {container} from "tsyringe";
 
 export class doorguardObject {
     protected doorguardObjectType: string = "object";
-    protected eventHandler = Container.get(EventHandler);
+    protected eventHandler = container.resolve(EventHandler);
 
     private readonly _id: string;
     private _name = "New Object";

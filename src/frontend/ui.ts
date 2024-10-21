@@ -1,9 +1,9 @@
 import {Request, Response} from "express";
-import {Service} from "typedi";
 import {settings} from "./settings/settings";
 import {log} from "node:util";
+import {singleton} from "tsyringe";
 
-@Service()
+@singleton()
 export class Ui {
     private port: number = 8080;
     private express = require("express");
