@@ -2,4 +2,10 @@
 
 <h1>Welcome to Doorguard</h1>
 
+<p>
+    <% if (!os.release().includes("rpi")) { %>
+        This instance is running on a PC, not the doorguard hardware, so all hardware related features will be disabled.
+    <% } %>
+</p>
+
 <%- include('template.ejs',{mode:"footer"}); %>

@@ -19,7 +19,7 @@
         <th>Id</th>
         <th>Name</th>
         <th>Type</th>
-        <th>Settings/Port</th>
+        <th>Settings</th>
         <th>Time</th>
         <th>Enabled</th>
         <th></th>
@@ -30,7 +30,16 @@
         <th><%= output.id %></th>
         <th><%= output.name %></th>
         <th><%= output.type %></th>
-        <th><%= output.settings %></th>
+        <th>
+            <% if (output.type === "audio") { %>
+                <%= output.settings %>
+            <% } else if (output.type === "hardware") { %>
+                <%= output.pin %>, <%= output.repeat %>x <%= output.duration %>ms
+            <% } else if (output.type === "discord") { %>
+                    <%= output.channel %>: "<%= output.message %>"
+            <% } %>
+
+        </th>
         <th><%= output.getTimeAsString() %></th>
         <th><%= output.enabled ? 'Yes' : 'No' %></th>
         <th>

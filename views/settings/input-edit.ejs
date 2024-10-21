@@ -11,11 +11,18 @@
     }
 
     function onChange() {
-        const settings = document.getElementById('settings');
-        settings.style.display = "";
+        const hardware_pin = document.getElementById('hardware_pin');
+        const discord_channel = document.getElementById('discord_channel');
+        const discord_message = document.getElementById('discord_message');
+        hardware_pin.style.display = "none";
+        discord_channel.style.display = "none";
+        discord_message.style.display = "none";
         const type = document.getElementById('type');
-        if (type.value === "virtual"){
-            settings.style.display = "none";
+        if (type.value === "hardware"){
+            hardware_pin.style.display = "";
+        } else if (type.value === "discord"){
+            discord_channel.style.display = "";
+            discord_message.style.display = "";
         }
     }
 </script>
@@ -55,9 +62,17 @@
                 </select>
             </th>
         </tr>
-        <tr id="settings">
-            <th><label for="settings">Settings</label></th>
-            <th><input type="text" id="settings" name="settings" value="<%= input.settings %>"></th>
+        <tr id="hardware_pin">
+            <th><label for="pin">Output pin:</label></th>
+            <th><input type="number" id="pin" name="pin" value="<%= input.pin %>"></th>
+        </tr>
+        <tr id="discord_channel">
+            <th><label for="channel">Channel</label></th>
+            <th><input type="text" id="channel" name="channel" value="<%= input.channel %>"></th>
+        </tr>
+        <tr id="discord_message">
+            <th><label for="message">Message</label></th>
+            <th><input type="text" id="message" name="message" value="<%= input.message %>"></th>
         </tr>
         <tr>
             <th><label for="timeFrom">Time (from</label>/<label for="timeTo">to)</label></th>

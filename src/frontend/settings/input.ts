@@ -52,7 +52,9 @@ export function input(app: Application) {
         }
         input.name = req.body.name;
         input.type = req.body.type;
-        input.settings = req.body.settings;
+        input.pin = req.body.pin;
+        input.channel = req.body.channel;
+        input.message = req.body.message;
         input.description = req.body.description;
 
         res.redirect("/settings/input");

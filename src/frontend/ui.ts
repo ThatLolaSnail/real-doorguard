@@ -14,7 +14,11 @@ export class Ui {
         this.app.set('view engine', 'ejs');
 
         this.app.get("/", (req: Request, res: Response) => {
-            res.render("index", {});
+            res.render("index", {os: require('os')});
+        });
+
+        this.app.get("/about", (req: Request, res: Response) => {
+            res.render("about", {os: require('os')});
         });
 
         settings(this.app);

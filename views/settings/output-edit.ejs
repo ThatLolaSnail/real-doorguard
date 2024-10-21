@@ -1,21 +1,39 @@
 <%- include('../template.ejs',{
     mode:"header",
-    onload: "onLoad(" + Object.values(types).indexOf(output.type) + ")"
+    onload: "onLoad(" + types.indexOf(output.type) + "," + pins.indexOf(output.pin) + ")"
 }); %>
 
 <script>
-    function onLoad(selectedIndex){
-        document.getElementById('type').selectedIndex = selectedIndex;
+    function onLoad(typeIndex, pinIndex){
+        document.getElementById('type').selectedIndex = typeIndex;
+        document.getElementById('pin').selectedIndex = pinIndex;
 
         onChange();
     }
 
     function onChange() {
-        const settings = document.getElementById('settings');
-        settings.style.display = "";
+        const audio = document.getElementById('audio');
+        const hardware_pin = document.getElementById('hardware_pin');
+        const hardware_repeat = document.getElementById('hardware_repeat');
+        const hardware_duration = document.getElementById('hardware_duration');
+        const discord_channel = document.getElementById('discord_channel');
+        const discord_message = document.getElementById('discord_message');
+        audio.style.display = "none";
+        hardware_pin.style.display = "none";
+        hardware_repeat.style.display = "none";
+        hardware_duration.style.display = "none";
+        discord_channel.style.display = "none";
+        discord_message.style.display = "none";
         const type = document.getElementById('type');
-        if (type.value === "virtual"){
-            settings.style.display = "none";
+        if (type.value === "audio"){
+            audio.style.display = "";
+        } else if (type.value === "hardware"){
+            hardware_pin.style.display = "";
+            hardware_repeat.style.display = "";
+            hardware_duration.style.display = "";
+        } else if (type.value === "discord"){
+            discord_channel.style.display = "";
+            discord_message.style.display = "";
         }
     }
 </script>
@@ -49,15 +67,41 @@
             <th><label for="type">Type</label></th>
             <th>
                 <select id="type" name="type" onchange=onChange()>
-                    <% for (let t of Object.values(types)) { %>
+                    <% for (let t of types) { %>
                         <option value="<%= t %>"><%= t %></option>
                     <% } %>
                 </select>
             </th>
         </tr>
-        <tr id="settings">
-            <th><label for="settings">Settings</label></th>
+        <tr id="audio">
+            <th><label for="settings">Audio file</label></th>
             <th><input type="text" id="settings" name="settings" value="<%= output.settings %>"></th>
+        </tr>
+        <tr id="hardware_pin">
+            <th><label for="pin">Output pin:</label></th>
+            <th>
+                <select id="pin" name="pin">
+                    <% for (let key of pins) { %>
+                        <option value="<%= key %>"><%= key %></option>
+                    <% } %>
+                </select>
+            </th>
+        </tr>
+        <tr id="hardware_repeat">
+            <th><label for="repeat">Repeat:</label></th>
+            <th><input type="number" id="repeat" name="repeat" value="<%= output.repeat %>"></th>
+        </tr>
+        <tr id="hardware_duration">
+            <th><label for="duration">Duration:</label></th>
+            <th><input type="number" id="duration" name="duration" value="<%= output.duration %>"></th>
+        </tr>
+        <tr id="discord_channel">
+            <th><label for="channel">Channel</label></th>
+            <th><input type="text" id="channel" name="channel" value="<%= output.channel %>"></th>
+        </tr>
+        <tr id="discord_message">
+            <th><label for="message">Message</label></th>
+            <th><input type="text" id="message" name="message" value="<%= output.message %>"></th>
         </tr>
         <tr>
             <th><label for="timeFrom">Time (from</label>/<label for="timeTo">to)</label></th>

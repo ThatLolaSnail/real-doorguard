@@ -30,7 +30,14 @@
         <th><%= input.id %></th>
         <th><%= input.name %></th>
         <th><%= input.type %></th>
-        <th><%= input.settings %></th>
+        <th>
+            <% if (input.type === "hardware") { %>
+                pin <%= input.pin %>
+            <% } else if (input.type === "discord") { %>
+                <%= input.channel %>: "<%= input.message %>"
+            <% } %>
+
+        </th>
         <th><%= input.getTimeAsString() %></th>
         <th><%= input.enabled ? 'Yes' : 'No' %></th>
         <th>

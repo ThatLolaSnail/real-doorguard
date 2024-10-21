@@ -17,11 +17,10 @@ export function output(app: Application) {
         if (typeof req.query.id === 'string'){
             output = api.outputs.get(req.query.id) || null;
         }
-        if (output) {
-            res.render("settings/output-edit", {output: output, types: api.outputType});
-        } else {
-            res.render("settings/output-edit", {output: new Output("new"), types: api.outputType});
+        if (!output) {
+            output = new Output("new");
         }
+        res.render("settings/output-edit", {output: output, types: Object.values(api.outputType), pins: Array.from(api.hardwareOutputPins.keys())});
     });
 
     app.get("/settings/output/delete", (req: Request, res: Response) => {
@@ -53,6 +52,11 @@ export function output(app: Application) {
         output.name = req.body.name;
         output.type = req.body.type;
         output.settings = req.body.settings;
+        output.pin = req.body.pin;
+        output.repeat = req.body.repeat;
+        output.duration = req.body.duration;
+        output.channel = req.body.channel;
+        output.message = req.body.message;
         output.description = req.body.description;
 
         res.redirect("/settings/output");
