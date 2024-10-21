@@ -22,7 +22,7 @@
         }
     </style>
 </head>
-<body>
+<body <%= (typeof onload !== 'undefined') ? "onload="+onload : "" %>>
 <p>
     The Doorguard System
 </p>
@@ -35,16 +35,20 @@
             <a href="/settings"> Settings </a>
         </th>
         <th>
-            <a href="/settings/advanced"> Advanced Settings </a>
+            <a href="/log"> Log </a>
         </th>
         <th>
-            <a href="/log"> Log </a>
+            <a href="/about"> About </a>
         </th>
     </tr>
 
 </table>
 
+<hr>
+
 <% }else{ /* This is where the main html will be placed by the template engin! */ %>
+
+<hr>
 
 <p>The Doorguard System</p>
 </body>

@@ -1,0 +1,49 @@
+<%- include('../template.ejs',{mode:"header"}); %>
+
+<h1>Settings: Outputs</h1>
+
+<%- include('settings-template.ejs'); %>
+
+<p>
+    A Output is something that signals that the door has been rung or does other things in the real world, for example the bell or the speaker of the doorbell, but also an automatic door opener or buzzer at your front door.<br>
+    You can edit or delete the entries.<br>
+    Click "Test" to fire the output for testing.
+</p>
+
+<p>
+    These are all outputs:
+</p>
+
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Settings/Port</th>
+        <th>Time</th>
+        <th>Enabled</th>
+        <th></th>
+    </tr>
+
+    <% for (let output of outputs.values()){ %>
+    <tr>
+        <th><%= output.id %></th>
+        <th><%= output.name %></th>
+        <th><%= output.type %></th>
+        <th><%= output.settings %></th>
+        <th><%= output.getTimeAsString() %></th>
+        <th><%= output.enabled ? 'Yes' : 'No' %></th>
+        <th>
+            <a href="/settings/output/edit?id=<%= output.id %>">Edit</a>
+            <a href="/settings/output/delete?id=<%= output.id %>">Delete</a>
+            <a href="/settings/output/test?id=<%= output.id %>">Test</a>
+        </th>
+    </tr>
+    <% } %>
+</table>
+
+<p>
+    <a href="/settings/output/edit">Add output</a>
+</p>
+
+<%- include('../template.ejs',{mode:"footer"}); %>

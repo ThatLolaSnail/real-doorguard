@@ -5,11 +5,13 @@ describe('main', () => {
         // Act
 
         // Assert
+        expect(true).toBeTruthy();
     });
-
+/*
     it.each([
 
     ])('name', ()=>{
 
     })
+*/
 });

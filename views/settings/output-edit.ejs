@@ -1,0 +1,80 @@
+<%- include('../template.ejs',{
+    mode:"header",
+    onload: "onLoad(" + Object.values(types).indexOf(output.type) + ")"
+}); %>
+
+<script>
+    function onLoad(selectedIndex){
+        document.getElementById('type').selectedIndex = selectedIndex;
+
+        onChange();
+    }
+
+    function onChange() {
+        const settings = document.getElementById('settings');
+        settings.style.display = "";
+        const type = document.getElementById('type');
+        if (type.value === "virtual"){
+            settings.style.display = "none";
+        }
+    }
+</script>
+
+<h1>Settings: Edit a Output</h1>
+
+<%- include('settings-template.ejs'); %>
+
+<p>
+    A Output is everything between a button press and a bell ring, so all the settings.<br>
+    Don't forget to save after editing changes.<br>
+    To disable the condition upper limit, set it to 0.
+</p>
+
+<form action="/settings/output/edit" method="post">
+    <input type="hidden" id="id" name="id" value="<%= output.id %>">
+    <table>
+        <tr>
+            <th>Id</th>
+            <th><%= output.id %></th>
+        </tr>
+        <tr>
+            <th><label for="name">Name</label></th>
+            <th><input type="text" id="name" name="name" value="<%= output.name %>"></th>
+        </tr>
+        <tr>
+            <th><label for="description">Description</label></th>
+            <th><textarea id="description" name="description" rows="2" cols="40"><%= output.description %></textarea></th>
+        </tr>
+        <tr>
+            <th><label for="type">Type</label></th>
+            <th>
+                <select id="type" name="type" onchange=onChange()>
+                    <% for (let t of Object.values(types)) { %>
+                        <option value="<%= t %>"><%= t %></option>
+                    <% } %>
+                </select>
+            </th>
+        </tr>
+        <tr id="settings">
+            <th><label for="settings">Settings</label></th>
+            <th><input type="text" id="settings" name="settings" value="<%= output.settings %>"></th>
+        </tr>
+        <tr>
+            <th><label for="timeFrom">Time (from</label>/<label for="timeTo">to)</label></th>
+            <th><input type="time" id="timeFrom" name="timeFrom" value="<%= output.timeFrom.toString() %>"> -
+                <input type="time" id="timeTo" name="timeTo" value="<%= output.timeTo.toString() %>"></th>
+        </tr>
+        <tr>
+            <th><label for="enabled">Enabled</label></th>
+            <th><input type="checkbox" id="enabled" name="enabled" value="enabled" <%= output.enabled ? 'checked="true"' : ""%>></th>
+        </tr>
+
+    </table>
+
+    <p>
+        <input type="submit" value="Submit">
+        <a href="/settings/output"> Cancel </a>
+    </p>
+</form>
+
+<%- include('../template.ejs',{mode:"footer"}); %>
