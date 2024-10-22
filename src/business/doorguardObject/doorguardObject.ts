@@ -32,9 +32,7 @@ export class doorguardObject {
     protected checkTime(){
         const now = new Date();
         const time = new Time( now.getHours(), now.getMinutes());
-        console.log(this.doorguardObjectType, this.id, "checks the time:", new Date(), new Date().getHours(), ":", new Date().getMinutes(), ":", new Date().getSeconds());
         return time.isInInterval(this.timeFrom, this.timeTo);
-
     }
 
     public get id(): string {

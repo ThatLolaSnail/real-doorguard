@@ -20,9 +20,10 @@ export class EventHandler extends EventEmitter {
 /*
     Types of events:
 
-    input       - an input was fired, the time was checked. This can be used by the controllers
-    controller  - a controller was fired, n is correct, time was checked.
-    output      - an output was fired, the time was checked.
-    log         - useful info to be logged, for example a controller check status
-    ring        - a controller is telling an output to fire, the output will do its own checks if neccesary.
+    input         - an input was fired, the time was checked. This can be used by the controllers
+    controller    - a controller was fired, n is correct, time was checked.
+    output        - an output was fired, the time was checked.
+    log           - useful info to be logged, for example a controller check status
+    ring          - a controller is telling an output to fire, the output will do its own checks if neccesary.
+    hardwareInput - a hardware input telling the input module that it was activated
  */

@@ -13,12 +13,18 @@ export class Input extends doorguardObject {
     protected doorguardObjectType = "input";
     private _type: InputType = InputType.VIRTUAL;
     private _settings: string = "";
-    private _pin: number = -1;
+    private _pin: string = "";
     private _channel: string = "";
     private _message: string = "";
 
     constructor(id: string) {
         super(id);
+        this.eventHandler.addListener("hardwareInput", (pin: string) => {
+            console.log("Input received hardware input from", pin);
+            if (this.type === InputType.HARDWARE && pin === this.pin){
+                this.fireIf(this.checkTime());
+            }
+        });
     }
 
     public set type(type: string) {
@@ -39,11 +45,11 @@ export class Input extends doorguardObject {
     public get settings() {
         return this._settings;
     }
-    public set pin(settings: number) {
+    public set pin(settings: string) {
         // TODO: Change in Database
         this._pin = settings;
     }
-    public get pin() {
+    public get pin():string {
         return this._pin;
     }
     public set channel(settings: string) {

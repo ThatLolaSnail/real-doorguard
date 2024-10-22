@@ -18,7 +18,7 @@ export class Output extends doorguardObject {
 
     private _settings: string = "";
 
-    private _pin: string  = "OUT1";
+    private _pin: string  = "";
     private _repeat: number = 1;
     private _duration: number = 250;
 

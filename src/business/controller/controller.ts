@@ -43,19 +43,27 @@ export class Controller extends doorguardObject {
 
     public fire(){
         super.fire();
+        console.log(typeof this.outputs);
         for (let output of this.outputs){
+
             this.eventHandler.emit("ring", output);
         }
     }
 
-    public set inputs(inputs: string[]) {
+    public set inputs(inputs: string[] | string) {
+        if (typeof inputs === "string") {
+            inputs = inputs.split(",");
+        }
         // TODO: Change in Database
         this._inputs = inputs;
     }
     public get inputs() {
         return this._inputs;
     }
-    public set outputs(outputs: string[]) {
+    public set outputs(outputs: string[] | string) {
+        if (typeof outputs === "string") {
+        outputs = outputs.split(",");
+    }
         // TODO: Change in Database
         this._outputs = outputs;
     }

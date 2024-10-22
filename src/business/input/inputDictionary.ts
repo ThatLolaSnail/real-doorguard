@@ -18,14 +18,13 @@ export class InputDictionary extends Map<string,Input> {
         input = new Input(id);
         input.name = "Hardware Button"
         input.type = InputType.HARDWARE;
-        input.settings = "02";
+        input.pin = "IN2";
         super.set(id, input);
 
         id = this.idService.getNewId();
         input = new Input(id);
         input.name = "Discord"
         input.type = InputType.DISCORD;
-        input.settings = "@ThatLolaSnail";
         super.set(id, input);
 
         //super.set won't add things to the database

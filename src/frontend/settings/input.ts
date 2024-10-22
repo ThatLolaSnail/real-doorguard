@@ -17,11 +17,10 @@ export function input(app: Application) {
         if (typeof req.query.id === 'string'){
             input = api.inputs.get(req.query.id) || null;
         }
-        if (input) {
-            res.render("settings/input-edit", {input: input, types: api.inputType});
-        } else {
-            res.render("settings/input-edit", {input: new Input("new"), types: api.inputType});
+        if (!input) {
+            input = new Input("new");
         }
+        res.render("settings/input-edit", {input: input, types: Object.values(api.inputType), pins: Array.from(api.hardwareInputPins.keys())});
     });
 
     app.get("/settings/input/delete", (req: Request, res: Response) => {
