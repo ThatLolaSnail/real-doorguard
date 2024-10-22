@@ -52,8 +52,6 @@ export function input(app: Application) {
         input.name = req.body.name;
         input.type = req.body.type;
         input.pin = req.body.pin;
-        input.channel = req.body.channel;
-        input.message = req.body.message;
         input.description = req.body.description;
         input.timeFrom = req.body.timeFrom;
         input.timeTo = req.body.timeTo;

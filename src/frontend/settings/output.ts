@@ -55,8 +55,6 @@ export function output(app: Application) {
         output.pin = req.body.pin;
         output.repeat = req.body.repeat;
         output.duration = req.body.duration;
-        output.channel = req.body.channel;
-        output.message = req.body.message;
         output.description = req.body.description;
         output.timeFrom = req.body.timeFrom;
         output.timeTo = req.body.timeTo;

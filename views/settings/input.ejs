@@ -33,8 +33,6 @@
         <th>
             <% if (input.type === "hardware") { %>
                 pin <%= input.pin %>
-            <% } else if (input.type === "discord") { %>
-                <%= input.channel %>: "<%= input.message %>"
             <% } %>
 
         </th>

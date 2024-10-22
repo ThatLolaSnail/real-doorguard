@@ -49,7 +49,6 @@ export class Hardware {
 
     public output(pin: string, repeat: number, duration: number) {
         let p = this.outputs.get(pin);
-        console.log("HAAARDWARE OUUUUTTTT", pin, p, repeat, duration);
         if (!this.isPi() || p === undefined || repeat <= 0 || duration <= 0) {
             return;
         }
