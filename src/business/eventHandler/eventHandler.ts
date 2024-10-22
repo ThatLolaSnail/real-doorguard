@@ -8,7 +8,7 @@ export class EventHandler extends EventEmitter {
         return super.emit(eventName, ...args);
     }
     public addListener(eventName: string, listener: (...args: any[]) => void): this {
-        console.log("EventHandler added:",eventName);
+        console.log("EventHandler listen:",eventName);
         return super.addListener(eventName, listener);
     }
     public removeListener(eventName: string, listener: (...args: any[]) => void): this {

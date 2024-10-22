@@ -3,7 +3,6 @@ import {doorguardObject} from "../doorguardObject/doorguardObject";
 export enum InputType {
     VIRTUAL = "virtual",
     HARDWARE = "hardware",
-    DISCORD = "discord",
 }
 function isInputType(value: string): value is InputType {
     return Object.values(InputType).includes(value as InputType);
@@ -14,13 +13,10 @@ export class Input extends doorguardObject {
     private _type: InputType = InputType.VIRTUAL;
     private _settings: string = "";
     private _pin: string = "";
-    private _channel: string = "";
-    private _message: string = "";
 
     constructor(id: string) {
         super(id);
         this.eventHandler.addListener("hardwareInput", (pin: string) => {
-            console.log("Input received hardware input from", pin);
             if (this.type === InputType.HARDWARE && pin === this.pin){
                 this.fireIfEnabledAndInTimeframe();
             }
@@ -51,19 +47,5 @@ export class Input extends doorguardObject {
     }
     public get pin():string {
         return this._pin;
-    }
-    public set channel(settings: string) {
-        // TODO: Change in Database
-        this._channel = settings;
-    }
-    public get channel() {
-        return this._channel;
-    }
-    public set message(settings: string) {
-        // TODO: Change in Database
-        this._message = settings;
-    }
-    public get message() {
-        return this._message;
     }
 }

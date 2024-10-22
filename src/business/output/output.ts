@@ -6,7 +6,6 @@ export enum OutputType {
     VIRTUAL = "virtual",
     AUDIO = "audio",
     HARDWARE = "hardware",
-    DISCORD = "discord",
 }
 function isOutputType(value: string): value is OutputType {
     return Object.values(OutputType).includes(value as OutputType);
@@ -21,9 +20,6 @@ export class Output extends doorguardObject {
     private _pin: string  = "";
     private _repeat: number = 1;
     private _duration: number = 250;
-
-    private _channel: string = "";
-    private _message: string = "";
 
     private player = require('play-sound')();
     private hardware = container.resolve(Hardware);
@@ -48,9 +44,6 @@ export class Output extends doorguardObject {
                  break;
              case OutputType.HARDWARE:
                  this.hardware.output(this.pin, this.repeat, this.duration);
-                 break;
-             case OutputType.DISCORD:
-                 // discord.output(this.channel, this.message)
                  break;
          }
     }
@@ -97,19 +90,4 @@ export class Output extends doorguardObject {
     public get duration(): number {
         return this._duration;
     }
-    public set channel(settings: string) {
-        // TODO: Change in Database
-        this._channel = settings;
-    }
-    public get channel(): string {
-        return this._channel;
-    }
-    public set message(settings: string) {
-        // TODO: Change in Database
-        this._message = settings;
-    }
-    public get message(): string {
-        return this._message;
-    }
-
 }
