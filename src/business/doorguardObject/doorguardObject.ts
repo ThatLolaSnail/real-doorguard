@@ -22,9 +22,11 @@ export class doorguardObject {
         this.eventHandler.emit(this.doorguardObjectType, this.id);
     }
 
-    protected fireIf(condition: boolean): void{
-        this.eventHandler.emit("log", this.doorguardObjectType, this.id, condition);
-        if(condition) {
+    protected fireIfEnabledAndInTimeframe(): void{
+        const enabled = this.enabled;
+        const timeMatches = this.checkTime();
+        this.eventHandler.emit("log", this.doorguardObjectType, this.id, enabled, timeMatches);
+        if(enabled && timeMatches) {
             this.fire();
         }
     }
@@ -32,9 +34,7 @@ export class doorguardObject {
     protected checkTime(){
         const now = new Date();
         const time = new Time( now.getHours(), now.getMinutes());
-        console.log(this.doorguardObjectType, this.id, "checks the time:", new Date(), new Date().getHours(), ":", new Date().getMinutes(), ":", new Date().getSeconds());
         return time.isInInterval(this.timeFrom, this.timeTo);
-
     }
 
     public get id(): string {

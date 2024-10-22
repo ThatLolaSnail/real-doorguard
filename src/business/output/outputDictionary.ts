@@ -21,14 +21,18 @@ export class OutputDictionary extends Map<string,Output> {
         output = new Output(id);
         output.name = "My Great Doorbell 2"
         output.type = OutputType.HARDWARE;
-        output.settings = "06,1x1000ms";
+        output.pin = "OUT1";
+        output.repeat = 2;
+        output.duration = 250;
         super.set(id, output);
 
         id = this.idService.getNewId();
         output = new Output(id);
         output.name = "Door Buzzer"
         output.type = OutputType.HARDWARE;
-        output.settings = "17,1x2000ms";
+        output.pin = "OUT2";
+        output.repeat = 1;
+        output.duration = 2000;
         super.set(id, output);
 
         id = this.idService.getNewId();

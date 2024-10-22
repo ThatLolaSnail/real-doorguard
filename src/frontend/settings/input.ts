@@ -17,11 +17,10 @@ export function input(app: Application) {
         if (typeof req.query.id === 'string'){
             input = api.inputs.get(req.query.id) || null;
         }
-        if (input) {
-            res.render("settings/input-edit", {input: input, types: api.inputType});
-        } else {
-            res.render("settings/input-edit", {input: new Input("new"), types: api.inputType});
+        if (!input) {
+            input = new Input("new");
         }
+        res.render("settings/input-edit", {input: input, types: Object.values(api.inputType), pins: Array.from(api.hardwareInputPins.keys())});
     });
 
     app.get("/settings/input/delete", (req: Request, res: Response) => {
@@ -52,8 +51,13 @@ export function input(app: Application) {
         }
         input.name = req.body.name;
         input.type = req.body.type;
-        input.settings = req.body.settings;
+        input.pin = req.body.pin;
+        input.channel = req.body.channel;
+        input.message = req.body.message;
         input.description = req.body.description;
+        input.timeFrom = req.body.timeFrom;
+        input.timeTo = req.body.timeTo;
+        input.enabled = req.body.enabled === "enabled";
 
         res.redirect("/settings/input");
     });
