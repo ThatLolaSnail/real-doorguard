@@ -32,7 +32,7 @@ export class Output extends doorguardObject {
         super(id);
         this.eventHandler.addListener("ring", (id: string) => {
             if (this.id == id){
-                this.fireIf(this.checkTime());
+                this.fireIfEnabledAndInTimeframe();
             }
         });
     }

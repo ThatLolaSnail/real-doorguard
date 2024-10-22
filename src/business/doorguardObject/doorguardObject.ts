@@ -22,9 +22,11 @@ export class doorguardObject {
         this.eventHandler.emit(this.doorguardObjectType, this.id);
     }
 
-    protected fireIf(condition: boolean): void{
-        this.eventHandler.emit("log", this.doorguardObjectType, this.id, condition);
-        if(condition) {
+    protected fireIfEnabledAndInTimeframe(): void{
+        const enabled = this.enabled;
+        const timeMatches = this.checkTime();
+        this.eventHandler.emit("log", this.doorguardObjectType, this.id, enabled, timeMatches);
+        if(enabled && timeMatches) {
             this.fire();
         }
     }

@@ -55,7 +55,7 @@ export function controller(app: Application) {
         controller.outputs = req.body.outputs.split(",");
         controller.setCondition(req.body.conditionFrom, req.body.conditionTo);
         controller.setTimeFromStrings(req.body.timeFrom, req.body.timeTo);
-        controller.enabled = !!req.body.enabled;
+        controller.enabled = req.body.enabled === "enabled";
         controller.description = req.body.description;
 
         res.redirect("/settings/controller");

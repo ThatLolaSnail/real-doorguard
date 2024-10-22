@@ -27,9 +27,13 @@ export class Time{
     public isInInterval(from: Time, to: Time): boolean {
         if (from <= to){
             //interval does not cross midnight\
+
+            console.log("Time Check",this,from,to,this >= from && this <= to);
             return this >= from && this <= to;
         } else {
             //interval crosses midnight
+
+            console.log("Time Check",this,from,to,this >= from || this <= to);
             return this >= from || this <= to;
 
         }

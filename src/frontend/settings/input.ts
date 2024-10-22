@@ -55,6 +55,9 @@ export function input(app: Application) {
         input.channel = req.body.channel;
         input.message = req.body.message;
         input.description = req.body.description;
+        input.timeFrom = req.body.timeFrom;
+        input.timeTo = req.body.timeTo;
+        input.enabled = req.body.enabled === "enabled";
 
         res.redirect("/settings/input");
     });

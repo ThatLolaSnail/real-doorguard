@@ -22,7 +22,7 @@ export class Input extends doorguardObject {
         this.eventHandler.addListener("hardwareInput", (pin: string) => {
             console.log("Input received hardware input from", pin);
             if (this.type === InputType.HARDWARE && pin === this.pin){
-                this.fireIf(this.checkTime());
+                this.fireIfEnabledAndInTimeframe();
             }
         });
     }

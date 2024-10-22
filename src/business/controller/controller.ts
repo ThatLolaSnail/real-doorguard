@@ -28,12 +28,12 @@ export class Controller extends doorguardObject {
 
         // if we have no upper limit, we don't need to wait for the timeout
         if (this.conditionTo == 0 && this.conditionFrom == this.numberOfPresses) {
-            this.fireIf(this.checkTime());
+            this.fireIfEnabledAndInTimeframe();
         }
         // if we have an upper limit, we have to make sure a timeout has passed before checking it.
         this.lastPressTimer = setTimeout(()=>{
             if (this.numberOfPresses < this.conditionTo && this.numberOfPresses >= this.conditionFrom){
-                this.fireIf(this.checkTime());
+                this.fireIfEnabledAndInTimeframe();
             }
 
             // after the timeout when the button has been evaluated, reset the counter.

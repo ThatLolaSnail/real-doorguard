@@ -58,6 +58,9 @@ export function output(app: Application) {
         output.channel = req.body.channel;
         output.message = req.body.message;
         output.description = req.body.description;
+        output.timeFrom = req.body.timeFrom;
+        output.timeTo = req.body.timeTo;
+        output.enabled = req.body.enabled === "enabled";
 
         res.redirect("/settings/output");
     });
