@@ -1,4 +1,5 @@
 import Database from 'better-sqlite3';
+import {singleton} from "tsyringe";
 
 
 // Interfaces damit man von unkown Data Type aus Datenbank zu passenden Types casted
@@ -61,6 +62,7 @@ interface Input {
 }
 
 // Die Klasse mit der man alles machen kann
+@singleton()
 export class DatabaseDoorGuard {
     private db: Database.Database;
 

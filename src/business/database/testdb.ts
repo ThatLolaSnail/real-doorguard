@@ -1,4 +1,6 @@
 import {DatabaseDoorGuard} from "./database";
+import {container} from "tsyringe";
+import {Main} from "../main/main";
 
 
 function logTestResult(description: string, result: any): void {
@@ -6,7 +8,7 @@ function logTestResult(description: string, result: any): void {
 }
 
 export function dbtest(): void {
-    const newDb = new DatabaseDoorGuard();
+    const newDb = container.resolve(DatabaseDoorGuard);
 
     // Test for Settings
     // IMPORTANT!!!! KEYS ARE UNIQUE, SO IF YOU WANNA DO THIS TEST AGAIN THEN USE OTHER KEYS!!!!
