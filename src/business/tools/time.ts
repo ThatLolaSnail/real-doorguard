@@ -1,6 +1,16 @@
 import {numToStringTwoDigits} from "./tools";
 
 export class Time{
+    public static fromString(str: string): Time {
+        let strArray = str.split(":");
+        if (strArray.length == 2 ) {
+            let h = parseInt(strArray[0]);
+            let min = parseInt(strArray[1]);
+            return new Time(h, min);
+        }
+        return new Time(0,0);
+    }
+
     private totalMinutes: number = 0;
 
     constructor(hours: number, minutes: number) {

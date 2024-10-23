@@ -1,5 +1,6 @@
 import Database from 'better-sqlite3';
 import {singleton} from "tsyringe";
+import {Time} from "../tools/time";
 
 
 // Interfaces damit man von unkown Data Type aus Datenbank zu passenden Types casted
@@ -18,8 +19,8 @@ interface Setting {
 interface Controller {
     id?: number;
     name: string;
-    timeFrom: Date;
-    timeTo: Date;
+    timeFrom: string;
+    timeTo: string;
     enabled: boolean;
     description: string;
 
@@ -32,8 +33,8 @@ interface Controller {
 interface Output {
     id?: number;
     name: string;
-    timeFrom: Date;
-    timeTo: Date;
+    timeFrom: Time;
+    timeTo: Time;
     enabled: boolean;
     description: string;
 
@@ -49,8 +50,8 @@ interface Output {
 interface Input {
     id?: number;
     name: string;
-    timeFrom: Date;
-    timeTo: Date;
+    timeFrom: Time;
+    timeTo: Time;
     enabled: boolean;
     description: string;
 
@@ -72,6 +73,12 @@ export class DatabaseDoorGuard {
 
         // Create all Tables if they don't exist
         this.createTablesIfNotExists();
+    }
+
+    public resetDatabase(){
+        this.dropAllTables();
+        this.createTablesIfNotExists();
+        this.createDefaultElements();
     }
 
     // Insert Methoden
@@ -98,8 +105,8 @@ export class DatabaseDoorGuard {
         );
         insertData.run(
             controller.name,
-            controller.timeFrom.toISOString(),
-            controller.timeTo.toISOString(),
+            controller.timeFrom.toString(),
+            controller.timeTo.toString(),
             controller.enabled ? 1 : 0,
             controller.description,
             controller.inputs,
@@ -118,8 +125,8 @@ export class DatabaseDoorGuard {
         );
         insertData.run(
             input.name,
-            input.timeFrom.toISOString(),
-            input.timeTo.toISOString(),
+            input.timeFrom.toString(),
+            input.timeTo.toString(),
             input.enabled ? 1 : 0,
             input.description,
             input.type,
@@ -140,8 +147,8 @@ export class DatabaseDoorGuard {
         );
         insertData.run(
             output.name,
-            output.timeFrom.toISOString(),
-            output.timeTo.toISOString(),
+            output.timeFrom.toString(),
+            output.timeTo.toString(),
             output.enabled ? 1 : 0,
             output.description,
             output.type,
@@ -202,8 +209,8 @@ export class DatabaseDoorGuard {
         return row ? {
             id: row.id,
             name: row.name,
-            timeFrom: new Date(row.timeFrom),
-            timeTo: new Date(row.timeTo),
+            timeFrom: Time.fromString(row.timeFrom),
+            timeTo: Time.fromString(row.timeTo),
             enabled: !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
             description: row.description,
             inputs: row.inputs,
@@ -359,6 +366,10 @@ export class DatabaseDoorGuard {
         this.db.exec("DROP TABLE IF EXISTS controllers");
         this.db.exec("DROP TABLE IF EXISTS outputs");
         this.db.exec("DROP TABLE IF EXISTS inputs");
+    }
+
+    private createDefaultElements(): void {
+        this.insertInput()
     }
 
     // Close the DB Connection

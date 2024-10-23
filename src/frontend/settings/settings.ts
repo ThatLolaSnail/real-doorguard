@@ -16,7 +16,8 @@ export function settings(app: Application) {
 
     app.get("/settings/advanced/reset-database", (req: Request, res: Response) => {
         console.log("AAAAA");
-        const newDb = container.resolve(DatabaseDoorGuard);
+        const db = container.resolve(DatabaseDoorGuard);
+        db.resetDatabase();
         res.redirect("/settings/advanced");
     });
 
