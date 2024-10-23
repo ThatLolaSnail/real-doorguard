@@ -204,7 +204,7 @@ export class DatabaseDoorGuard {
             name: row.name,
             timeFrom: new Date(row.timeFrom),
             timeTo: new Date(row.timeTo),
-            enabled: !!row.enabled,
+            enabled: !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
             description: row.description,
             inputs: row.inputs,
             outputs: row.outputs,
@@ -223,7 +223,7 @@ export class DatabaseDoorGuard {
             name: row.name,
             timeFrom: new Date(row.timeFrom),
             timeTo: new Date(row.timeTo),
-            enabled: !!row.enabled,
+            enabled: !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
             description: row.description,
             inputs: row.inputs,
             outputs: row.outputs,
@@ -242,7 +242,7 @@ export class DatabaseDoorGuard {
             name: row.name,
             timeFrom: new Date(row.timeFrom),
             timeTo: new Date(row.timeTo),
-            enabled: !!row.enabled, // Convert integer to boolean
+            enabled: !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
             description: row.description,
             type: row.type,
             settings: row.settings,
@@ -264,7 +264,7 @@ export class DatabaseDoorGuard {
             name: row.name,
             timeFrom: new Date(row.timeFrom),
             timeTo: new Date(row.timeTo),
-            enabled: !!row.enabled, // Convert integer to boolean
+            enabled: !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
             description: row.description,
             type: row.type,
             settings: row.settings,
@@ -286,7 +286,7 @@ export class DatabaseDoorGuard {
             name: row.name,
             timeFrom: new Date(row.timeFrom),
             timeTo: new Date(row.timeTo),
-            enabled: !!row.enabled, // Convert integer to boolean
+            enabled: !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
             description: row.description,
             type: row.type,
             settings: row.settings,
@@ -306,7 +306,7 @@ export class DatabaseDoorGuard {
             name: row.name,
             timeFrom: new Date(row.timeFrom),
             timeTo: new Date(row.timeTo),
-            enabled: !!row.enabled, // Convert integer to boolean
+            enabled: !!row.enabled, // Cast integer to boolean, just to make sure .... :D
             description: row.description,
             type: row.type,
             settings: row.settings,
@@ -316,6 +316,52 @@ export class DatabaseDoorGuard {
         }));
     }
 
+    // Delete Stuff
+
+    public deleteEvent(id: number): void {
+        const deleteData = this.db.prepare(
+            "DELETE FROM events WHERE id = ?"
+        );
+        deleteData.run(id);
+    }
+
+    public deleteSetting(key: string): void {
+        const deleteData = this.db.prepare(
+            "DELETE FROM settings WHERE key = ?"
+        );
+        deleteData.run(key);
+    }
+
+    public deleteController(id: number): void {
+        const deleteData = this.db.prepare(
+            "DELETE FROM controllers WHERE id = ?"
+        );
+        deleteData.run(id);
+    }
+
+    public deleteInput(id: number): void {
+        const deleteData = this.db.prepare(
+            "DELETE FROM inputs WHERE id = ?"
+        );
+        deleteData.run(id);
+    }
+
+    public deleteOutput(id: number): void {
+        const deleteData = this.db.prepare(
+            "DELETE FROM outputs WHERE id = ?"
+        );
+        deleteData.run(id);
+    }
+
+    public dropAllTables(): void {
+        this.db.exec("DROP TABLE IF EXISTS events");
+        this.db.exec("DROP TABLE IF EXISTS settings");
+        this.db.exec("DROP TABLE IF EXISTS controllers");
+        this.db.exec("DROP TABLE IF EXISTS outputs");
+        this.db.exec("DROP TABLE IF EXISTS inputs");
+    }
+
+    // Close the DB Connection
 
     public close(): void {
         this.db.close();
@@ -359,8 +405,8 @@ export class DatabaseDoorGuard {
                 timeTo DATE NOT NULL,
                 enabled BOOLEAN NOT NULL,
                 description TEXT NOT NULL,
-                inputs TEXT NOT NULL, -- Store as a comma-separated string
-                outputs TEXT NOT NULL, -- Store as a comma-separated string
+                inputs TEXT NOT NULL,
+                outputs TEXT NOT NULL,
                 conditionsFrom INTEGER NOT NULL,
                 conditionsTo INTEGER NOT NULL
             )`;
