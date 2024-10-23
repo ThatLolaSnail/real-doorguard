@@ -28,12 +28,12 @@ export class Controller extends doorguardObject {
 
         // if we have no upper limit, we don't need to wait for the timeout
         if (this.conditionTo == 0 && this.conditionFrom == this.numberOfPresses) {
-            this.fireIf(this.checkTime());
+            this.fireIfEnabledAndInTimeframe();
         }
         // if we have an upper limit, we have to make sure a timeout has passed before checking it.
         this.lastPressTimer = setTimeout(()=>{
             if (this.numberOfPresses < this.conditionTo && this.numberOfPresses >= this.conditionFrom){
-                this.fireIf(this.checkTime());
+                this.fireIfEnabledAndInTimeframe();
             }
 
             // after the timeout when the button has been evaluated, reset the counter.
@@ -43,19 +43,27 @@ export class Controller extends doorguardObject {
 
     public fire(){
         super.fire();
+        console.log(typeof this.outputs);
         for (let output of this.outputs){
+
             this.eventHandler.emit("ring", output);
         }
     }
 
-    public set inputs(inputs: string[]) {
+    public set inputs(inputs: string[] | string) {
+        if (typeof inputs === "string") {
+            inputs = inputs.split(",");
+        }
         // TODO: Change in Database
         this._inputs = inputs;
     }
     public get inputs() {
         return this._inputs;
     }
-    public set outputs(outputs: string[]) {
+    public set outputs(outputs: string[] | string) {
+        if (typeof outputs === "string") {
+        outputs = outputs.split(",");
+    }
         // TODO: Change in Database
         this._outputs = outputs;
     }

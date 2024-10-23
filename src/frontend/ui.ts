@@ -1,9 +1,9 @@
 import {Request, Response} from "express";
-import {Service} from "typedi";
 import {settings} from "./settings/settings";
 import {log} from "node:util";
+import {singleton} from "tsyringe";
 
-@Service()
+@singleton()
 export class Ui {
     private port: number = 8080;
     private express = require("express");
@@ -14,7 +14,11 @@ export class Ui {
         this.app.set('view engine', 'ejs');
 
         this.app.get("/", (req: Request, res: Response) => {
-            res.render("index", {});
+            res.render("index", {os: require('os')});
+        });
+
+        this.app.get("/about", (req: Request, res: Response) => {
+            res.render("about", {os: require('os')});
         });
 
         settings(this.app);

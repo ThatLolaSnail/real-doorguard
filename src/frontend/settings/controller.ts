@@ -1,10 +1,10 @@
 import {Application, Request, Response} from "express";
 import {Controller} from "../../business/controller/controller";
 import {Api} from "../../api/api";
-import {Container} from "typedi";
+import {container} from "tsyringe";
 
 export function controller(app: Application) {
-    var api = Container.get(Api);
+    var api = container.resolve(Api);
     var bodyParser = require("body-parser");
     var urlencodedParser = bodyParser.urlencoded({extended: false})
 
@@ -55,7 +55,7 @@ export function controller(app: Application) {
         controller.outputs = req.body.outputs.split(",");
         controller.setCondition(req.body.conditionFrom, req.body.conditionTo);
         controller.setTimeFromStrings(req.body.timeFrom, req.body.timeTo);
-        controller.enabled = !!req.body.enabled;
+        controller.enabled = req.body.enabled === "enabled";
         controller.description = req.body.description;
 
         res.redirect("/settings/controller");

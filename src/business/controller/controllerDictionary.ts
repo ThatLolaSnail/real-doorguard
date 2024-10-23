@@ -1,9 +1,9 @@
 import {Controller} from "./controller";
-import {Container} from "typedi";
 import {IdService} from "../tools/idService";
+import {container} from "tsyringe";
 
 export class ControllerDictionary extends Map<string,Controller> {
-    private idService = Container.get(IdService);
+    private idService = container.resolve(IdService);
 
     constructor() {
         super();
@@ -14,17 +14,17 @@ export class ControllerDictionary extends Map<string,Controller> {
         controller.name = "only a few times";
         controller.setCondition(1,3);
         controller.inputs = ["4","5","6"];
-        controller.outputs = ["7"];
-        controller.setTimeFromStrings("06:00","21:59");
+        controller.outputs = ["7","8"];
+        controller.setTimeFromStrings("06:00","23:59");
         super.set(id, controller);
 
         id = this.idService.getNewId();
         controller = new Controller(id);
         controller.name = "more than 3 times => unlock";
-        controller.setCondition(3,7);
+        controller.setCondition(3,0);
         controller.inputs = ["4","5","6"];
-        controller.outputs = ["8","11"];
-        controller.setTimeFromStrings("06:00","21:59");
+        controller.outputs = ["9","11"];
+        controller.setTimeFromStrings("06:00","23:59");
         super.set(id, controller);
 
         id = this.idService.getNewId();
@@ -32,7 +32,7 @@ export class ControllerDictionary extends Map<string,Controller> {
         controller.name = "a lot (must be my friend)";
         controller.setCondition(7,0);
         controller.inputs = ["4","5","6"];
-        controller.outputs = ["9","11"];
+        controller.outputs = ["10"];
         controller.setTimeFromStrings("00:00","23:59");
         super.set(id, controller);
 

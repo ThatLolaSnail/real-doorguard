@@ -1,10 +1,10 @@
 import {Application, Request, Response} from "express";
 import {Api} from "../../api/api";
-import {Container} from "typedi";
 import {Output} from "../../business/output/output";
+import {container} from "tsyringe";
 
 export function output(app: Application) {
-    var api = Container.get(Api);
+    var api = container.resolve(Api);
     var bodyParser = require("body-parser");
     var urlencodedParser = bodyParser.urlencoded({extended: false})
 
@@ -17,11 +17,10 @@ export function output(app: Application) {
         if (typeof req.query.id === 'string'){
             output = api.outputs.get(req.query.id) || null;
         }
-        if (output) {
-            res.render("settings/output-edit", {output: output, types: api.outputType});
-        } else {
-            res.render("settings/output-edit", {output: new Output("new"), types: api.outputType});
+        if (!output) {
+            output = new Output("new");
         }
+        res.render("settings/output-edit", {output: output, types: Object.values(api.outputType), pins: Array.from(api.hardwareOutputPins.keys())});
     });
 
     app.get("/settings/output/delete", (req: Request, res: Response) => {
@@ -53,7 +52,13 @@ export function output(app: Application) {
         output.name = req.body.name;
         output.type = req.body.type;
         output.settings = req.body.settings;
+        output.pin = req.body.pin;
+        output.repeat = req.body.repeat;
+        output.duration = req.body.duration;
         output.description = req.body.description;
+        output.timeFrom = req.body.timeFrom;
+        output.timeTo = req.body.timeTo;
+        output.enabled = req.body.enabled === "enabled";
 
         res.redirect("/settings/output");
     });

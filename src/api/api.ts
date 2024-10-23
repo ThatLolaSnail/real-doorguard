@@ -1,9 +1,10 @@
-import {Service} from "typedi";
 import {Main} from "../business/main/main";
 import {InputType} from "../business/input/input";
 import {OutputType} from "../business/output/output";
+import {singleton} from "tsyringe";
+import {Hardware} from "../business/hardware/hardware";
 
-@Service()
+@singleton()
 export class Api {
     constructor(private main: Main) {
 
@@ -18,10 +19,16 @@ export class Api {
     public get inputType(){
         return InputType;
     }
+    public get hardwareInputPins(){
+        return Hardware.INPUT_PINS;
+    }
     public get outputs(){
         return this.main.outputs;
     }
     public get outputType(){
         return OutputType;
+    }
+    public get hardwareOutputPins(){
+        return Hardware.OUTPUT_PINS;
     }
 }

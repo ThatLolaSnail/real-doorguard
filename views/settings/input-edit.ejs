@@ -1,21 +1,22 @@
 <%- include('../template.ejs',{
     mode:"header",
-    onload: "onLoad(" + Object.values(types).indexOf(input.type) + ")"
+    onload: "onLoad(" + types.indexOf(input.type) + "," + pins.indexOf(input.pin) + ")"
 }); %>
 
 <script>
-    function onLoad(selectedIndex){
-        document.getElementById('type').selectedIndex = selectedIndex;
+    function onLoad(typeIndex, pinIndex){
+        document.getElementById('type').selectedIndex = typeIndex;
+        document.getElementById('pin').selectedIndex = pinIndex;
 
         onChange();
     }
 
     function onChange() {
-        const settings = document.getElementById('settings');
-        settings.style.display = "";
+        const hardware_pin = document.getElementById('hardware_pin');
+        hardware_pin.style.display = "none";
         const type = document.getElementById('type');
-        if (type.value === "virtual"){
-            settings.style.display = "none";
+        if (type.value === "hardware"){
+            hardware_pin.style.display = "";
         }
     }
 </script>
@@ -26,8 +27,7 @@
 
 <p>
     A Input is everything between a button press and a bell ring, so all the settings.<br>
-    Don't forget to save after editing changes.<br>
-    To disable the condition upper limit, set it to 0.
+    Don't forget to save after editing changes.
 </p>
 
 <form action="/settings/input/edit" method="post">
@@ -49,15 +49,21 @@
             <th><label for="type">Type</label></th>
             <th>
                 <select id="type" name="type" onchange=onChange()>
-                    <% for (let t of Object.values(types)) { %>
+                    <% for (let t of types) { %>
                         <option value="<%= t %>"><%= t %></option>
                     <% } %>
                 </select>
             </th>
         </tr>
-        <tr id="settings">
-            <th><label for="settings">Settings</label></th>
-            <th><input type="text" id="settings" name="settings" value="<%= input.settings %>"></th>
+        <tr id="hardware_pin">
+            <th><label for="pin">Input pin:</label></th>
+            <th>
+                <select id="pin" name="pin">
+                    <% for (let key of pins) { %>
+                        <option value="<%= key %>"><%= key %></option>
+                    <% } %>
+                </select>
+            </th>
         </tr>
         <tr>
             <th><label for="timeFrom">Time (from</label>/<label for="timeTo">to)</label></th>

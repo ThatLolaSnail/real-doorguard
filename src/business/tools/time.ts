@@ -26,7 +26,7 @@ export class Time{
 
     public isInInterval(from: Time, to: Time): boolean {
         if (from <= to){
-            //interval does not cross midnight\
+            //interval does not cross midnight
             return this >= from && this <= to;
         } else {
             //interval crosses midnight

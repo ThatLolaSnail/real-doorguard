@@ -30,7 +30,12 @@
         <th><%= input.id %></th>
         <th><%= input.name %></th>
         <th><%= input.type %></th>
-        <th><%= input.settings %></th>
+        <th>
+            <% if (input.type === "hardware") { %>
+                pin <%= input.pin %>
+            <% } %>
+
+        </th>
         <th><%= input.getTimeAsString() %></th>
         <th><%= input.enabled ? 'Yes' : 'No' %></th>
         <th>
