@@ -1,65 +1,12 @@
 import Database from 'better-sqlite3';
 import {singleton} from "tsyringe";
 
-
-// Interfaces damit man von unkown Data Type aus Datenbank zu passenden Types casted
-
-interface Event {
-    id?: number;
-    type: string;
-    timestamp: Date;
-}
-
-interface Setting {
-    key: string;
-    value: string;
-}
-
-interface Controller {
-    id?: number;
-    name: string;
-    timeFrom: Date;
-    timeTo: Date;
-    enabled: boolean;
-    description: string;
-
-    inputs: string; // Array?
-    outputs: string; // Array?
-    conditionsFrom: number;
-    conditionsTo: number;
-}
-
-interface Output {
-    id?: number;
-    name: string;
-    timeFrom: Date;
-    timeTo: Date;
-    enabled: boolean;
-    description: string;
-
-    type: string; // ??
-    settings: string;
-    pin: string;
-    repeat: number;
-    duration: number;
-    channel: string;
-    message: string;
-}
-
-interface Input {
-    id?: number;
-    name: string;
-    timeFrom: Date;
-    timeTo: Date;
-    enabled: boolean;
-    description: string;
-
-    type: string;
-    settings: string;
-    pin: string;
-    channel: string;
-    message: string;
-}
+import {Dgevent} from "./interfaces/dgevent";
+import {Controller} from "./interfaces/controller";
+import {Input} from "./interfaces/input";
+import {Output} from "./interfaces/output";
+import {Setting} from "./interfaces/setting";
+import {Time} from "../tools/time";
 
 // Die Klasse mit der man alles machen kann
 @singleton()
@@ -74,12 +21,13 @@ export class DatabaseDoorGuard {
         this.createTablesIfNotExists();
     }
 
-    // Insert Methoden
-    public insertEvent(event: Event): void {
+    // Insert Methoden, alle geben die ID zurück außer Settings
+    public insertEvent(event: Dgevent): number {
         const insertData = this.db.prepare(
             "INSERT INTO events (type, timestamp) VALUES (?, ?)"
         );
-        insertData.run(event.type, event.timestamp.toISOString());
+        const result = insertData.run(event.type, event.timestamp.toISOString());
+        return result.lastInsertRowid as number;
     }
 
     public insertSetting(setting: Setting): void {
@@ -89,17 +37,17 @@ export class DatabaseDoorGuard {
         insertData.run(setting.key, setting.value);
     }
 
-    public insertController(controller: Controller): void {
+    public insertController(controller: Controller): number {
         const insertData = this.db.prepare(
             `INSERT INTO controllers (
-            name, timeFrom, timeTo, enabled, description, 
-            inputs, outputs, conditionsFrom, conditionsTo
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        name, timeFrom, timeTo, enabled, description, 
+        inputs, outputs, conditionsFrom, conditionsTo
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
         );
-        insertData.run(
+        const result = insertData.run(
             controller.name,
-            controller.timeFrom.toISOString(),
-            controller.timeTo.toISOString(),
+            controller.timeFrom.toString(),
+            controller.timeTo.toString(),
             controller.enabled ? 1 : 0,
             controller.description,
             controller.inputs,
@@ -107,19 +55,20 @@ export class DatabaseDoorGuard {
             controller.conditionsFrom,
             controller.conditionsTo
         );
+        return result.lastInsertRowid as number;
     }
 
-    public insertInput(input: Input): void {
+    public insertInput(input: Input): number {
         const insertData = this.db.prepare(
             `INSERT INTO inputs (
-            name, timeFrom, timeTo, enabled, description, 
-            type, settings, pin, channel, message
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        name, timeFrom, timeTo, enabled, description, 
+        type, settings, pin, channel, message
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
         );
-        insertData.run(
+        const result = insertData.run(
             input.name,
-            input.timeFrom.toISOString(),
-            input.timeTo.toISOString(),
+            input.timeFrom.toString(),
+            input.timeTo.toString(),
             input.enabled ? 1 : 0,
             input.description,
             input.type,
@@ -128,20 +77,21 @@ export class DatabaseDoorGuard {
             input.channel,
             input.message
         );
+        return result.lastInsertRowid as number;
     }
 
-    public insertOutput(output: Output): void {
+    public insertOutput(output: Output): number {
         const insertData = this.db.prepare(
             `INSERT INTO outputs (
-            name, timeFrom, timeTo, enabled, description, 
-            type, settings, pin, repeat, duration, 
-            channel, message
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        name, timeFrom, timeTo, enabled, description, 
+        type, settings, pin, repeat, duration, 
+        channel, message
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
         );
-        insertData.run(
+        const result = insertData.run(
             output.name,
-            output.timeFrom.toISOString(),
-            output.timeTo.toISOString(),
+            output.timeFrom.toString(),
+            output.timeTo.toString(),
             output.enabled ? 1 : 0,
             output.description,
             output.type,
@@ -152,23 +102,24 @@ export class DatabaseDoorGuard {
             output.channel,
             output.message
         );
+        return result.lastInsertRowid as number;
     }
 
     // Get Methoden
-    public getEvent(id: number): Event | null {
+    public getEvent(id: number): Dgevent | null {
         const getData = this.db.prepare(
             "SELECT id, type, timestamp FROM events WHERE id = ?"
         );
-        const row = getData.get(id) as Event;
+        const row = getData.get(id) as Dgevent;
         return row ? { id: row.id, type: row.type, timestamp: new Date(row.timestamp) } : null;
     }
 
-    public getEvents(): Event[] {
-        const getData = this.db.prepare<Event[]>(
+    public getEvents(): Dgevent[] {
+        const getData = this.db.prepare<Dgevent[]>(
             "SELECT id, type, timestamp FROM events"
         );
-        const rows = getData.all() as Event[];
-        return rows.map((row: Event) => ({
+        const rows = getData.all() as Dgevent[];
+        return rows.map((row: Dgevent) => ({
             id: row.id,
             type: row.type,
             timestamp: new Date(row.timestamp),
@@ -202,8 +153,8 @@ export class DatabaseDoorGuard {
         return row ? {
             id: row.id,
             name: row.name,
-            timeFrom: new Date(row.timeFrom),
-            timeTo: new Date(row.timeTo),
+            timeFrom: row.timeFrom,
+            timeTo: row.timeTo,
             enabled: !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
             description: row.description,
             inputs: row.inputs,
@@ -221,8 +172,8 @@ export class DatabaseDoorGuard {
         return rows.map((row: Controller) => ({
             id: row.id,
             name: row.name,
-            timeFrom: new Date(row.timeFrom),
-            timeTo: new Date(row.timeTo),
+            timeFrom: row.timeFrom,
+            timeTo: row.timeTo,
             enabled: !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
             description: row.description,
             inputs: row.inputs,
@@ -240,8 +191,8 @@ export class DatabaseDoorGuard {
         return row ? {
             id: row.id,
             name: row.name,
-            timeFrom: new Date(row.timeFrom),
-            timeTo: new Date(row.timeTo),
+            timeFrom: row.timeFrom,
+            timeTo: row.timeTo,
             enabled: !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
             description: row.description,
             type: row.type,
@@ -262,8 +213,8 @@ export class DatabaseDoorGuard {
         return rows.map((row: Output) => ({
             id: row.id,
             name: row.name,
-            timeFrom: new Date(row.timeFrom),
-            timeTo: new Date(row.timeTo),
+            timeFrom: row.timeFrom,
+            timeTo: row.timeTo,
             enabled: !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
             description: row.description,
             type: row.type,
@@ -284,8 +235,8 @@ export class DatabaseDoorGuard {
         return row ? {
             id: row.id,
             name: row.name,
-            timeFrom: new Date(row.timeFrom),
-            timeTo: new Date(row.timeTo),
+            timeFrom: row.timeFrom,
+            timeTo: row.timeTo,
             enabled: !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
             description: row.description,
             type: row.type,
@@ -304,8 +255,8 @@ export class DatabaseDoorGuard {
         return rows.map((row: Input) => ({
             id: row.id,
             name: row.name,
-            timeFrom: new Date(row.timeFrom),
-            timeTo: new Date(row.timeTo),
+            timeFrom: row.timeFrom,
+            timeTo: row.timeTo,
             enabled: !!row.enabled, // Cast integer to boolean, just to make sure .... :D
             description: row.description,
             type: row.type,
@@ -361,6 +312,24 @@ export class DatabaseDoorGuard {
         this.db.exec("DROP TABLE IF EXISTS inputs");
     }
 
+    public checkIfTablesExist(): Record<string, boolean> {
+        const tableExists = (tableName: string): boolean => {
+            const result = this.db
+                .prepare(
+                    "SELECT name FROM sqlite_master WHERE type='table' AND name=?"
+                )
+                .get(tableName);
+            return !!result;
+        };
+        return {
+            Settings: tableExists("settings"),
+            Events: tableExists("events"),
+            Controllers: tableExists("controllers"),
+            Outputs: tableExists("outputs"),
+            Inputs: tableExists("inputs"),
+        };
+    }
+
     // Close the DB Connection
 
     public close(): void {
@@ -368,6 +337,13 @@ export class DatabaseDoorGuard {
     }
 
     // useful but private Stuff
+
+    newTimeFromString(timeString: string): Time {
+        const [hoursStr, minutesStr] = timeString.split(':');
+        const hours = parseInt(hoursStr, 10);
+        const minutes = parseInt(minutesStr, 10);
+        return new Time(hours, minutes);
+    }
 
     createTablesIfNotExists(): void {
         this.createEventTable();
@@ -401,8 +377,8 @@ export class DatabaseDoorGuard {
             CREATE TABLE IF NOT EXISTS controllers (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
-                timeFrom DATE NOT NULL,
-                timeTo DATE NOT NULL,
+                timeFrom TEXT NOT NULL,
+                timeTo TEXT NOT NULL,
                 enabled BOOLEAN NOT NULL,
                 description TEXT NOT NULL,
                 inputs TEXT NOT NULL,
@@ -418,8 +394,8 @@ export class DatabaseDoorGuard {
             CREATE TABLE IF NOT EXISTS inputs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
-                timeFrom DATE NOT NULL,
-                timeTo DATE NOT NULL,
+                timeFrom TEXT NOT NULL,
+                timeTo TEXT NOT NULL,
                 enabled BOOLEAN NOT NULL,
                 description TEXT NOT NULL,
                 type TEXT NOT NULL,
@@ -436,8 +412,8 @@ export class DatabaseDoorGuard {
             CREATE TABLE IF NOT EXISTS outputs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
-                timeFrom DATE NOT NULL,
-                timeTo DATE NOT NULL,
+                timeFrom TEXT NOT NULL,
+                timeTo TEXT NOT NULL,
                 enabled BOOLEAN NOT NULL,
                 description TEXT NOT NULL,
                 type TEXT NOT NULL,
