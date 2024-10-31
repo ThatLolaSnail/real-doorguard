@@ -1,19 +1,22 @@
 import Database from 'better-sqlite3';
-import {singleton} from "tsyringe";
+import {container, singleton} from "tsyringe";
 
 import {DgeventIface} from "./interfaces/dgeventIface";
 import {ControllerIface} from "./interfaces/controllerIface";
 import {InputIface} from "./interfaces/inputIface";
 import {OutputIface} from "./interfaces/outputIface";
 import {SettingIface} from "./interfaces/settingIface";
-import {Input} from "../input/input";
+import {Input, InputType} from "../input/input";
 import {Output} from "../output/output";
 import {Controller} from "../controller/controller";
+import {IdService} from "../tools/idService";
+import {Time} from "../tools/time";
 
 // Die Klasse mit der man alles machen kann
 @singleton()
 export class DatabaseDoorGuard {
     private db: Database.Database;
+    private idService = container.resolve(IdService);
 
     // Constructor der die DB aufmacht und alle Tabellen erstellt falls noch nicht vorhanden
     constructor() {
@@ -228,7 +231,7 @@ export class DatabaseDoorGuard {
 
     public getInput(id: number): InputIface | null {
         const getData = this.db.prepare(
-            "SELECT id, name, timeFrom, timeTo, enabled, description, type, settings, pin, channel, message FROM inputs WHERE id = ?"
+            "SELECT id, name, timeFrom, timeTo, enabled, description, type, pin FROM inputs WHERE id = ?"
         );
         const row = getData.get(id) as InputIface;
         return row ? {
@@ -243,21 +246,14 @@ export class DatabaseDoorGuard {
         } : null;
     }
 
-    public getInputs(): InputIface[] {
+    public getAllInputs(): Input[] {
         const getData = this.db.prepare(
-            "SELECT id, name, timeFrom, timeTo, enabled, description, type, settings, pin, channel, message FROM inputs"
+            "SELECT id, name, timeFrom, timeTo, enabled, description, type, pin FROM inputs"
         );
         const rows = getData.all() as InputIface[];
-        return rows.map((row: InputIface) => ({
-            id: row.id,
-            name: row.name,
-            timeFrom: row.timeFrom,
-            timeTo: row.timeTo,
-            enabled: !!row.enabled, // Cast integer to boolean, just to make sure .... :D
-            description: row.description,
-            type: row.type,
-            pin: row.pin
-        }));
+        return rows.map((row: InputIface) =>
+            new Input(row.id, row.name, row.timeFrom, row.timeTo, !!row.enabled, row.description, row.type as InputType, row.pin)
+        );
     }
 
     // Delete Stuff
@@ -348,6 +344,7 @@ export class DatabaseDoorGuard {
         this.createControllerTable();
         this.createInputTable();
         this.createOutputTable();
+        this.createDefaultEntries();
     }
 
     createEventTable (): void {
@@ -396,10 +393,7 @@ export class DatabaseDoorGuard {
                 enabled BOOLEAN NOT NULL,
                 description TEXT NOT NULL,
                 type TEXT NOT NULL,
-                settings TEXT NOT NULL,
-                pin TEXT NOT NULL,
-                channel TEXT NOT NULL,
-                message TEXT NOT NULL
+                pin TEXT NOT NULL
             )`;
         this.db.exec(query);
     }
@@ -417,10 +411,15 @@ export class DatabaseDoorGuard {
                 settings TEXT NOT NULL,
                 pin TEXT NOT NULL,
                 repeat INTEGER NOT NULL,
-                duration INTEGER NOT NULL,
-                channel TEXT NOT NULL,
-                message TEXT NOT NULL
+                duration INTEGER NOT NULL
             )`;
         this.db.exec(query);
+    }
+
+    private createDefaultEntries() {
+
+        let id = this.idService.getNewId();
+
+        this.insertInput(new Input(id, "Input Button", new Time(6,0), new Time(23,0), true, "Default input 1", InputType.HARDWARE, "IN1"));
     }
 }
