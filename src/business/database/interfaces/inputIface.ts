@@ -1,7 +1,7 @@
 import {Time} from "../../tools/time";
 
 export interface InputIface {
-    id?: number;
+    id: string;
     name: string;
     timeFrom: Time;
     timeTo: Time;
@@ -9,8 +9,5 @@ export interface InputIface {
     description: string;
 
     type: string;
-    settings: string;
     pin: string;
-    channel: string;
-    message: string;
 }

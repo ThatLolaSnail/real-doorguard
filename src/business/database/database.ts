@@ -17,6 +17,9 @@ export class DatabaseDoorGuard {
     constructor() {
         this.db = new Database('database.db');
 
+        //to test the createTablesIfNotExist function, this deletes everything!
+        this.dropAllTables();
+
         // Create all Tables if they don't exist
         this.createTablesIfNotExists();
     }
@@ -37,14 +40,15 @@ export class DatabaseDoorGuard {
         insertData.run(setting.key, setting.value);
     }
 
-    public insertController(controller: ControllerIface): number {
+    public insertController(controller: ControllerIface): void {
         const insertData = this.db.prepare(
             `INSERT INTO controllers (
-        name, timeFrom, timeTo, enabled, description, 
+        id, name, timeFrom, timeTo, enabled, description, 
         inputs, outputs, conditionsFrom, conditionsTo
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
         );
         const result = insertData.run(
+            controller.id,
             controller.name,
             controller.timeFrom.toString(),
             controller.timeTo.toString(),
@@ -55,40 +59,36 @@ export class DatabaseDoorGuard {
             controller.conditionsFrom,
             controller.conditionsTo
         );
-        return result.lastInsertRowid as number;
     }
 
-    public insertInput(input: InputIface): number {
+    public insertInput(input: InputIface): void {
         const insertData = this.db.prepare(
             `INSERT INTO inputs (
-        name, timeFrom, timeTo, enabled, description, 
-        type, settings, pin, channel, message
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        id, name, timeFrom, timeTo, enabled, description, 
+        type, pin
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
         );
         const result = insertData.run(
+            input.id,
             input.name,
             input.timeFrom.toString(),
             input.timeTo.toString(),
             input.enabled ? 1 : 0,
             input.description,
             input.type,
-            input.settings,
-            input.pin,
-            input.channel,
-            input.message
+            input.pin
         );
-        return result.lastInsertRowid as number;
     }
 
-    public insertOutput(output: OutputIface): number {
+    public insertOutput(output: OutputIface): void {
         const insertData = this.db.prepare(
             `INSERT INTO outputs (
-        name, timeFrom, timeTo, enabled, description, 
-        type, settings, pin, repeat, duration, 
-        channel, message
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        id, name, timeFrom, timeTo, enabled, description, 
+        type, settings, pin, repeat, duration
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
         );
         const result = insertData.run(
+            output.id,
             output.name,
             output.timeFrom.toString(),
             output.timeTo.toString(),
@@ -98,11 +98,8 @@ export class DatabaseDoorGuard {
             output.settings,
             output.pin,
             output.repeat,
-            output.duration,
-            output.channel,
-            output.message
+            output.duration
         );
-        return result.lastInsertRowid as number;
     }
 
     // Get Methoden
@@ -199,9 +196,7 @@ export class DatabaseDoorGuard {
             settings: row.settings,
             pin: row.pin,
             repeat: row.repeat,
-            duration: row.duration,
-            channel: row.channel,
-            message: row.message
+            duration: row.duration
         } : null;
     }
 
@@ -222,8 +217,6 @@ export class DatabaseDoorGuard {
             pin: row.pin,
             repeat: row.repeat,
             duration: row.duration,
-            channel: row.channel,
-            message: row.message
         }));
     }
 
@@ -240,10 +233,7 @@ export class DatabaseDoorGuard {
             enabled: !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
             description: row.description,
             type: row.type,
-            settings: row.settings,
-            pin: row.pin,
-            channel: row.channel,
-            message: row.message
+            pin: row.pin
         } : null;
     }
 
@@ -260,10 +250,7 @@ export class DatabaseDoorGuard {
             enabled: !!row.enabled, // Cast integer to boolean, just to make sure .... :D
             description: row.description,
             type: row.type,
-            settings: row.settings,
-            pin: row.pin,
-            channel: row.channel,
-            message: row.message
+            pin: row.pin
         }));
     }
 
@@ -283,21 +270,21 @@ export class DatabaseDoorGuard {
         deleteData.run(key);
     }
 
-    public deleteController(id: number): void {
+    public deleteController(id: string): void {
         const deleteData = this.db.prepare(
             "DELETE FROM controllers WHERE id = ?"
         );
         deleteData.run(id);
     }
 
-    public deleteInput(id: number): void {
+    public deleteInput(id: string): void {
         const deleteData = this.db.prepare(
             "DELETE FROM inputs WHERE id = ?"
         );
         deleteData.run(id);
     }
 
-    public deleteOutput(id: number): void {
+    public deleteOutput(id: string): void {
         const deleteData = this.db.prepare(
             "DELETE FROM outputs WHERE id = ?"
         );
@@ -312,6 +299,7 @@ export class DatabaseDoorGuard {
         this.db.exec("DROP TABLE IF EXISTS inputs");
     }
 
+    /*
     public checkIfTablesExist(): Record<string, boolean> {
         const tableExists = (tableName: string): boolean => {
             const result = this.db
@@ -329,6 +317,7 @@ export class DatabaseDoorGuard {
             Inputs: tableExists("inputs"),
         };
     }
+     */
 
     // Close the DB Connection
 
@@ -338,12 +327,14 @@ export class DatabaseDoorGuard {
 
     // useful but private Stuff
 
+    /*
     newTimeFromString(timeString: string): Time {
         const [hoursStr, minutesStr] = timeString.split(':');
         const hours = parseInt(hoursStr, 10);
         const minutes = parseInt(minutesStr, 10);
         return new Time(hours, minutes);
     }
+     */
 
     createTablesIfNotExists(): void {
         this.createEventTable();
@@ -375,7 +366,7 @@ export class DatabaseDoorGuard {
     createControllerTable(): void {
         const query = `
             CREATE TABLE IF NOT EXISTS controllers (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id TEXT PRIMARY KEY,
                 name TEXT NOT NULL,
                 timeFrom TEXT NOT NULL,
                 timeTo TEXT NOT NULL,
@@ -392,7 +383,7 @@ export class DatabaseDoorGuard {
     createInputTable(): void {
         const query = `
             CREATE TABLE IF NOT EXISTS inputs (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id TEXT PRIMARY KEY,
                 name TEXT NOT NULL,
                 timeFrom TEXT NOT NULL,
                 timeTo TEXT NOT NULL,
@@ -410,7 +401,7 @@ export class DatabaseDoorGuard {
     createOutputTable(): void {
         const query = `
             CREATE TABLE IF NOT EXISTS outputs (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id TEXT PRIMARY KEY,
                 name TEXT NOT NULL,
                 timeFrom TEXT NOT NULL,
                 timeTo TEXT NOT NULL,
