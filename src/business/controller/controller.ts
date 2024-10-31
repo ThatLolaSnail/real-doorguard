@@ -1,19 +1,25 @@
 import {clearTimeout} from "node:timers";
 import {doorguardObject} from "../doorguardObject/doorguardObject";
+import {Time} from "../tools/time";
 
 export class Controller extends doorguardObject {
     protected doorguardObjectType = "controller";
     public DELAY = 1000;
-    private _inputs : string[] = ["4","5"];
-    private _outputs : string[] = ["7"];
-    private _conditionFrom = 1;
-    private _conditionTo = 3;
+    private _inputs : string[];
+    private _outputs : string[];
+    private _conditionFrom: number;
+    private _conditionTo: number;
 
     private numberOfPresses = 0;
     private lastPressTimer: NodeJS.Timeout | undefined;
 
-    constructor(id: string) {
-        super(id);
+    constructor(id?: string, name?: string, timeFrom?: Time, timeTo?: Time, enabled?: boolean, description?: string, inputs?: string[], outputs?: string[], conditionFrom?: number, conditionTo?: number) {
+        super(id, name, timeFrom, timeTo, enabled, description);
+        this._inputs = inputs ?? [];
+        this._outputs = outputs ?? [];
+        this._conditionFrom = conditionFrom ?? 1;
+        this._conditionTo = conditionTo ?? 0;
+
         this.eventHandler.addListener("input", (id: string) => {
             if (this.inputs.includes(id)){
                 this.handleInput();

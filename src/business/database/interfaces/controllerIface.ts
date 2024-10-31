@@ -10,6 +10,6 @@ export interface ControllerIface {
 
     inputs: string;
     outputs: string;
-    conditionsFrom: number;
-    conditionsTo: number;
+    conditionFrom: number;
+    conditionTo: number;
 }

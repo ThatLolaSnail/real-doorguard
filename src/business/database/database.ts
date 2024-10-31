@@ -6,7 +6,9 @@ import {ControllerIface} from "./interfaces/controllerIface";
 import {InputIface} from "./interfaces/inputIface";
 import {OutputIface} from "./interfaces/outputIface";
 import {SettingIface} from "./interfaces/settingIface";
-import {Time} from "../tools/time";
+import {Input} from "../input/input";
+import {Output} from "../output/output";
+import {Controller} from "../controller/controller";
 
 // Die Klasse mit der man alles machen kann
 @singleton()
@@ -40,7 +42,7 @@ export class DatabaseDoorGuard {
         insertData.run(setting.key, setting.value);
     }
 
-    public insertController(controller: ControllerIface): void {
+    public insertController(controller: Controller): void {
         const insertData = this.db.prepare(
             `INSERT INTO controllers (
         id, name, timeFrom, timeTo, enabled, description, 
@@ -56,12 +58,12 @@ export class DatabaseDoorGuard {
             controller.description,
             controller.inputs,
             controller.outputs,
-            controller.conditionsFrom,
-            controller.conditionsTo
+            controller.conditionFrom,
+            controller.conditionTo
         );
     }
 
-    public insertInput(input: InputIface): void {
+    public insertInput(input: Input): void {
         const insertData = this.db.prepare(
             `INSERT INTO inputs (
         id, name, timeFrom, timeTo, enabled, description, 
@@ -80,7 +82,7 @@ export class DatabaseDoorGuard {
         );
     }
 
-    public insertOutput(output: OutputIface): void {
+    public insertOutput(output: Output): void {
         const insertData = this.db.prepare(
             `INSERT INTO outputs (
         id, name, timeFrom, timeTo, enabled, description, 
@@ -142,11 +144,15 @@ export class DatabaseDoorGuard {
         }));
     }
 
-    public getController(id: number): ControllerIface | null {
+    /*
+    public getController(id: string): Controller | null {
         const getData = this.db.prepare(
             "SELECT id, name, timeFrom, timeTo, enabled, description, inputs, outputs, conditionsFrom, conditionsTo FROM controllers WHERE id = ?"
         );
         const row = getData.get(id) as ControllerIface;
+        let controller = new Controller(id, row.name, row.timeFrom, row.timeTo, !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
+ row.description, row.inputs, row.outputs, row.conditionFrom, row.conditionTo
+
         return row ? {
             id: row.id,
             name: row.name,
@@ -156,12 +162,12 @@ export class DatabaseDoorGuard {
             description: row.description,
             inputs: row.inputs,
             outputs: row.outputs,
-            conditionsFrom: row.conditionsFrom,
-            conditionsTo: row.conditionsTo
+            conditionFrom: row.conditionFrom,
+            conditionTo: row.conditionTo
         } : null;
-    }
+    }*/
 
-    public getControllers(): ControllerIface[] {
+    public getAllControllers(): ControllerIface[] {
         const getData = this.db.prepare(
             "SELECT id, name, timeFrom, timeTo, enabled, description, inputs, outputs, conditionsFrom, conditionsTo FROM controllers"
         );
@@ -175,8 +181,8 @@ export class DatabaseDoorGuard {
             description: row.description,
             inputs: row.inputs,
             outputs: row.outputs,
-            conditionsFrom: row.conditionsFrom,
-            conditionsTo: row.conditionsTo
+            conditionFrom: row.conditionFrom,
+            conditionTo: row.conditionTo
         }));
     }
 

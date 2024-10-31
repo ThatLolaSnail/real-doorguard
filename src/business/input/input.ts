@@ -1,4 +1,5 @@
 import {doorguardObject} from "../doorguardObject/doorguardObject";
+import {Time} from "../tools/time";
 
 export enum InputType {
     VIRTUAL = "virtual",
@@ -10,12 +11,14 @@ function isInputType(value: string): value is InputType {
 
 export class Input extends doorguardObject {
     protected doorguardObjectType = "input";
-    private _type: InputType = InputType.VIRTUAL;
-    private _settings: string = "";
-    private _pin: string = "";
+    private _type: InputType;
+    private _pin: string;
 
-    constructor(id: string) {
-        super(id);
+    constructor(id?: string, name?: string, timeFrom?: Time, timeTo?: Time, enabled?: boolean, description?: string, type?: InputType, pin?: string) {
+        super(id, name, timeFrom, timeTo, enabled, description);
+        this._type = type ?? InputType.VIRTUAL;
+        this._pin = pin ?? "";
+
         this.eventHandler.addListener("hardwareInput", (pin: string) => {
             if (this.type === InputType.HARDWARE && pin === this.pin){
                 this.fireIfEnabledAndInTimeframe();
@@ -33,13 +36,6 @@ export class Input extends doorguardObject {
     }
     public get type() {
         return this._type;
-    }
-    public set settings(settings: string) {
-        // TODO: Change in Database
-        this._settings = settings;
-    }
-    public get settings() {
-        return this._settings;
     }
     public set pin(settings: string) {
         // TODO: Change in Database

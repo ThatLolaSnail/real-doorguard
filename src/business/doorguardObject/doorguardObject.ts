@@ -1,21 +1,28 @@
 import {Time} from "../tools/time";
 import {EventHandler} from "../eventHandler/eventHandler";
 import {container} from "tsyringe";
+import {IdService} from "../tools/idService";
 
 export class doorguardObject {
     protected doorguardObjectType: string = "object";
     protected eventHandler = container.resolve(EventHandler);
+    protected idService = container.resolve(IdService);
 
     private readonly _id: string;
-    private _name = "New Object";
-    private _timeFrom = new Time(0, 0);
-    private _timeTo = new Time(23,59);
-    private _enabled = true;
-    private _description = "Please edit this Object's settings to your liking.";
+    private _name: string;
+    private _timeFrom: Time;
+    private _timeTo: Time;
+    private _enabled: boolean;
+    private _description: string;
 
 
-    constructor(id: string) {
-        this._id = id;
+    constructor(id?: string, name?: string, timeFrom?: Time, timeTo?: Time, enabled?: boolean, description?: string) {
+        this._id = id ?? this.idService.getNewId();
+        this._name = name ?? "New Object";
+        this._timeFrom = timeFrom ?? new Time(0, 0);
+        this._timeTo = timeTo ?? new Time(23,59);
+        this._enabled = enabled ?? true;
+        this._description = description ?? "Please edit this Object's settings to your liking.";
     }
 
     public fire(){

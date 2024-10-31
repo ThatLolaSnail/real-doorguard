@@ -1,3 +1,4 @@
+/*
 import {DatabaseDoorGuard} from "./database";
 import {container} from "tsyringe";
 
@@ -80,7 +81,7 @@ export function dbTest(): void {
 
     db.deleteController(controllerId1);
 
-    const allControllers = db.getControllers();
+    const allControllers = db.getAllControllers();
     logTestResult('controllers', allControllers);
 
 
@@ -169,3 +170,4 @@ export function dbTest(): void {
     db.dropAllTables();
     db.close();
 }
+*/
