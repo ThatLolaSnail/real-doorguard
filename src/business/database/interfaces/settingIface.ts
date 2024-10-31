@@ -1,4 +1,4 @@
-export interface Setting {
+export interface SettingIface {
     key: string;
     value: string;
 }

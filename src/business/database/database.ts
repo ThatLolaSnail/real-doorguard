@@ -1,11 +1,11 @@
 import Database from 'better-sqlite3';
 import {singleton} from "tsyringe";
 
-import {Dgevent} from "./interfaces/dgevent";
-import {Controller} from "./interfaces/controller";
-import {Input} from "./interfaces/input";
-import {Output} from "./interfaces/output";
-import {Setting} from "./interfaces/setting";
+import {DgeventIface} from "./interfaces/dgeventIface";
+import {ControllerIface} from "./interfaces/controllerIface";
+import {InputIface} from "./interfaces/inputIface";
+import {OutputIface} from "./interfaces/outputIface";
+import {SettingIface} from "./interfaces/settingIface";
 import {Time} from "../tools/time";
 
 // Die Klasse mit der man alles machen kann
@@ -22,7 +22,7 @@ export class DatabaseDoorGuard {
     }
 
     // Insert Methoden, alle geben die ID zurück außer Settings
-    public insertEvent(event: Dgevent): number {
+    public insertEvent(event: DgeventIface): number {
         const insertData = this.db.prepare(
             "INSERT INTO events (type, timestamp) VALUES (?, ?)"
         );
@@ -30,14 +30,14 @@ export class DatabaseDoorGuard {
         return result.lastInsertRowid as number;
     }
 
-    public insertSetting(setting: Setting): void {
+    public insertSetting(setting: SettingIface): void {
         const insertData = this.db.prepare(
             "INSERT INTO settings (key, value) VALUES (?, ?)"
         );
         insertData.run(setting.key, setting.value);
     }
 
-    public insertController(controller: Controller): number {
+    public insertController(controller: ControllerIface): number {
         const insertData = this.db.prepare(
             `INSERT INTO controllers (
         name, timeFrom, timeTo, enabled, description, 
@@ -58,7 +58,7 @@ export class DatabaseDoorGuard {
         return result.lastInsertRowid as number;
     }
 
-    public insertInput(input: Input): number {
+    public insertInput(input: InputIface): number {
         const insertData = this.db.prepare(
             `INSERT INTO inputs (
         name, timeFrom, timeTo, enabled, description, 
@@ -80,7 +80,7 @@ export class DatabaseDoorGuard {
         return result.lastInsertRowid as number;
     }
 
-    public insertOutput(output: Output): number {
+    public insertOutput(output: OutputIface): number {
         const insertData = this.db.prepare(
             `INSERT INTO outputs (
         name, timeFrom, timeTo, enabled, description, 
@@ -106,50 +106,50 @@ export class DatabaseDoorGuard {
     }
 
     // Get Methoden
-    public getEvent(id: number): Dgevent | null {
+    public getEvent(id: number): DgeventIface | null {
         const getData = this.db.prepare(
             "SELECT id, type, timestamp FROM events WHERE id = ?"
         );
-        const row = getData.get(id) as Dgevent;
+        const row = getData.get(id) as DgeventIface;
         return row ? { id: row.id, type: row.type, timestamp: new Date(row.timestamp) } : null;
     }
 
-    public getEvents(): Dgevent[] {
-        const getData = this.db.prepare<Dgevent[]>(
+    public getEvents(): DgeventIface[] {
+        const getData = this.db.prepare<DgeventIface[]>(
             "SELECT id, type, timestamp FROM events"
         );
-        const rows = getData.all() as Dgevent[];
-        return rows.map((row: Dgevent) => ({
+        const rows = getData.all() as DgeventIface[];
+        return rows.map((row: DgeventIface) => ({
             id: row.id,
             type: row.type,
             timestamp: new Date(row.timestamp),
         }));
     }
 
-    public getSetting(key: string): Setting | null {
+    public getSetting(key: string): SettingIface | null {
         const getData = this.db.prepare(
             "SELECT key, value FROM settings WHERE key = ?"
         );
-        const row = getData.get(key) as Setting; // Cast the result to SettingRow
+        const row = getData.get(key) as SettingIface; // Cast the result to SettingRow
         return row ? {  key: row.key, value: row.value } : null;
     }
 
-    public getSettings(): Setting[] {
-        const getData = this.db.prepare<Setting[]>(
+    public getSettings(): SettingIface[] {
+        const getData = this.db.prepare<SettingIface[]>(
             "SELECT key, value FROM settings"
         );
-        const rows = getData.all() as Setting[];
-        return rows.map((row: Setting) => ({
+        const rows = getData.all() as SettingIface[];
+        return rows.map((row: SettingIface) => ({
             key: row.key,
             value: row.value,
         }));
     }
 
-    public getController(id: number): Controller | null {
+    public getController(id: number): ControllerIface | null {
         const getData = this.db.prepare(
             "SELECT id, name, timeFrom, timeTo, enabled, description, inputs, outputs, conditionsFrom, conditionsTo FROM controllers WHERE id = ?"
         );
-        const row = getData.get(id) as Controller;
+        const row = getData.get(id) as ControllerIface;
         return row ? {
             id: row.id,
             name: row.name,
@@ -164,12 +164,12 @@ export class DatabaseDoorGuard {
         } : null;
     }
 
-    public getControllers(): Controller[] {
+    public getControllers(): ControllerIface[] {
         const getData = this.db.prepare(
             "SELECT id, name, timeFrom, timeTo, enabled, description, inputs, outputs, conditionsFrom, conditionsTo FROM controllers"
         );
-        const rows = getData.all() as Controller[];
-        return rows.map((row: Controller) => ({
+        const rows = getData.all() as ControllerIface[];
+        return rows.map((row: ControllerIface) => ({
             id: row.id,
             name: row.name,
             timeFrom: row.timeFrom,
@@ -183,11 +183,11 @@ export class DatabaseDoorGuard {
         }));
     }
 
-    public getOutput(id: number): Output | null {
+    public getOutput(id: number): OutputIface | null {
         const getData = this.db.prepare(
             "SELECT id, name, timeFrom, timeTo, enabled, description, type, settings, pin, repeat, duration, channel, message FROM outputs WHERE id = ?"
         );
-        const row = getData.get(id) as Output;
+        const row = getData.get(id) as OutputIface;
         return row ? {
             id: row.id,
             name: row.name,
@@ -205,12 +205,12 @@ export class DatabaseDoorGuard {
         } : null;
     }
 
-    public getOutputs(): Output[] {
+    public getOutputs(): OutputIface[] {
         const getData = this.db.prepare(
             "SELECT id, name, timeFrom, timeTo, enabled, description, type, settings, pin, repeat, duration, channel, message FROM outputs"
         );
-        const rows = getData.all() as Output[];
-        return rows.map((row: Output) => ({
+        const rows = getData.all() as OutputIface[];
+        return rows.map((row: OutputIface) => ({
             id: row.id,
             name: row.name,
             timeFrom: row.timeFrom,
@@ -227,11 +227,11 @@ export class DatabaseDoorGuard {
         }));
     }
 
-    public getInput(id: number): Input | null {
+    public getInput(id: number): InputIface | null {
         const getData = this.db.prepare(
             "SELECT id, name, timeFrom, timeTo, enabled, description, type, settings, pin, channel, message FROM inputs WHERE id = ?"
         );
-        const row = getData.get(id) as Input;
+        const row = getData.get(id) as InputIface;
         return row ? {
             id: row.id,
             name: row.name,
@@ -247,12 +247,12 @@ export class DatabaseDoorGuard {
         } : null;
     }
 
-    public getInputs(): Input[] {
+    public getInputs(): InputIface[] {
         const getData = this.db.prepare(
             "SELECT id, name, timeFrom, timeTo, enabled, description, type, settings, pin, channel, message FROM inputs"
         );
-        const rows = getData.all() as Input[];
-        return rows.map((row: Input) => ({
+        const rows = getData.all() as InputIface[];
+        return rows.map((row: InputIface) => ({
             id: row.id,
             name: row.name,
             timeFrom: row.timeFrom,

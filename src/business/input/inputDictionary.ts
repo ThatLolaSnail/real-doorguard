@@ -9,6 +9,7 @@ export class InputDictionary extends Map<string,Input> {
         super();
 
         // TODO: Read inputs from database
+        /*
         let id = this.idService.getNewId();
         let input = new Input(id);
         input.name = "Just for testing"
@@ -30,6 +31,7 @@ export class InputDictionary extends Map<string,Input> {
 
         //super.set won't add things to the database
         //this.idService.registerId(id);
+         */
 
     }
 

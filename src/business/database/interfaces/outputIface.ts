@@ -1,6 +1,6 @@
 import {Time} from "../../tools/time";
 
-export interface Output {
+export interface OutputIface {
     id?: number;
     name: string;
     timeFrom: Time;

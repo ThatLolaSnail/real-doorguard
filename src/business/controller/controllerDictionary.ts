@@ -9,6 +9,7 @@ export class ControllerDictionary extends Map<string,Controller> {
         super();
 
         // TODO: Read controllers from database
+        /*
         let id = this.idService.getNewId();
         let controller = new Controller(id);
         controller.name = "only a few times";
@@ -38,7 +39,7 @@ export class ControllerDictionary extends Map<string,Controller> {
 
         //super.set won't add things to the database
         //this.idService.registerId(id);
-
+*/
     }
 
     public set(key: string, value: Controller): this {

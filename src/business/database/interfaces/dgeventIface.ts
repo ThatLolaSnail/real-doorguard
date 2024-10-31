@@ -1,4 +1,4 @@
-export interface Dgevent {
+export interface DgeventIface {
     id?: number;
     type: string;
     timestamp: Date;

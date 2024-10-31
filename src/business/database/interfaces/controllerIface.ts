@@ -1,6 +1,6 @@
 import {Time} from "../../tools/time";
 
-export interface Input {
+export interface ControllerIface {
     id?: number;
     name: string;
     timeFrom: Time;
@@ -8,9 +8,8 @@ export interface Input {
     enabled: boolean;
     description: string;
 
-    type: string;
-    settings: string;
-    pin: string;
-    channel: string;
-    message: string;
+    inputs: string; // Array?
+    outputs: string; // Array?
+    conditionsFrom: number;
+    conditionsTo: number;
 }

@@ -9,7 +9,7 @@ export class OutputDictionary extends Map<string,Output> {
         super();
 
         // TODO: Read outputs from database
-
+/*
         let id = this.idService.getNewId();
         let output = new Output(id);
         output.name = "My Great Doorbell"
@@ -49,7 +49,7 @@ export class OutputDictionary extends Map<string,Output> {
 
         //super.set won't add things to the database
         //this.idService.registerId(id);
-
+        */
     }
 
     public set(key: string, value: Output): this {
