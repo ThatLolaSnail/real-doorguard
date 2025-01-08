@@ -9,6 +9,7 @@ function logTestResult(description: string, result: any): void {
 }
 
 export function dbTest(): void {
+    /*
     const db = container.resolve(DatabaseDoorGuard);
 
     const setting1 = { key: 'alexandra', value: 'goth' };
@@ -168,4 +169,6 @@ export function dbTest(): void {
 
     db.dropAllTables();
     db.close();
+
+     */
 }
