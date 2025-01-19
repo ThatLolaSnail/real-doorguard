@@ -4,9 +4,20 @@ import {singleton} from "tsyringe";
 import {Dgevent} from "./interfaces/dgevent";
 import {Setting} from "./interfaces/setting";
 import {Time} from "../tools/time";
-import { Controller } from '../controller/controller';
-import { Input } from '../input/input';
-import { Output } from '../output/output';
+import {Controller} from '../controller/controller';
+import {Input} from '../input/input';
+import {Output} from '../output/output';
+
+/*
+function stringFromDB(input: string): undefined | string[] {
+    // Weil manche Values den Typ string oder string[] haben ... rastet alles andere aus.
+    if (input.includes(",")) {
+        return input.split(",");
+    }
+    return input;
+}
+ */
+
 
 // Datenbanken Klasse zum create, update, get und delete von Daten
 @singleton()
@@ -50,8 +61,8 @@ export class DatabaseDoorGuard {
             controller.timeTo.toString(),
             controller.enabled ? 1 : 0,
             controller.description,
-            controller.inputs,
-            controller.outputs,
+            controller.inputs.toString(),
+            controller.outputs.toString(),
             controller.conditionFrom,
             controller.conditionTo
         );
@@ -63,7 +74,7 @@ export class DatabaseDoorGuard {
             `INSERT INTO inputs (
         name, timeFrom, timeTo, enabled, description, 
         type, pin
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    ) VALUES (?, ?, ?, ?, ?, ?, ?)`
         );
         const result = insertData.run(
             input.name,
@@ -82,7 +93,7 @@ export class DatabaseDoorGuard {
             `INSERT INTO outputs (
         name, timeFrom, timeTo, enabled, description, 
         type, pin, repeat, duration
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
         );
         const result = insertData.run(
             output.name,
@@ -91,7 +102,9 @@ export class DatabaseDoorGuard {
             output.enabled ? 1 : 0,
             output.description,
             output.type,
-            output.pin
+            output.pin,
+            output.repeat,
+            output.duration
         );
         return result.lastInsertRowid as number;
     }
@@ -141,50 +154,43 @@ export class DatabaseDoorGuard {
             "SELECT id, name, timeFrom, timeTo, enabled, description, inputs, outputs, conditionFrom, conditionTo FROM controllers WHERE id = ?"
         );
 
-        return getData.get(id) as Controller;
+        const row = getData.get(id) as Controller;
+        /*{
+            id: string,
+            name: string,
+            timeFrom: Time,
+            timeTo: Time,
+            enabled: boolean,
+            description: string,
+            inputs: string,
+            outputs: string,
+            conditionFrom: number,
+            conditionTo: number
+        };
 
-        /*
-       const row = getData.get(id) as Controller;
+         */
 
-       return row;
-
-      return new Controller(
-          row.id,
-          row.name,
-          row.timeFrom,
-          row.timeTo,
-          !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
-          row.description,
-          row.inputs.split(","),
-          row.outputs.split(","),
-          row.conditionFrom,
-          row.conditionTo
-          );
-
-
-      // @ts-ignore
-      return row ? {
-          id: row.id,
-          name: row.name,
-          timeFrom: row.timeFrom,
-          timeTo: row.timeTo,
-          enabled: !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
-          description: row.description,
-          inputs: row.inputs,
-          outputs: row.outputs,
-          conditionFrom: row.conditionFrom,
-          conditionTo: row.conditionTo
-      } : null;
-
-       */
+        return new Controller(
+            row.id,
+            row.name,
+            row.timeFrom,
+            row.timeTo,
+            !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
+            row.description,
+            row.inputs.toString().split(","),
+            row.outputs.toString().split(","),
+            //JSON.parse(row.inputs),
+            //stringFromDB(row.outputs),
+            row.conditionFrom,
+            row.conditionTo
+        );
     }
 
     public getControllers(): Controller[] {
         const getData = this.db.prepare(
             "SELECT id, name, timeFrom, timeTo, enabled, description, inputs, outputs, conditionFrom, conditionTo FROM controllers"
         );
-        return getData.all() as Controller[];
-        /*
+
         const rows = getData.all() as Controller[];
 
         // @ts-ignore
@@ -195,13 +201,12 @@ export class DatabaseDoorGuard {
             timeTo: row.timeTo,
             enabled: !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
             description: row.description,
-            inputs: row.inputs,
-            outputs: row.outputs,
+            inputs: row.inputs.toString().split(","),
+            outputs: row.outputs.toString().split(","),
             conditionFrom: row.conditionFrom,
             conditionTo: row.conditionTo
         }));
 
-         */
     }
 
     public getOutput(id: number): Output | null {
@@ -274,10 +279,10 @@ export class DatabaseDoorGuard {
 
     public getInputs(): Input[] {
         const getData = this.db.prepare(
-            "SELECT id, name, timeFrom, timeTo, enabled, description, type, settings, pin, channel, message FROM inputs"
+            "SELECT id, name, timeFrom, timeTo, enabled, description, type, pin FROM inputs"
         );
-        return getData.all() as Input[];
-        /*
+        //return getData.all() as Input[];
+
         const rows = getData.all() as Input[];
         // @ts-ignore
         return rows.map((row: Input) => ({
@@ -291,90 +296,86 @@ export class DatabaseDoorGuard {
             pin: row.pin,
         }));
 
-        */
     }
 
     // Updating DataBase Methods
 
-    // Update Event
-    public updateEvent(event: Partial<Dgevent> & { id: number }): number {
-        const updates = Object.entries(event).filter(([key, value]) => key !== 'id' && value !== undefined);
-        if (updates.length === 0) return 0;
-
-        const updateQuery = updates.map(([key]) => `${key} = ?`).join(', ');
-        const params = updates.map(([, value]) => value);
-        params.push(event.id);
-
+    public updateEvent(event: Dgevent): void {
         const updateData = this.db.prepare(
-            `UPDATE events SET ${updateQuery} WHERE id = ?`
+            "UPDATE events SET type = ?, timestamp = ? WHERE id = ?"
         );
-        const result = updateData.run(...params);
-        return result.changes;
+        updateData.run(event.type, event.timestamp.toISOString(), event.id);
     }
 
-    // Update Setting
-    public updateSetting(setting: Partial<Setting> & { id: number }): number {
-        const updates = Object.entries(setting).filter(([key, value]) => key !== 'id' && value !== undefined);
-        if (updates.length === 0) return 0;
-
-        const updateQuery = updates.map(([key]) => `${key} = ?`).join(', ');
-        const params = updates.map(([, value]) => value);
-        params.push(setting.id);
-
+    public updateSetting(setting: Setting): void {
         const updateData = this.db.prepare(
-            `UPDATE settings SET ${updateQuery} WHERE id = ?`
+            "UPDATE settings SET value = ? WHERE key = ?"
         );
-        const result = updateData.run(...params);
-        return result.changes;
+        updateData.run(setting.value, setting.key);
     }
 
-    // Update Controller
-    public updateController(controller: Partial<Controller> & { id: number }): number {
-        const updates = Object.entries(controller).filter(([key, value]) => key !== 'id' && value !== undefined);
-        if (updates.length === 0) return 0;
-
-        const updateQuery = updates.map(([key]) => `${key} = ?`).join(', ');
-        const params = updates.map(([, value]) => value);
-        params.push(controller.id);
-
+    public updateController(controller: Controller): void {
         const updateData = this.db.prepare(
-            `UPDATE controllers SET ${updateQuery} WHERE id = ?`
+            `UPDATE controllers SET 
+            name = ?, timeFrom = ?, timeTo = ?, enabled = ?, description = ?, 
+            inputs = ?, outputs = ?, conditionFrom = ?, conditionTo = ? 
+         WHERE id = ?`
         );
-        const result = updateData.run(...params);
-        return result.changes;
+        updateData.run(
+            controller.name,
+            controller.timeFrom.toString(),
+            controller.timeTo.toString(),
+            controller.enabled ? 1 : 0,
+            controller.description,
+            controller.inputs.toString(),
+            controller.outputs.toString(),
+            controller.conditionFrom,
+            controller.conditionTo,
+            controller.id
+        );
     }
 
-    // Update Output
-    public updateOutput(output: Partial<Output> & { id: number }): number {
-        const updates = Object.entries(output).filter(([key, value]) => key !== 'id' && value !== undefined);
-        if (updates.length === 0) return 0;
-
-        const updateQuery = updates.map(([key]) => `${key} = ?`).join(', ');
-        const params = updates.map(([, value]) => value);
-        params.push(output.id);
-
+    public updateInput(input: Input): void {
         const updateData = this.db.prepare(
-            `UPDATE outputs SET ${updateQuery} WHERE id = ?`
+            `UPDATE inputs SET 
+            name = ?, timeFrom = ?, timeTo = ?, enabled = ?, description = ?, 
+            type = ?, pin = ? 
+         WHERE id = ?`
         );
-        const result = updateData.run(...params);
-        return result.changes;
+        updateData.run(
+            input.name,
+            input.timeFrom.toString(),
+            input.timeTo.toString(),
+            input.enabled ? 1 : 0,
+            input.description,
+            input.type,
+            input.pin,
+            input.id
+        );
     }
 
-    // Update Input
-    public updateInput(input: Partial<Input> & { id: number }): number {
-        const updates = Object.entries(input).filter(([key, value]) => key !== 'id' && value !== undefined);
-        if (updates.length === 0) return 0;
-
-        const updateQuery = updates.map(([key]) => `${key} = ?`).join(', ');
-        const params = updates.map(([, value]) => value);
-        params.push(input.id);
-
+    public updateOutput(output: Output): void {
         const updateData = this.db.prepare(
-            `UPDATE inputs SET ${updateQuery} WHERE id = ?`
+            `UPDATE outputs SET 
+            name = ?, timeFrom = ?, timeTo = ?, enabled = ?, description = ?, 
+            type = ?, pin = ?, repeat = ?, duration = ? 
+         WHERE id = ?`
         );
-        const result = updateData.run(...params);
-        return result.changes;
+        updateData.run(
+            output.name,
+            output.timeFrom.toString(),
+            output.timeTo.toString(),
+            output.enabled ? 1 : 0,
+            output.description,
+            output.type,
+            output.pin,
+            output.repeat,
+            output.duration,
+            output.id
+        );
     }
+
+
 
     // Delete Stuff
 

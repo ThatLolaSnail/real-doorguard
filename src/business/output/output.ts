@@ -46,7 +46,7 @@ export class Output extends doorguardObject {
 
          switch (this.type){
              case OutputType.VIRTUAL:
-                 dbTest();
+                 //dbTest();
                  break;
              case OutputType.AUDIO:
                  this.player.play("audio/" + this.settings);

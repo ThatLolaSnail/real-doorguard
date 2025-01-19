@@ -19,29 +19,38 @@ export function dbTest(): void {
     const dgevent2 = { type: 'door', timestamp: new Date() };
     const dgevent3 = { type: 'error', timestamp: new Date() };
 
-    const dgeventIds = [dgevent1, dgevent2, dgevent3].map(event => db.insertEvent(event));
-    logTestResult('Dgevent IDs', dgeventIds);
+    try {
+        const dgeventIds = [dgevent1, dgevent2, dgevent3].map(event => db.insertEvent(event));
+        logTestResult('Dgevent IDs', dgeventIds);
 
-    const singleDgevent = db.getEvent(dgeventIds[0]);
-    logTestResult('Single Dgevent', singleDgevent);
+        const singleDgevent = db.getEvent(dgeventIds[0]);
+        logTestResult('Single Dgevent', singleDgevent);
 
-    const allDgevents = db.getEvents();
-    logTestResult('All Dgevents', allDgevents);
+        const allDgevents = db.getEvents();
+        logTestResult('All Dgevents', allDgevents);
+    }  catch (error: unknown) {
+        logTestResult('ERROR Events', error);
+    }
 
     // Setting
     const setting1 = { key: 'doorkey', value: 'square' };
     const setting2 = { key: 'cat', value: 'dark' };
     const setting3 = { key: 'music', value: 'metal' };
 
-    [setting1, setting2, setting3].forEach(setting => db.insertSetting(setting));
-    logTestResult('All Settings', db.getSettings());
+    try {
+        [setting1, setting2, setting3].forEach(setting => db.insertSetting(setting));
+        logTestResult('All Settings', db.getSettings());
 
-    const singleSetting = db.getSetting('cat');
-    logTestResult('Single Setting', singleSetting);
+        const singleSetting = db.getSetting('cat');
+        logTestResult('Single Setting', singleSetting);
+    } catch (error: unknown) {
+        logTestResult('ERROR Settings', error);
+    }
+
 
     // Controller
     const controller1 = new Controller(
-        'controller1',
+        '1',
         'Main Controller',
         new Time(8, 0),
         new Time(18, 0),
@@ -53,26 +62,38 @@ export function dbTest(): void {
         5
     );
     const controller2 = new Controller(
-        'controller2',
+        '2',
         'Backup Controller',
         new Time(20, 0),
         new Time(6, 0),
         false,
-        'controller 1 description',
+        'controller 1337 description',
         ['Input3', 'Input4'],
         ['Output2'],
         2,
         10
     );
 
-    const controllerIds = [controller1, controller2].map(controller => db.insertController(controller));
-    logTestResult('Controller IDs', controllerIds);
 
-    const singleController = db.getController(controllerIds[0]);
-    logTestResult('Single Controller', singleController);
+    try {
+        const controllerIds = [controller1, controller2].map(controller => db.insertController(controller));
+        logTestResult('Controller IDs', controllerIds);
 
-    const allControllers = db.getControllers();
-    logTestResult('All Controllers', allControllers);
+        const singleController = db.getController(controllerIds[1]);
+        logTestResult('Single Controller', singleController);
+
+        controller2.description = "666 description";
+        db.updateController(controller2);
+
+        const singleController2 = db.getController(controllerIds[1]);
+        logTestResult('Single Controller with Update:', singleController);
+
+        const allControllers = db.getControllers();
+        logTestResult('All Controllers', allControllers);
+    } catch (error: unknown) {
+        logTestResult('ERROR CONTROLLERS', error);
+    }
+
 
     // Input
     const input1 = new Input(
@@ -96,11 +117,16 @@ export function dbTest(): void {
         '5'
     );
 
-    [input1, input2].forEach(input => db.insertInput(input));
-    logTestResult('All Inputs', db.getInputs());
+    try {
+        [input1, input2].forEach(input => db.insertInput(input));
+        logTestResult('All Inputs', db.getInputs());
 
-    const singleInput = db.getInput(1); // Example ID
-    logTestResult('Single Input', singleInput);
+        const singleInput = db.getInput(1); // Example ID
+        logTestResult('Single Input', singleInput);
+    } catch (error: unknown) {
+        logTestResult('ERROR Inputs', error);
+    }
+
 
     // Output
     const output1 = new Output(
@@ -130,12 +156,17 @@ export function dbTest(): void {
         500
     );
 
-    [output1, output2].forEach(output => db.insertOutput(output));
-    logTestResult('All Outputs', db.getOutputs());
+    try {
+        [output1, output2].forEach(output => db.insertOutput(output));
+        logTestResult('All Outputs', db.getOutputs());
 
-    const singleOutput = db.getOutput(1); // Example ID
-    logTestResult('Single Output', singleOutput);
+        const singleOutput = db.getOutput(1); // Example ID
+        logTestResult('Single Output', singleOutput);
+    } catch (error: unknown) {
+        logTestResult('ERROR Outputs', error);
+    }
 
+    // Clean Up
     db.dropAllTables();
     db.close();
 
