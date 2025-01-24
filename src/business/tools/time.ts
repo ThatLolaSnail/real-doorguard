@@ -13,12 +13,12 @@ export class Time{
     public toString(): string {
         return numToStringTwoDigits(this.hours) + ':' + numToStringTwoDigits(this.minutes);
     }
-    public fromString(timeString: string): [number, number] {
+    public static fromString(timeString: string): Time {
         const [hoursStr, minutesStr] = timeString.split(':');
         const hours = parseInt(hoursStr, 10);
         const minutes = parseInt(minutesStr, 10);
-        this.setTime(hours, minutes);
-        return [hours, minutes];
+        //this.setTime(hours, minutes);
+        return new Time(hours, minutes);
     }
     public get hours(): number {
         return Math.floor(this.totalMinutes / 60)

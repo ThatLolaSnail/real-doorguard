@@ -1,12 +1,13 @@
 import Database from 'better-sqlite3';
-import {singleton} from "tsyringe";
+import {singleton, container} from "tsyringe";
 
 import {Dgevent} from "./interfaces/dgevent";
 import {Setting} from "./interfaces/setting";
 import {Time} from "../tools/time";
 import {Controller} from '../controller/controller';
-import {Input} from '../input/input';
-import {Output} from '../output/output';
+import {Input, InputType} from '../input/input';
+import {Output, OutputType} from '../output/output';
+import {IdService} from '../tools/idService'
 
 /*
 function stringFromDB(input: string): undefined | string[] {
@@ -22,6 +23,7 @@ function stringFromDB(input: string): undefined | string[] {
 // Datenbanken Klasse zum create, update, get und delete von Daten
 @singleton()
 export class DatabaseDoorGuard {
+    private idService = container.resolve(IdService);
     private db: Database.Database;
 
     // Constructor der die DB aufmacht und alle Tabellen erstellt falls noch nicht vorhanden
@@ -191,22 +193,9 @@ export class DatabaseDoorGuard {
             "SELECT id, name, timeFrom, timeTo, enabled, description, inputs, outputs, conditionFrom, conditionTo FROM controllers"
         );
 
-        const rows = getData.all() as Controller[];
+        const rows = getData.all() as {id:string,name:string,timeFrom:string,timeTo:string,enabled:boolean, description:string,inputs:string,outputs:string, conditionFrom:number,conditionTo:number}[];
 
-        // @ts-ignore
-        return rows.map((row: Controller) => ({
-            id: row.id,
-            name: row.name,
-            timeFrom: row.timeFrom,
-            timeTo: row.timeTo,
-            enabled: !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
-            description: row.description,
-            inputs: row.inputs.toString().split(","),
-            outputs: row.outputs.toString().split(","),
-            conditionFrom: row.conditionFrom,
-            conditionTo: row.conditionTo
-        }));
-
+        return rows.map(row => new Controller(row.id, row.name, Time.fromString(row.timeFrom), Time.fromString(row.timeTo), row.enabled, row.description, row.inputs.split(","), row.outputs.split(","), row.conditionFrom, row.conditionTo));
     }
 
     public getOutput(id: number): Output | null {
@@ -456,11 +445,16 @@ export class DatabaseDoorGuard {
     }
 
     createTablesIfNotExists(): void {
+        // TODO: fix this!
+        this.dropAllTables();
+        //if not exists {
         this.createEventTable();
         this.createSettingTable();
         this.createControllerTable();
         this.createInputTable();
         this.createOutputTable();
+        this.createDefaultData();
+        // }
     }
 
     createEventTable (): void {
@@ -529,5 +523,29 @@ export class DatabaseDoorGuard {
                 duration INTEGER NOT NULL
             )`;
         this.db.exec(query);
+    }
+
+    createDefaultData(){
+        const description = "default Description";
+        const enabled = true;
+        const from = new Time(0,0);
+        const to = new Time(23,59);
+
+        this.insertInput(new Input("1", "Button 1", from, to, enabled, description, InputType.HARDWARE, "IN1"));
+        this.insertInput(new Input("2", "Button 2", from, to, enabled, description, InputType.HARDWARE, "IN2"));
+        this.insertInput(new Input("3", "Button 3", from, to, enabled, description, InputType.VIRTUAL));
+
+        const inputs = ["1","2","3"];
+        this.insertController(new Controller("4", "name", from, to, enabled, description, inputs, ["6","7"], 1, 3));
+        this.insertController(new Controller("5", "name", from, to, enabled, description, inputs, ["8","9"], 3, 0));
+
+        const repeat = 1;
+        const duration = 250;
+        this.insertOutput(new Output("6", "quiet Sound", from, to, enabled, description, OutputType.AUDIO, "bell.wav", "", repeat, duration));
+        this.insertOutput(new Output("7", "mechanical Bell", from, to, enabled, description, OutputType.HARDWARE, "", "OUT1", repeat, duration));
+        this.insertOutput(new Output("8", "loud Sound", from, to, enabled, description, OutputType.AUDIO, "long.wav", "", repeat, duration));
+        this.insertOutput(new Output("9", "actual Buzzer", from, to, enabled, description, OutputType.HARDWARE, "", "OUT2", repeat, 4*duration));
+
+        this.idService.registerId("9");
     }
 }
