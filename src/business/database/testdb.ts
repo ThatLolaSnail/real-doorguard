@@ -2,7 +2,11 @@ import {DatabaseDoorGuard} from "./database";
 import {container} from "tsyringe";
 
 import 'reflect-metadata';
-import {Time} from "../tools/time"; // Necessary if using dependency injection libraries like tsyringe
+import {Time} from "../tools/time";
+import {Controller} from "../controller/controller"; // Necessary if using dependency injection libraries like tsyringe
+import { Input, InputType } from "../input/input";
+import {Output, OutputType } from "../output/output";
+import {Setting} from "./interfaces/setting";
 
 function logTestResult(description: string, result: any): void {
     console.log(`${description}:`, result);
@@ -11,161 +15,177 @@ function logTestResult(description: string, result: any): void {
 export function dbTest(): void {
     const db = container.resolve(DatabaseDoorGuard);
 
-    const setting1 = { key: 'alexandra', value: 'goth' };
-    const setting2 = { key: 'lola', value: 'cheese' };
-    db.insertSetting(setting1);
-    db.insertSetting(setting2);
-    logTestResult('setting1', setting1);
-    logTestResult('setting2', setting2);
+    // Dgevent
+    const event1 = { type: 'bellring', timestamp: new Date() };
+    const event2 = { type: 'door', timestamp: new Date() };
+    const event3 = { type: 'error', timestamp: new Date() };
+    const events = [event1, event2, event3];
 
-    const getSetting1 = db.getSetting('alexandra');
-    const getSetting2 = db.getSetting('lola');
-    logTestResult('get setting1', getSetting1);
-    logTestResult('get setting2', getSetting2);
+    try {
+        // Insert multiple Events
+        const eventIds = events.map(event => db.insertEvent(event));
+        (events.length == eventIds.length) ? logTestResult('Insert Events', 'OK') : logTestResult('Insert Events:', 'ERROR!')
 
-    db.deleteSetting('lola');
+        // Get single Event
+        const singleEvent = db.getEvent(eventIds[0]);
+        (event1.type == singleEvent?.type) ? logTestResult('Get Event', 'OK') : logTestResult('Get Event:', 'ERROR!')
 
-    const allSettings = db.getSettings();
-    logTestResult('settings', allSettings);
-
-    // Events
-    const event1 = { type: 'login', timestamp: new Date() };
-    const event2 = { type: 'logout', timestamp: new Date() };
-    const eventId1 = db.insertEvent(event1);
-    const eventId2 = db.insertEvent(event2);
-    logTestResult('event1 ID', eventId1);
-    logTestResult('event2 ID', eventId2);
-
-    const getEvent = db.getEvent(eventId1);
-    logTestResult('get event1', getEvent);
-
-    db.deleteEvent(eventId1);
-
-    const allEvents = db.getEvents();
-    logTestResult('events', allEvents);
+        // Update single Event
+        //singleEvent?.type = 'door';
 
 
+        // Get all Events
+        const allEvents = db.getEvents();
+        (events.length == allEvents.length) ? logTestResult('Get all Events', 'OK') : logTestResult('Get all Events:', 'ERROR!')
+
+    }  catch (error: unknown) {
+        logTestResult('ERROR Events', error);
+    }
+
+    // Setting
+    const setting1 = { key: 'doorkey', value: 'square' };
+    const setting2 = { key: 'cat', value: 'dark' };
+    const setting3 = { key: 'music', value: 'metal' };
+    const settings = [setting1, setting2, setting3];
+
+    try {
+        // Insert multiple Settings
+        settings.forEach(setting => db.insertSetting(setting));
+        (settings.length == db.getSettings().length) ? logTestResult('Insert Settings', 'OK') : logTestResult('Insert Settings:', 'ERROR!')
+
+        // Get single Setting
+        const singleSetting = db.getSetting(setting2.key);
+        (setting2.key == singleSetting?.key) ? logTestResult('Get Setting', 'OK') : logTestResult('Get Setting:', 'ERROR!')
+
+        // Update single Setting
+        setting2.value = 'white';
+        db.updateSetting(setting2);
+        (setting2.value == db.getSetting(setting2.key)?.value)  ? logTestResult('Update Setting', 'OK') : logTestResult('Update Setting:', 'ERROR!')
+    } catch (error: unknown) {
+        logTestResult('ERROR Settings', error);
+    }
 
 
-    // Controllers
-    const controller1 = {
-        name: 'Controller1',
-        timeFrom: new Time(8, 15),
-        timeTo: new Time(17, 45),
-        enabled: true,
-        description: 'Primary Controller',
-        inputs: 'Input1',
-        outputs: 'Output1',
-        conditionsFrom: 1,
-        conditionsTo: 2,
-    };
-    const controller2 = {
-        name: 'Controller2',
-        timeFrom: new Time(9,0),
-        timeTo: new Time(18, 0),
-        enabled: false,
-        description: 'Secondary Controller',
-        inputs: 'Input2',
-        outputs: 'Output2',
-        conditionsFrom: 2,
-        conditionsTo: 3,
-    };
-    const controllerId1 = db.insertController(controller1);
-    const controllerId2 = db.insertController(controller2);
-    logTestResult('controller1 ID', controllerId1);
-    logTestResult('controller2 ID', controllerId2);
-
-    const getController = db.getController(controllerId1);
-    logTestResult('get controller1', getController);
-
-    db.deleteController(controllerId1);
-
-    const allControllers = db.getControllers();
-    logTestResult('controllers', allControllers);
+    // Controller
+    const controller1 = new Controller(
+        '1',
+        'Main Controller',
+        new Time(8, 0),
+        new Time(18, 0),
+        true,
+        'controller 1 description',
+        ['Input1', 'Input2'],
+        ['Output1'],
+        1,
+        5
+    );
+    const controller2 = new Controller(
+        '2',
+        'Backup Controller',
+        new Time(20, 0),
+        new Time(6, 0),
+        false,
+        'controller 1337 description',
+        ['Input3', 'Input4'],
+        ['Output2'],
+        2,
+        10
+    );
 
 
+    try {
+        const controllerIds = [controller1, controller2].map(controller => db.insertController(controller));
+        logTestResult('Controller IDs', controllerIds);
+
+        const singleController = db.getController(controllerIds[1]);
+        logTestResult('Single Controller', singleController);
+
+        controller2.description = "666 description";
+        db.updateController(controller2);
+
+        const singleController2 = db.getController(controllerIds[1]);
+        logTestResult('Single Controller with Update:', singleController);
+
+        const allControllers = db.getControllers();
+        logTestResult('All Controllers', allControllers);
+    } catch (error: unknown) {
+        logTestResult('ERROR CONTROLLERS', error);
+    }
 
 
-    // Inputs
-    const input1 = {
-        name: 'Input1',
-        timeFrom: new Time(6, 22),
-        timeTo: new Time(14, 14),
-        enabled: true,
-        description: 'Main input',
-        type: 'digital',
-        settings: '{}',
-        pin: 'P1',
-        channel: 'CH1',
-        message: 'Initial state',
-    };
-    const input2 = {
-        name: 'Input2',
-        timeFrom: new Time(6, 22),
-        timeTo: new Time(14, 14),
-        enabled: false,
-        description: 'Secondary input',
-        type: 'analog',
-        settings: '{}',
-        pin: 'P2',
-        channel: 'CH2',
-        message: 'Secondary state',
-    };
-    const inputId1 = db.insertInput(input1);
-    const inputId2 = db.insertInput(input2);
-    logTestResult('input1 ID', inputId1);
-    logTestResult('input2 ID', inputId2);
+    // Input
+    const input1 = new Input(
+        'input1',
+        'Virtual Input',
+        new Time(9, 0),
+        new Time(17, 0),
+        true,
+        'descriptiooooon',
+        InputType.VIRTUAL,
+        '4'
+    );
+    const input2 = new Input(
+        'input2',
+        'Hardware IOnput',
+        new Time(0, 0),
+        new Time(23, 59),
+        true,
+        'description',
+        InputType.HARDWARE,
+        '5'
+    );
 
-    const getInput = db.getInput(inputId1);
-    logTestResult('get input1', getInput);
+    try {
+        [input1, input2].forEach(input => db.insertInput(input));
+        logTestResult('All Inputs', db.getInputs());
 
-    db.deleteInput(inputId1);
+        const singleInput = db.getInput(1); // Example ID
+        logTestResult('Single Input', singleInput);
+    } catch (error: unknown) {
+        logTestResult('ERROR Inputs', error);
+    }
 
-    const allInputs = db.getInputs();
-    logTestResult('inputs', allInputs);
 
-    // Outputs
-    const output1 = {
-        name: 'Output1',
-        timeFrom: new Time(6, 22),
-        timeTo: new Time(14, 14),
-        enabled: true,
-        description: 'Primary output',
-        type: 'analog',
-        settings: '{}',
-        pin: 'O1',
-        repeat: 1,
-        duration: 60,
-        channel: 'CH1',
-        message: 'Output active',
-    };
-    const output2 = {
-        name: 'Output2',
-        timeFrom: new Time(6, 22),
-        timeTo: new Time(14, 14),
-        enabled: false,
-        description: 'Backup output',
-        type: 'digital',
-        settings: '{}',
-        pin: 'O2',
-        repeat: 0,
-        duration: 30,
-        channel: 'CH2',
-        message: 'Output inactive',
-    };
-    const outputId1 = db.insertOutput(output1);
-    const outputId2 = db.insertOutput(output2);
-    logTestResult('output1 ID', outputId1);
-    logTestResult('output2 ID', outputId2);
+    // Output
+    const output1 = new Output(
+        'output1',
+        'Virtual Output',
+        new Time(9, 0),
+        new Time(17, 0),
+        true,
+        'Virtual OutPut Description',
+        OutputType.VIRTUAL,
+        '',
+        '6',
+        1,
+        250
+    );
+    const output2 = new Output(
+        'output2',
+        'Hardware Output',
+        new Time(18, 0),
+        new Time(22, 0),
+        true,
+        'Hardware Output Descriptin',
+        OutputType.HARDWARE,
+        '',
+        '5',
+        3,
+        500
+    );
 
-    const getOutput = db.getOutput(outputId1);
-    logTestResult('get output1', getOutput);
+    try {
+        [output1, output2].forEach(output => db.insertOutput(output));
+        logTestResult('All Outputs', db.getOutputs());
 
-    db.deleteOutput(outputId1);
+        const singleOutput = db.getOutput(1); // Example ID
+        logTestResult('Single Output', singleOutput);
+    } catch (error: unknown) {
+        logTestResult('ERROR Outputs', error);
+    }
 
-    const allOutputs = db.getOutputs();
-    logTestResult('outputs', allOutputs);
-
+    // Clean Up
     db.dropAllTables();
     db.close();
+
 }
