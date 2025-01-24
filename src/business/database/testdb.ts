@@ -6,6 +6,7 @@ import {Time} from "../tools/time";
 import {Controller} from "../controller/controller"; // Necessary if using dependency injection libraries like tsyringe
 import { Input, InputType } from "../input/input";
 import {Output, OutputType } from "../output/output";
+import {Setting} from "./interfaces/setting";
 
 function logTestResult(description: string, result: any): void {
     console.log(`${description}:`, result);
@@ -15,19 +16,28 @@ export function dbTest(): void {
     const db = container.resolve(DatabaseDoorGuard);
 
     // Dgevent
-    const dgevent1 = { type: 'bellring', timestamp: new Date() };
-    const dgevent2 = { type: 'door', timestamp: new Date() };
-    const dgevent3 = { type: 'error', timestamp: new Date() };
+    const event1 = { type: 'bellring', timestamp: new Date() };
+    const event2 = { type: 'door', timestamp: new Date() };
+    const event3 = { type: 'error', timestamp: new Date() };
+    const events = [event1, event2, event3];
 
     try {
-        const dgeventIds = [dgevent1, dgevent2, dgevent3].map(event => db.insertEvent(event));
-        logTestResult('Dgevent IDs', dgeventIds);
+        // Insert multiple Events
+        const eventIds = events.map(event => db.insertEvent(event));
+        (events.length == eventIds.length) ? logTestResult('Insert Events', 'OK') : logTestResult('Insert Events:', 'ERROR!')
 
-        const singleDgevent = db.getEvent(dgeventIds[0]);
-        logTestResult('Single Dgevent', singleDgevent);
+        // Get single Event
+        const singleEvent = db.getEvent(eventIds[0]);
+        (event1.type == singleEvent?.type) ? logTestResult('Get Event', 'OK') : logTestResult('Get Event:', 'ERROR!')
 
-        const allDgevents = db.getEvents();
-        logTestResult('All Dgevents', allDgevents);
+        // Update single Event
+        //singleEvent?.type = 'door';
+
+
+        // Get all Events
+        const allEvents = db.getEvents();
+        (events.length == allEvents.length) ? logTestResult('Get all Events', 'OK') : logTestResult('Get all Events:', 'ERROR!')
+
     }  catch (error: unknown) {
         logTestResult('ERROR Events', error);
     }
@@ -36,13 +46,21 @@ export function dbTest(): void {
     const setting1 = { key: 'doorkey', value: 'square' };
     const setting2 = { key: 'cat', value: 'dark' };
     const setting3 = { key: 'music', value: 'metal' };
+    const settings = [setting1, setting2, setting3];
 
     try {
-        [setting1, setting2, setting3].forEach(setting => db.insertSetting(setting));
-        logTestResult('All Settings', db.getSettings());
+        // Insert multiple Settings
+        settings.forEach(setting => db.insertSetting(setting));
+        (settings.length == db.getSettings().length) ? logTestResult('Insert Settings', 'OK') : logTestResult('Insert Settings:', 'ERROR!')
 
-        const singleSetting = db.getSetting('cat');
-        logTestResult('Single Setting', singleSetting);
+        // Get single Setting
+        const singleSetting = db.getSetting(setting2.key);
+        (setting2.key == singleSetting?.key) ? logTestResult('Get Setting', 'OK') : logTestResult('Get Setting:', 'ERROR!')
+
+        // Update single Setting
+        setting2.value = 'white';
+        db.updateSetting(setting2);
+        (setting2.value == db.getSetting(setting2.key)?.value)  ? logTestResult('Update Setting', 'OK') : logTestResult('Update Setting:', 'ERROR!')
     } catch (error: unknown) {
         logTestResult('ERROR Settings', error);
     }
