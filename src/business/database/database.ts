@@ -8,17 +8,6 @@ import {Controller} from '../controller/controller';
 import {Input} from '../input/input';
 import {Output} from '../output/output';
 
-/*
-function stringFromDB(input: string): undefined | string[] {
-    // Weil manche Values den Typ string oder string[] haben ... rastet alles andere aus.
-    if (input.includes(",")) {
-        return input.split(",");
-    }
-    return input;
-}
- */
-
-
 // Datenbanken Klasse zum create, update, get und delete von Daten
 @singleton()
 export class DatabaseDoorGuard {
@@ -166,9 +155,7 @@ export class DatabaseDoorGuard {
             outputs: string,
             conditionFrom: number,
             conditionTo: number
-        };
-
-         */
+        };*/
 
         return new Controller(
             row.id,
@@ -179,8 +166,6 @@ export class DatabaseDoorGuard {
             row.description,
             row.inputs.toString().split(","),
             row.outputs.toString().split(","),
-            //JSON.parse(row.inputs),
-            //stringFromDB(row.outputs),
             row.conditionFrom,
             row.conditionTo
         );
