@@ -3,6 +3,7 @@ import {Api} from "../../api/api";
 import {Input} from "../../business/input/input";
 import {container} from "tsyringe";
 import {DatabaseDoorGuard} from "../../business/database/database";
+import {Time} from "../../business/tools/time";
 
 export function input(app: Application) {
     var api = container.resolve(Api);
@@ -51,12 +52,12 @@ export function input(app: Application) {
         if (!input){
             input = api.inputs.createNew();
         }
-        input.name = req.body.name;
-        input.type = req.body.type;
-        input.pin = req.body.pin;
-        input.description = req.body.description;
-        input.timeFrom = req.body.timeFrom;
-        input.timeTo = req.body.timeTo;
+        input.name = String(req.body.name);
+        input.type = String(req.body.type);
+        input.pin = String(req.body.pin);
+        input.description = String(req.body.description);
+        input.timeFrom = Time.fromString(String(req.body.timeFrom));
+        input.timeTo = Time.fromString(String(req.body.timeTo));
         input.enabled = req.body.enabled === "enabled";
         db.updateInput(input);
 

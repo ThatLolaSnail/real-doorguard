@@ -2,7 +2,6 @@ import {Time} from "../tools/time";
 import {EventHandler} from "../eventHandler/eventHandler";
 import {container} from "tsyringe";
 import {IdService} from "../tools/idService";
-import {DatabaseDoorGuard} from "../database/database";
 
 export class doorguardObject {
     protected doorguardObjectType: string = "object";
@@ -53,22 +52,6 @@ export class doorguardObject {
     }
     public get name() {
         return this._name;
-    }
-    public setTimeFromStrings(from: String, to: String) {
-        let fromArray = from.split(":");
-        let toArray = to.split(":");
-
-        if (fromArray.length == 2 && toArray.length == 2) {
-            let fromH =parseInt(fromArray[0]);
-            let fromMin =parseInt(fromArray[1]);
-            let toH =parseInt(toArray[0]);
-            let toMin =parseInt(toArray[1]);
-            this.setTime(new Time(fromH,fromMin), new Time(toH, toMin));
-        }
-    }
-    public setTime(from: Time, to: Time) {
-        this.timeFrom = from;
-        this.timeTo = to;
     }
     public set timeFrom(from: Time) {
         this._timeFrom = from;
