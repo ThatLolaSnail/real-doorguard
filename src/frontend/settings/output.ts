@@ -3,6 +3,7 @@ import {Api} from "../../api/api";
 import {Output} from "../../business/output/output";
 import {container} from "tsyringe";
 import {DatabaseDoorGuard} from "../../business/database/database";
+import {Time} from "../../business/tools/time";
 
 export function output(app: Application) {
     var api = container.resolve(Api);
@@ -51,15 +52,15 @@ export function output(app: Application) {
         if (!output){
             output = api.outputs.createNew();
         }
-        output.name = req.body.name;
-        output.type = req.body.type;
-        output.wave = req.body.wave;
-        output.pin = req.body.pin;
-        output.repeat = req.body.repeat;
-        output.duration = req.body.duration;
-        output.description = req.body.description;
-        output.timeFrom = req.body.timeFrom;
-        output.timeTo = req.body.timeTo;
+        output.name = String(req.body.name);
+        output.type = String(req.body.type);
+        output.wave = String(req.body.wave);
+        output.pin = String(req.body.pin);
+        output.repeat = String(req.body.repeat);
+        output.duration = parseInt(req.body.duration);
+        output.description = String(req.body.description);
+        output.timeFrom = Time.fromString(String(req.body.timeFrom));
+        output.timeTo = Time.fromString(String(req.body.timeTo));
         output.enabled = req.body.enabled === "enabled";
         db.updateOutput(output);
 

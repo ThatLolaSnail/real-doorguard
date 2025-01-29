@@ -2,7 +2,6 @@ import {doorguardObject} from "../doorguardObject/doorguardObject";
 import {container} from "tsyringe";
 import {Hardware} from "../hardware/hardware";
 import {Time} from "../tools/time";
-import { dbTest } from "../database/testdb";
 
 export enum OutputType {
     VIRTUAL = "virtual",
@@ -57,17 +56,17 @@ export class Output extends doorguardObject {
          }
     }
 
-    public set type(type: string) {
+    public set type(type: any) {
         if (isOutputType(type)) {
             this._type = type;
         } else {
             this._type = OutputType.VIRTUAL;
         }
     }
-    public get type() {
+    public get type(): string {
         return this._type;
     }
-    public set wave(wave: string) {
+    public set wave(wave) {
         this._wave = wave;
     }
     public get wave() {
