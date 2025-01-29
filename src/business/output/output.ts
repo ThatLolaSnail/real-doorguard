@@ -63,20 +63,17 @@ export class Output extends doorguardObject {
         } else {
             this._type = OutputType.VIRTUAL;
         }
-        // TODO: Change in Database
     }
     public get type() {
         return this._type;
     }
     public set wave(wave: string) {
-        // TODO: Change in Database
         this._wave = wave;
     }
     public get wave() {
         return this._wave;
     }
     public set pin(settings: string) {
-        // TODO: Change in Database
         this._pin = settings;
     }
     public get pin(): string {
@@ -86,14 +83,12 @@ export class Output extends doorguardObject {
         if (typeof settings !== "number"){
             settings = parseInt(settings);
         }
-        // TODO: Change in Database
         this._repeat = settings;
     }
     public get repeat(): number {
         return this._repeat;
     }
     public set duration(settings: number) {
-        // TODO: Change in Database
         this._duration = settings;
     }
     public get duration(): number {

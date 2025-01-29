@@ -20,12 +20,12 @@ export class InputDictionary extends Map<string,Input> {
 
     public set(key: string, value: Input): this {
         super.set(key,value);
-        // TODO: Add input to database
+        this.db.insertInput(value)
 
         return this;
     }
     public delete(key: string){
-        // TODO: Remove input from database
+        this.db.deleteInput(key);
 
         return super.delete(key);
     }

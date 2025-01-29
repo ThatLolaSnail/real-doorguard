@@ -9,17 +9,6 @@ import {Input, InputType} from '../input/input';
 import {Output, OutputType} from '../output/output';
 import {IdService} from '../tools/idService'
 
-/*
-function stringFromDB(input: string): undefined | string[] {
-    // Weil manche Values den Typ string oder string[] haben ... rastet alles andere aus.
-    if (input.includes(",")) {
-        return input.split(",");
-    }
-    return input;
-}
- */
-
-
 // Datenbanken Klasse zum create, update, get und delete von Daten
 @singleton()
 export class DatabaseDoorGuard {
@@ -157,23 +146,9 @@ export class DatabaseDoorGuard {
         const getData = this.db.prepare(
             "SELECT id, name, timeFrom, timeTo, enabled, description, inputs, outputs, conditionFrom, conditionTo FROM controllers WHERE id = ?"
         );
-// TODO: fix this!
-        const row = getData.get(id) as Controller;
+        const row = getData.get(id) as {id:string,name:string,timeFrom:string,timeTo:string,enabled:boolean, description:string,inputs:string,outputs:string, conditionFrom:number,conditionTo:number};
 
-        return new Controller(
-            row.id,
-            row.name,
-            row.timeFrom,
-            row.timeTo,
-            !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
-            row.description,
-            row.inputs.toString().split(","),
-            row.outputs.toString().split(","),
-            //JSON.parse(row.inputs),
-            //stringFromDB(row.outputs),
-            row.conditionFrom,
-            row.conditionTo
-        );
+        return new Controller(row.id, row.name, Time.fromString(row.timeFrom), Time.fromString(row.timeTo), row.enabled, row.description, row.inputs.split(","), row.outputs.split(","), row.conditionFrom, row.conditionTo);
     }
 
     public getControllers(): Controller[] {
@@ -188,10 +163,11 @@ export class DatabaseDoorGuard {
 
     public getOutput(id: number): Output | null {
         const getData = this.db.prepare(
-            "SELECT id, name, timeFrom, timeTo, enabled, description, type, pin, repeat, duration FROM outputs WHERE id = ?"
+            "SELECT id, name, timeFrom, timeTo, enabled, description, type, wave, pin, repeat, duration FROM outputs WHERE id = ?"
         );
-        // TODO: fix this!
-        return getData.get(id) as Output;
+        const row = getData.get(id) as {id:string, name:string, timeFrom:string, timeTo:string, enabled:boolean, description:string, type:string, wave:string, pin:string, repeat:number, duration:number};
+
+        return new Output(row.id, row.name, Time.fromString(row.timeFrom), Time.fromString(row.timeTo), row.enabled, row.description, row.type as OutputType, row.wave, row.pin, row.repeat, row.duration);
     }
 
     public getOutputs(): Output[] {
@@ -200,36 +176,24 @@ export class DatabaseDoorGuard {
         );
         const rows = getData.all() as {id:string, name:string, timeFrom:string, timeTo:string, enabled:boolean, description:string, type:string, wave:string, pin:string, repeat:number, duration:number}[];
         return rows.map(row => new Output(row.id, row.name, Time.fromString(row.timeFrom), Time.fromString(row.timeTo), row.enabled, row.description, row.type as OutputType, row.wave, row.pin, row.repeat, row.duration));
-        // TODO: fix this!
     }
 
     public getInput(id: number): Input | null {
         const getData = this.db.prepare(
             "SELECT id, name, timeFrom, timeTo, enabled, description, type, pin FROM inputs WHERE id = ?"
         );
-        return getData.get(id) as Input;
-        // TODO: fix this!
+        const row = getData.get(id) as {id:string, name:string, timeFrom:string, timeTo:string, enabled:boolean, description:string, type:string, pin:string};
+
+        return new Input(row.id, row.name, Time.fromString(row.timeFrom), Time.fromString(row.timeTo), row.enabled, row.description, row.type as InputType, row.pin);
     }
 
     public getInputs(): Input[] {
         const getData = this.db.prepare(
             "SELECT id, name, timeFrom, timeTo, enabled, description, type, pin FROM inputs"
         );
-        //return getData.all() as Input[];
+        const rows = getData.all() as {id:string, name:string, timeFrom:string, timeTo:string, enabled:boolean, description:string, type:string, pin:string}[];
 
-        const rows = getData.all() as Input[];
-        // @ts-ignore
-        return rows.map((row: Input) => ({
-            id: row.id,
-            name: row.name,
-            timeFrom: row.timeFrom,
-            timeTo: row.timeTo,
-            enabled: !!row.enabled, // Cast integer to boolean, just to make sure .... :D
-            description: row.description,
-            type: row.type,
-            pin: row.pin,
-        }));
-
+        return rows.map(row => new Input(row.id, row.name, Time.fromString(row.timeFrom), Time.fromString(row.timeTo), row.enabled, row.description, row.type as InputType, row.pin));
     }
 
     // Updating DataBase Methods
@@ -357,8 +321,13 @@ export class DatabaseDoorGuard {
     }
 
     private allTablesExists(): boolean {
-        // TODO: Fix this.
-        return true;
+        const tableExists = this.checkIfTablesExist();
+
+        return tableExists.Settings
+            && tableExists.Events
+            && tableExists.Controllers
+            && tableExists.Outputs
+            && tableExists.Inputs;
     }
 
     public checkIfTablesExist(): Record<string, boolean> {
@@ -432,7 +401,7 @@ export class DatabaseDoorGuard {
     createControllerTable(): void {
         const query = `
             CREATE TABLE IF NOT EXISTS controllers (
-                id INTEGER PRIMARY KEY,
+                id TEXT PRIMARY KEY,
                 name TEXT NOT NULL,
                 timeFrom TEXT NOT NULL,
                 timeTo TEXT NOT NULL,
@@ -449,7 +418,7 @@ export class DatabaseDoorGuard {
     createInputTable(): void {
         const query = `
             CREATE TABLE IF NOT EXISTS inputs (
-                id INTEGER PRIMARY KEY,
+                id TEXT PRIMARY KEY,
                 name TEXT NOT NULL,
                 timeFrom TEXT NOT NULL,
                 timeTo TEXT NOT NULL,
@@ -464,7 +433,7 @@ export class DatabaseDoorGuard {
     createOutputTable(): void {
         const query = `
             CREATE TABLE IF NOT EXISTS outputs (
-                id INTEGER PRIMARY KEY,
+                id TEXT PRIMARY KEY,
                 name TEXT NOT NULL,
                 timeFrom TEXT NOT NULL,
                 timeTo TEXT NOT NULL,
