@@ -45,7 +45,6 @@ export class Output extends doorguardObject {
 
          switch (this.type){
              case OutputType.VIRTUAL:
-                 //dbTest();
                  break;
              case OutputType.AUDIO:
                  this.player.play("audio/" + this.wave);
@@ -67,7 +66,7 @@ export class Output extends doorguardObject {
         return this._type;
     }
     public set wave(wave) {
-        this._wave = wave;
+        this._wave = wave.replace(/[\\/]/g, "-");
     }
     public get wave() {
         return this._wave;

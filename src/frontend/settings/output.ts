@@ -23,7 +23,7 @@ export function output(app: Application) {
         if (!output) {
             output = new Output("new");
         }
-        res.render("settings/output-edit", {output: output, types: Object.values(api.outputType), pins: Array.from(api.hardwareOutputPins.keys())});
+        res.render("settings/output-edit", {output: output, types: Object.values(api.outputType), pins: Array.from(api.hardwareOutputPins.keys()), waves: Array.from(api.allWaves)});
     });
 
     app.get("/settings/output/delete", (req: Request, res: Response) => {

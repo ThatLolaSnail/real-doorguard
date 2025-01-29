@@ -256,7 +256,7 @@ export class DatabaseDoorGuard {
         const updateData = this.db.prepare(
             `UPDATE outputs SET 
             name = ?, timeFrom = ?, timeTo = ?, enabled = ?, description = ?, 
-            type = ?, pin = ?, repeat = ?, duration = ? 
+            type = ?, wave = ?, pin = ?, repeat = ?, duration = ? 
          WHERE id = ?`
         );
         updateData.run(
@@ -266,6 +266,7 @@ export class DatabaseDoorGuard {
             output.enabled ? 1 : 0,
             output.description,
             output.type,
+            output.wave,
             output.pin,
             output.repeat,
             output.duration,
