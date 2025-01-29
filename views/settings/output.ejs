@@ -32,7 +32,7 @@
         <th><%= output.type %></th>
         <th>
             <% if (output.type === "audio") { %>
-                <%= output.settings %>
+                <%= output.wave %>
             <% } else if (output.type === "hardware") { %>
                 <%= output.pin %>, <%= output.repeat %>x <%= output.duration %>ms
             <% } else if (output.type === "discord") { %>

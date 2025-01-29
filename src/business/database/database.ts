@@ -28,6 +28,7 @@ export class DatabaseDoorGuard {
 
     // Constructor der die DB aufmacht und alle Tabellen erstellt falls noch nicht vorhanden
     constructor() {
+        console.log("database");
         this.db = new Database('database.db');
 
         // Create all Tables if they don't exist
@@ -50,14 +51,15 @@ export class DatabaseDoorGuard {
         insertData.run(setting.key, setting.value);
     }
 
-    public insertController(controller: Controller): number {
+    public insertController(controller: Controller): void {
         const insertData = this.db.prepare(
             `INSERT INTO controllers (
-        name, timeFrom, timeTo, enabled, description, 
+        id, name, timeFrom, timeTo, enabled, description, 
         inputs, outputs, conditionFrom, conditionTo
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
         );
         const result = insertData.run(
+            controller.id,
             controller.name,
             controller.timeFrom.toString(),
             controller.timeTo.toString(),
@@ -68,17 +70,17 @@ export class DatabaseDoorGuard {
             controller.conditionFrom,
             controller.conditionTo
         );
-        return result.lastInsertRowid as number;
     }
 
-    public insertInput(input: Input): number {
+    public insertInput(input: Input): void {
         const insertData = this.db.prepare(
             `INSERT INTO inputs (
-        name, timeFrom, timeTo, enabled, description, 
+        id, name, timeFrom, timeTo, enabled, description, 
         type, pin
-    ) VALUES (?, ?, ?, ?, ?, ?, ?)`
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
         );
         const result = insertData.run(
+            input.id,
             input.name,
             input.timeFrom.toString(),
             input.timeTo.toString(),
@@ -87,28 +89,28 @@ export class DatabaseDoorGuard {
             input.type,
             input.pin
         );
-        return result.lastInsertRowid as number;
     }
 
-    public insertOutput(output: Output): number {
+    public insertOutput(output: Output): void {
         const insertData = this.db.prepare(
             `INSERT INTO outputs (
-        name, timeFrom, timeTo, enabled, description, 
-        type, pin, repeat, duration
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        id, name, timeFrom, timeTo, enabled, description, 
+        type, wave, pin, repeat, duration
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
         );
         const result = insertData.run(
+            output.id,
             output.name,
             output.timeFrom.toString(),
             output.timeTo.toString(),
             output.enabled ? 1 : 0,
             output.description,
             output.type,
+            output.wave,
             output.pin,
             output.repeat,
             output.duration
         );
-        return result.lastInsertRowid as number;
     }
 
     // Get Methoden
@@ -155,22 +157,8 @@ export class DatabaseDoorGuard {
         const getData = this.db.prepare(
             "SELECT id, name, timeFrom, timeTo, enabled, description, inputs, outputs, conditionFrom, conditionTo FROM controllers WHERE id = ?"
         );
-
+// TODO: fix this!
         const row = getData.get(id) as Controller;
-        /*{
-            id: string,
-            name: string,
-            timeFrom: Time,
-            timeTo: Time,
-            enabled: boolean,
-            description: string,
-            inputs: string,
-            outputs: string,
-            conditionFrom: number,
-            conditionTo: number
-        };
-
-         */
 
         return new Controller(
             row.id,
@@ -202,46 +190,17 @@ export class DatabaseDoorGuard {
         const getData = this.db.prepare(
             "SELECT id, name, timeFrom, timeTo, enabled, description, type, pin, repeat, duration FROM outputs WHERE id = ?"
         );
+        // TODO: fix this!
         return getData.get(id) as Output;
-        /*
-        const row = getData.get(id) as Output;
-        // @ts-ignore
-        return row ? {
-            id: row.id,
-            name: row.name,
-            timeFrom: row.timeFrom,
-            timeTo: row.timeTo,
-            enabled: !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
-            description: row.description,
-            type: row.type,
-            pin: row.pin,
-            repeat: row.repeat,
-            duration: row.duration
-        } : null;
-        */
     }
 
     public getOutputs(): Output[] {
         const getData = this.db.prepare(
-            "SELECT id, name, timeFrom, timeTo, enabled, description, type, pin, repeat, duration FROM outputs"
+            "SELECT id, name, timeFrom, timeTo, enabled, description, type, wave, pin, repeat, duration FROM outputs"
         );
-        return getData.all() as Output[];
-        /*
-        const rows = getData.all() as Output[];
-        // @ts-ignore
-        return rows.map((row: Output) => ({
-            id: row.id,
-            name: row.name,
-            timeFrom: row.timeFrom,
-            timeTo: row.timeTo,
-            enabled: !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
-            description: row.description,
-            type: row.type,
-            pin: row.pin,
-            repeat: row.repeat,
-            duration: row.duration
-        }));
-        */
+        const rows = getData.all() as {id:string, name:string, timeFrom:string, timeTo:string, enabled:boolean, description:string, type:string, wave:string, pin:string, repeat:number, duration:number}[];
+        return rows.map(row => new Output(row.id, row.name, Time.fromString(row.timeFrom), Time.fromString(row.timeTo), row.enabled, row.description, row.type as OutputType, row.wave, row.pin, row.repeat, row.duration));
+        // TODO: fix this!
     }
 
     public getInput(id: number): Input | null {
@@ -249,21 +208,7 @@ export class DatabaseDoorGuard {
             "SELECT id, name, timeFrom, timeTo, enabled, description, type, pin FROM inputs WHERE id = ?"
         );
         return getData.get(id) as Input;
-        /*
-        const row = getData.get(id) as Input;
-        // @ts-ignore
-        return row ? {
-            id: row.id,
-            name: row.name,
-            timeFrom: row.timeFrom,
-            timeTo: row.timeTo,
-            enabled: !!row.enabled,  // Cast integer to boolean, just to make sure .... :D
-            description: row.description,
-            type: row.type,
-            pin: row.pin
-        } : null;
-
-         */
+        // TODO: fix this!
     }
 
     public getInputs(): Input[] {
@@ -382,21 +327,21 @@ export class DatabaseDoorGuard {
         deleteData.run(key);
     }
 
-    public deleteController(id: number): void {
+    public deleteController(id: string): void {
         const deleteData = this.db.prepare(
             "DELETE FROM controllers WHERE id = ?"
         );
         deleteData.run(id);
     }
 
-    public deleteInput(id: number): void {
+    public deleteInput(id: string): void {
         const deleteData = this.db.prepare(
             "DELETE FROM inputs WHERE id = ?"
         );
         deleteData.run(id);
     }
 
-    public deleteOutput(id: number): void {
+    public deleteOutput(id: string): void {
         const deleteData = this.db.prepare(
             "DELETE FROM outputs WHERE id = ?"
         );
@@ -409,6 +354,11 @@ export class DatabaseDoorGuard {
         this.db.exec("DROP TABLE IF EXISTS controllers");
         this.db.exec("DROP TABLE IF EXISTS outputs");
         this.db.exec("DROP TABLE IF EXISTS inputs");
+    }
+
+    private allTablesExists(): boolean {
+        // TODO: Fix this.
+        return true;
     }
 
     public checkIfTablesExist(): Record<string, boolean> {
@@ -445,16 +395,19 @@ export class DatabaseDoorGuard {
     }
 
     createTablesIfNotExists(): void {
-        // TODO: fix this!
-        this.dropAllTables();
-        //if not exists {
-        this.createEventTable();
-        this.createSettingTable();
-        this.createControllerTable();
-        this.createInputTable();
-        this.createOutputTable();
-        this.createDefaultData();
-        // }
+
+        if( !this.allTablesExists()
+                || this.getControllers().length == 0
+                || this.getInputs().length == 0
+                || this.getOutputs().length == 0) {
+            this.dropAllTables();
+            this.createEventTable();
+            this.createSettingTable();
+            this.createControllerTable();
+            this.createInputTable();
+            this.createOutputTable();
+            this.createDefaultData();
+        }
     }
 
     createEventTable (): void {
@@ -479,7 +432,7 @@ export class DatabaseDoorGuard {
     createControllerTable(): void {
         const query = `
             CREATE TABLE IF NOT EXISTS controllers (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id INTEGER PRIMARY KEY,
                 name TEXT NOT NULL,
                 timeFrom TEXT NOT NULL,
                 timeTo TEXT NOT NULL,
@@ -496,7 +449,7 @@ export class DatabaseDoorGuard {
     createInputTable(): void {
         const query = `
             CREATE TABLE IF NOT EXISTS inputs (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id INTEGER PRIMARY KEY,
                 name TEXT NOT NULL,
                 timeFrom TEXT NOT NULL,
                 timeTo TEXT NOT NULL,
@@ -511,13 +464,14 @@ export class DatabaseDoorGuard {
     createOutputTable(): void {
         const query = `
             CREATE TABLE IF NOT EXISTS outputs (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id INTEGER PRIMARY KEY,
                 name TEXT NOT NULL,
                 timeFrom TEXT NOT NULL,
                 timeTo TEXT NOT NULL,
                 enabled BOOLEAN NOT NULL,
                 description TEXT NOT NULL,
                 type TEXT NOT NULL,
+                wave TEXT NOT NULL,
                 pin TEXT NOT NULL,
                 repeat INTEGER NOT NULL,
                 duration INTEGER NOT NULL
@@ -548,4 +502,5 @@ export class DatabaseDoorGuard {
 
         this.idService.registerId("9");
     }
+
 }

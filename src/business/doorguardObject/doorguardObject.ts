@@ -2,6 +2,7 @@ import {Time} from "../tools/time";
 import {EventHandler} from "../eventHandler/eventHandler";
 import {container} from "tsyringe";
 import {IdService} from "../tools/idService";
+import {DatabaseDoorGuard} from "../database/database";
 
 export class doorguardObject {
     protected doorguardObjectType: string = "object";

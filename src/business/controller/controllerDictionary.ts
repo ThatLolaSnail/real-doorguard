@@ -20,12 +20,12 @@ export class ControllerDictionary extends Map<string,Controller> {
 
     public set(key: string, value: Controller): this {
         super.set(key,value);
-        // TODO: Add controller to database
+        this.db.insertController(value)
 
         return this;
     }
     public delete(key: string){
-        // TODO: Remove controller from database
+        this.db.deleteController(key);
 
         return super.delete(key);
     }
