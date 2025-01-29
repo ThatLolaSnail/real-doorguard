@@ -20,12 +20,12 @@ export class OutputDictionary extends Map<string,Output> {
 
     public set(key: string, value: Output): this {
         super.set(key,value);
-        // TODO: Add output to database
+        this.db.insertOutput(value)
 
         return this;
     }
     public delete(key: string){
-        // TODO: Remove output from database
+        this.db.deleteOutput(key);
 
         return super.delete(key);
     }

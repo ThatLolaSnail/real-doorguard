@@ -2,11 +2,13 @@ import {Application, Request, Response} from "express";
 import {Api} from "../../api/api";
 import {Output} from "../../business/output/output";
 import {container} from "tsyringe";
+import {DatabaseDoorGuard} from "../../business/database/database";
 
 export function output(app: Application) {
     var api = container.resolve(Api);
     var bodyParser = require("body-parser");
     var urlencodedParser = bodyParser.urlencoded({extended: false})
+    const db = container.resolve(DatabaseDoorGuard);
 
     app.get("/settings/output", (_req: Request, res: Response) => {
         res.render("settings/output", {outputs:api.outputs});
@@ -59,6 +61,7 @@ export function output(app: Application) {
         output.timeFrom = req.body.timeFrom;
         output.timeTo = req.body.timeTo;
         output.enabled = req.body.enabled === "enabled";
+        db.updateOutput(output);
 
         res.redirect("/settings/output");
     });

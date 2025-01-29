@@ -32,13 +32,11 @@ export class Input extends doorguardObject {
         } else {
             this._type = InputType.VIRTUAL;
         }
-        // TODO: Change in Database
     }
     public get type() {
         return this._type;
     }
     public set pin(settings: string) {
-        // TODO: Change in Database
         this._pin = settings;
     }
     public get pin():string {

@@ -49,7 +49,6 @@ export class doorguardObject {
         return this._id;
     }
     public set name(name: string) {
-        // TODO: Change in Database
         this._name = name;
     }
     public get name() {
@@ -72,11 +71,9 @@ export class doorguardObject {
         this.timeTo = to;
     }
     public set timeFrom(from: Time) {
-        // TODO: Change in Database
         this._timeFrom = from;
     }
     public set timeTo(to: Time) {
-        // TODO: Change in Database
         this._timeTo = to;
     }
     public getTimeAsString(){
@@ -89,14 +86,12 @@ export class doorguardObject {
         return this._timeTo;
     }
     public set enabled(enabled: boolean) {
-        // TODO: Change in Database
         this._enabled = enabled;
     }
     public get enabled(){
         return this._enabled;
     }
     public set description(description: string) {
-        // TODO: Change in Database
         this._description = description;
     }
     public get description(){

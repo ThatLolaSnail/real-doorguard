@@ -60,7 +60,6 @@ export class Controller extends doorguardObject {
         if (typeof inputs === "string") {
             inputs = inputs.split(",");
         }
-        // TODO: Change in Database
         this._inputs = inputs;
     }
     public get inputs() {
@@ -70,7 +69,6 @@ export class Controller extends doorguardObject {
         if (typeof outputs === "string") {
         outputs = outputs.split(",");
     }
-        // TODO: Change in Database
         this._outputs = outputs;
     }
     public get outputs() {
@@ -81,11 +79,9 @@ export class Controller extends doorguardObject {
         this.conditionTo = to;
     }
     public set conditionFrom(from: number) {
-        // TODO: Change in Database
         this._conditionFrom = from > 0 ? from : 0;
     }
     public set conditionTo(to: number) {
-        // TODO: Change in Database
         this._conditionTo = to > 0 ? to : 0;
     }
     public get conditionFrom() {

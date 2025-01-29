@@ -2,11 +2,13 @@ import {Application, Request, Response} from "express";
 import {Controller} from "../../business/controller/controller";
 import {Api} from "../../api/api";
 import {container} from "tsyringe";
+import {DatabaseDoorGuard} from "../../business/database/database";
 
 export function controller(app: Application) {
     var api = container.resolve(Api);
     var bodyParser = require("body-parser");
     var urlencodedParser = bodyParser.urlencoded({extended: false})
+    const db = container.resolve(DatabaseDoorGuard);
 
     app.get("/settings/controller", (_req: Request, res: Response) => {
         res.render("settings/controller", {controllers:api.controllers});
@@ -57,6 +59,7 @@ export function controller(app: Application) {
         controller.setTimeFromStrings(req.body.timeFrom, req.body.timeTo);
         controller.enabled = req.body.enabled === "enabled";
         controller.description = req.body.description;
+        db.updateController(controller);
 
         res.redirect("/settings/controller");
     });
