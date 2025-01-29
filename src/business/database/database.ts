@@ -58,6 +58,15 @@ export class DatabaseDoorGuard {
         return result.lastInsertRowid as number;
     }
 
+    public tableExists(): boolean {
+        const insertData = this.db.prepare(
+            `SHOW TABLES LIKE (table) VALUES (?)`
+        );
+        const result = insertData.run("controllers");
+        console.log(result);
+        return !!result;
+    }
+
     public insertInput(input: Input): number {
         const insertData = this.db.prepare(
             `INSERT INTO inputs (
@@ -447,6 +456,27 @@ export class DatabaseDoorGuard {
         this.createInputTable();
         this.createOutputTable();
     }
+
+    /*
+    public getSetting(key: string): Setting | null {
+        const getData = this.db.prepare(
+            "SELECT key, value FROM settings WHERE key = ?"
+        );
+        const row = getData.get(key) as Setting; // Cast the result to SettingRow
+        return row ? {  key: row.key, value: row.value } : null;
+    } */
+    countRows(tableName: string): number {
+        const getRows = this.db.prepare("SELECT COUNT(*) AS count FROM " + tableName);
+        return getRows.get() as number;
+    }
+/*
+// Example usage
+    try {
+    const rowCount = countRows("users");
+    console.log(The users table has ${rowCount} rows.);
+} catch (error) {
+    console.error(error.message);
+} */
 
     createEventTable (): void {
         const query = `

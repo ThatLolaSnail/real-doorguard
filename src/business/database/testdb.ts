@@ -43,6 +43,9 @@ export function dbTest(): void {
         const allEvents = db.getEvents();
         (allEvents.length >= 3) ? logTestResult('Get all Events', 'OK') : logTestResult('Get all Events', 'ERROR!')
 
+        // Display how many Rows the table has
+        logTestResult('Rows of Events', db.countRows("events"));
+        logTestResult('TABLE EXISTS', db.checkIfTablesExist());
     }  catch (error: unknown) {
         logTestResult('ERROR Events', error);
     }
