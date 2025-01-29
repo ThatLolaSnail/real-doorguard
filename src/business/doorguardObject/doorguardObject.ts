@@ -48,34 +48,15 @@ export class doorguardObject {
         return this._id;
     }
     public set name(name: string) {
-        // TODO: Change in Database
         this._name = name;
     }
     public get name() {
         return this._name;
     }
-    public setTimeFromStrings(from: String, to: String) {
-        let fromArray = from.split(":");
-        let toArray = to.split(":");
-
-        if (fromArray.length == 2 && toArray.length == 2) {
-            let fromH =parseInt(fromArray[0]);
-            let fromMin =parseInt(fromArray[1]);
-            let toH =parseInt(toArray[0]);
-            let toMin =parseInt(toArray[1]);
-            this.setTime(new Time(fromH,fromMin), new Time(toH, toMin));
-        }
-    }
-    public setTime(from: Time, to: Time) {
-        this.timeFrom = from;
-        this.timeTo = to;
-    }
     public set timeFrom(from: Time) {
-        // TODO: Change in Database
         this._timeFrom = from;
     }
     public set timeTo(to: Time) {
-        // TODO: Change in Database
         this._timeTo = to;
     }
     public getTimeAsString(){
@@ -88,14 +69,12 @@ export class doorguardObject {
         return this._timeTo;
     }
     public set enabled(enabled: boolean) {
-        // TODO: Change in Database
         this._enabled = enabled;
     }
     public get enabled(){
         return this._enabled;
     }
     public set description(description: string) {
-        // TODO: Change in Database
         this._description = description;
     }
     public get description(){

@@ -1,12 +1,13 @@
 <%- include('../template.ejs',{
     mode:"header",
-    onload: "onLoad(" + types.indexOf(output.type) + "," + pins.indexOf(output.pin) + ")"
+    onload: "onLoad(" + types.indexOf(output.type) + "," + pins.indexOf(output.pin) + "," + waves.indexOf(output.wave) + ")"
 }); %>
 
 <script>
-    function onLoad(typeIndex, pinIndex){
+    function onLoad(typeIndex, pinIndex, waveIndex){
         document.getElementById('type').selectedIndex = typeIndex;
         document.getElementById('pin').selectedIndex = pinIndex;
+        document.getElementById('wave').selectedIndex = waveIndex;
 
         onChange();
     }
@@ -67,8 +68,14 @@
             </th>
         </tr>
         <tr id="audio">
-            <th><label for="settings">Audio file</label></th>
-            <th><input type="text" id="settings" name="settings" value="<%= output.settings %>"></th>
+            <th><label for="wave">Audio file</label></th>
+            <th>
+                <select id="wave" name="wave">
+                    <% for (let wave of waves) { %>
+                        <option value="<%= wave %>"><%= wave %></option>
+                    <% } %>
+                </select>
+            </th>
         </tr>
         <tr id="hardware_pin">
             <th><label for="pin">Output pin:</label></th>

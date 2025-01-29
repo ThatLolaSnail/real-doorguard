@@ -2,11 +2,14 @@ import {Application, Request, Response} from "express";
 import {Controller} from "../../business/controller/controller";
 import {Api} from "../../api/api";
 import {container} from "tsyringe";
+import {DatabaseDoorGuard} from "../../business/database/database";
+import {Time} from "../../business/tools/time";
 
 export function controller(app: Application) {
     var api = container.resolve(Api);
     var bodyParser = require("body-parser");
     var urlencodedParser = bodyParser.urlencoded({extended: false})
+    const db = container.resolve(DatabaseDoorGuard);
 
     app.get("/settings/controller", (_req: Request, res: Response) => {
         res.render("settings/controller", {controllers:api.controllers});
@@ -18,9 +21,9 @@ export function controller(app: Application) {
             controller = api.controllers.get(req.query.id) || null;
         }
         if (controller) {
-            res.render("settings/controller-edit", {controller: controller});
+            res.render("settings/controller-edit", {controller: controller, inputs: api.inputs, outputs: api.outputs});
         } else {
-            res.render("settings/controller-edit", {controller: new Controller("new")});
+            res.render("settings/controller-edit", {controller: new Controller("new"), inputs: api.inputs, outputs: api.outputs});
         }
     });
 
@@ -50,13 +53,16 @@ export function controller(app: Application) {
         if (!controller){
             controller = api.controllers.createNew();
         }
-        controller.name = req.body.name;
-        controller.inputs = req.body.inputs.split(",");
-        controller.outputs = req.body.outputs.split(",");
-        controller.setCondition(req.body.conditionFrom, req.body.conditionTo);
-        controller.setTimeFromStrings(req.body.timeFrom, req.body.timeTo);
+        controller.name = String(req.body.name);
+        controller.inputs = String(req.body.inputs);
+        controller.outputs = String(req.body.outputs);
+        controller.conditionFrom = parseInt(req.body.conditionFrom);
+        controller.conditionTo = parseInt(req.body.conditionTo);
+        controller.timeFrom = Time.fromString(String(req.body.timeFrom));
+        controller.timeTo = Time.fromString(String(req.body.timeTo));
         controller.enabled = req.body.enabled === "enabled";
-        controller.description = req.body.description;
+        controller.description = String(req.body.description);
+        db.updateController(controller);
 
         res.redirect("/settings/controller");
     });

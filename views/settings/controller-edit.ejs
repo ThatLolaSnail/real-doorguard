@@ -69,17 +69,17 @@
         <th>Id</th>
         <th>Name</th>
     </tr>
-    <% for(let input of controller.inputs) { %>
+    <% for(let id of controller.inputs) { %>
         <tr>
             <th>input</th>
-            <th><%= input %></th>
-            <th><%= input %></th>
+            <th><%= id %></th>
+            <th><%= inputs.get(id).name %></th>
         </tr>
-    <% } for(let output of controller.outputs) { %>
+    <% } for(let id of controller.outputs) { %>
         <tr>
             <th>output</th>
-            <th><%= output %></th>
-            <th><%= output %></th>
+            <th><%= id %></th>
+            <th><%= outputs.get(id).name %></th>
         </tr>
     <% } %>
 

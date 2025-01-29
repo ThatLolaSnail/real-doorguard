@@ -4,10 +4,14 @@ import {OutputType} from "../business/output/output";
 import {singleton} from "tsyringe";
 import {Hardware} from "../business/hardware/hardware";
 
+
 @singleton()
 export class Api {
+    private readonly fs = require('fs');
+    public readonly _waves: string[];
     constructor(private main: Main) {
-
+        this._waves = this.fs.readdirSync("audio") as string[];
+        console.log(this._waves);
     }
 
     public get controllers(){
@@ -30,5 +34,8 @@ export class Api {
     }
     public get hardwareOutputPins(){
         return Hardware.OUTPUT_PINS;
+    }
+    public get allWaves() {
+         return this._waves;
     }
 }
