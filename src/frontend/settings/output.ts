@@ -51,7 +51,7 @@ export function output(app: Application) {
         }
         output.name = req.body.name;
         output.type = req.body.type;
-        output.settings = req.body.settings;
+        output.wave = req.body.wave;
         output.pin = req.body.pin;
         output.repeat = req.body.repeat;
         output.duration = req.body.duration;

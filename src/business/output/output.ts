@@ -17,7 +17,7 @@ export class Output extends doorguardObject {
     protected doorguardObjectType = "output";
     private _type: OutputType = OutputType.VIRTUAL;
 
-    private _settings: string = "";
+    private _wave: string = "";
 
     private _pin: string  = "";
     private _repeat: number = 1;
@@ -26,10 +26,10 @@ export class Output extends doorguardObject {
     private player = require('play-sound')();
     private hardware = container.resolve(Hardware);
 
-    constructor(id?: string, name?: string, timeFrom?: Time, timeTo?: Time, enabled?: boolean, description?: string, type?: OutputType, setting?: string, pin?: string, repeat?: number, duration?: number) {
+    constructor(id?: string, name?: string, timeFrom?: Time, timeTo?: Time, enabled?: boolean, description?: string, type?: OutputType, wave?: string, pin?: string, repeat?: number, duration?: number) {
         super(id, name, timeFrom, timeTo, enabled, description);
         this._type = type ?? OutputType.VIRTUAL;
-        this._settings = setting ?? "";
+        this._wave = wave ?? "";
         this._pin = pin ?? "";
         this._repeat = repeat ?? 1;
         this._duration = duration ?? 250;
@@ -49,7 +49,7 @@ export class Output extends doorguardObject {
                  //dbTest();
                  break;
              case OutputType.AUDIO:
-                 this.player.play("audio/" + this.settings);
+                 this.player.play("audio/" + this.wave);
                  break;
              case OutputType.HARDWARE:
                  this.hardware.output(this.pin, this.repeat, this.duration);
@@ -68,12 +68,12 @@ export class Output extends doorguardObject {
     public get type() {
         return this._type;
     }
-    public set settings(settings: string) {
+    public set wave(wave: string) {
         // TODO: Change in Database
-        this._settings = settings;
+        this._wave = wave;
     }
-    public get settings() {
-        return this._settings;
+    public get wave() {
+        return this._wave;
     }
     public set pin(settings: string) {
         // TODO: Change in Database

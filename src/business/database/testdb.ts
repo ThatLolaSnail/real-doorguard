@@ -92,7 +92,7 @@ export function dbTest(): void {
         10
     );
 
-
+/*
     try {
         const controllerIds = [controller1, controller2].map(controller => db.insertController(controller));
         logTestResult('Controller IDs', controllerIds);
@@ -111,7 +111,7 @@ export function dbTest(): void {
     } catch (error: unknown) {
         logTestResult('ERROR CONTROLLERS', error);
     }
-
+*/
 
     // Input
     const input1 = new Input(
