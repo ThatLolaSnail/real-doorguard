@@ -25,6 +25,11 @@ export class doorguardObject {
         this._description = description ?? "Please edit this Object's settings to your liking.";
     }
 
+    public destructor(): void {
+        // removes all listeners so that this object doesn't do anything anymore
+        // and the Garbage Collector can delete this object.
+    }
+
     public fire(){
         this.eventHandler.emit(this.doorguardObjectType, this.id);
     }
@@ -32,7 +37,6 @@ export class doorguardObject {
     protected fireIfEnabledAndInTimeframe(): void{
         const enabled = this.enabled;
         const timeMatches = this.checkTime();
-        this.eventHandler.emit("log", this.doorguardObjectType, this.id, enabled, timeMatches);
         if(enabled && timeMatches) {
             this.fire();
         }

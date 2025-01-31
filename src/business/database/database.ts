@@ -8,6 +8,8 @@ import {Controller} from '../controller/controller';
 import {Input, InputType} from '../input/input';
 import {Output, OutputType} from '../output/output';
 import {IdService} from '../tools/idService'
+import {EventHandler} from "../eventHandler/eventHandler";
+import {Testing} from "../../testing";
 
 // Datenbanken Klasse zum create, update, get und delete von Daten
 @singleton()
@@ -15,12 +17,17 @@ export class DatabaseDoorGuard {
     private idService = container.resolve(IdService);
     private db: Database.Database;
 
+    private testing = container.resolve(Testing);
+
     // Constructor der die DB aufmacht und alle Tabellen erstellt falls noch nicht vorhanden
     constructor() {
         this.db = new Database('database.db');
 
         // Create all Tables if they don't exist
         this.createTablesIfNotExists();
+
+        // Listen to Events and add them to the database
+        this.eventListeners();
     }
 
     // Insert Methoden, alle geben die ID zurück außer Settings, da Setting nach key value geht
@@ -40,6 +47,7 @@ export class DatabaseDoorGuard {
     }
 
     public insertController(controller: Controller): void {
+        this.testing.print("insert"+controller.id);
         const insertData = this.db.prepare(
             `INSERT INTO controllers (
         id, name, timeFrom, timeTo, enabled, description, 
@@ -154,6 +162,7 @@ export class DatabaseDoorGuard {
         );
         const row = getData.get(id) as {id:string,name:string,timeFrom:string,timeTo:string,enabled:boolean, description:string,inputs:string,outputs:string, conditionFrom:number,conditionTo:number};
 
+        this.testing.set("getController");
         return new Controller(row.id, row.name, Time.fromString(row.timeFrom), Time.fromString(row.timeTo), row.enabled, row.description, row.inputs.split(","), row.outputs.split(","), row.conditionFrom, row.conditionTo);
     }
 
@@ -164,7 +173,12 @@ export class DatabaseDoorGuard {
 
         const rows = getData.all() as {id:string,name:string,timeFrom:string,timeTo:string,enabled:boolean, description:string,inputs:string,outputs:string, conditionFrom:number,conditionTo:number}[];
 
-        return rows.map(row => new Controller(row.id, row.name, Time.fromString(row.timeFrom), Time.fromString(row.timeTo), row.enabled, row.description, row.inputs.split(","), row.outputs.split(","), row.conditionFrom, row.conditionTo));
+        console.log(rows.length);
+
+        return rows.map(row => {
+            this.testing.set("getControllers");
+            return new Controller(row.id, row.name, Time.fromString(row.timeFrom), Time.fromString(row.timeTo), row.enabled, row.description, row.inputs.split(","), row.outputs.split(","), row.conditionFrom, row.conditionTo)
+        });
     }
 
     public getOutput(id: number): Output | null {
@@ -371,11 +385,7 @@ export class DatabaseDoorGuard {
     }
 
     createTablesIfNotExists(): void {
-
-        if( !this.allTablesExists()
-                || this.getControllers().length == 0
-                || this.getInputs().length == 0
-                || this.getOutputs().length == 0) {
+        if(!this.allTablesExists()){
             this.dropAllTables();
             this.createEventTable();
             this.createSettingTable();
@@ -455,7 +465,8 @@ export class DatabaseDoorGuard {
         this.db.exec(query);
     }
 
-    createDefaultData(){
+    private createDefaultData(){
+        console.log("createDefaultData");
         const description = "default Description";
         const enabled = true;
         const from = new Time(0,0);
@@ -466,6 +477,7 @@ export class DatabaseDoorGuard {
         this.insertInput(new Input("3", "Button 3", from, to, enabled, description, InputType.VIRTUAL));
 
         const inputs = ["1","2","3"];
+        this.testing.set("createDefaultData");
         this.insertController(new Controller("4", "name", from, to, enabled, description, inputs, ["6","7"], 1, 3));
         this.insertController(new Controller("5", "name", from, to, enabled, description, inputs, ["8","9"], 3, 0));
 
@@ -482,4 +494,20 @@ export class DatabaseDoorGuard {
         this.insertEvent({ type: 'defaultDataCreated', timestamp: new Date() });
     }
 
+    private eventListeners() {
+        const eventHandler = container.resolve(EventHandler);
+        //Add listeners to store events to database
+        eventHandler.addListener("hardwareInput", (pin: string)=>{
+            this.insertEvent({type: "hardwareInput."+pin, timestamp: new Date()})
+        });
+        eventHandler.addListener("input", (id: string)=>{
+            this.insertEvent({type: "input."+id, timestamp: new Date()})
+        });
+        eventHandler.addListener("controller", (id: string)=>{
+            this.insertEvent({type: "controller."+id, timestamp: new Date()})
+        });
+        eventHandler.addListener("output", (id: string)=>{
+            this.insertEvent({type: "output."+id, timestamp: new Date()})
+        });
+    }
 }
