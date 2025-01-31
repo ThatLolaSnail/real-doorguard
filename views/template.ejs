@@ -13,6 +13,10 @@
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
     <style>
+        a {
+            text-decoration: none;
+        }
+        /*
         th {
             border-width: 1px;
         }
@@ -20,29 +24,42 @@
         td {
             border-width: 1px;
         }
+
+         */
+        .main {
+            border:1px solid grey;
+        }
+
+        .dgdatatable {
+            border-width: 1px;
+        }
+
+        .noborder {
+            border: none;
+        }
+
+        table.table { width:auto; }
     </style>
 </head>
 <body <%= (typeof onload !== 'undefined') ? "onload="+onload : "" %>>
-<p>
-    The Doorguard System
-</p>
-<table>
-    <tr>
-        <th>
-            <a href="/"> Home </a>
-        </th>
-        <th>
-            <a href="/settings"> Settings </a>
-        </th>
-        <th>
-            <a href="/log"> Log </a>
-        </th>
-        <th>
-            <a href="/about"> About </a>
-        </th>
-    </tr>
+<div class="container main">
+<div class="align-items-center">
+    <h1 class="mb-3">
+        The Doorguard System
+    </h1>
+</div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="navbar-nav">
+            <a href="/" class="link-primary nav-item nav-link"> Home </a>
 
-</table>
+            <a href="/settings" class="link-primary nav-item nav-link"> Settings </a>
+
+            <a href="/log" class="link-primary nav-item nav-link"> Log </a>
+
+            <a href="/about" class="link-primary nav-item nav-link"> About </a>
+        </div>
+
+    </nav>
 
 <hr>
 
@@ -51,6 +68,7 @@
 <hr>
 
 <p>The Doorguard System</p>
+</div>
 </body>
 </html>
 

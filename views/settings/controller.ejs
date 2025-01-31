@@ -14,17 +14,19 @@
     These are all controllers:
 </p>
 
-<table>
-    <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Inputs</th>
-        <th>Outputs</th>
-        <th>Conditions</th>
-        <th>Time</th>
-        <th>Enabled</th>
-        <th></th>
-    </tr>
+<table class="table table-striped dgdatatable">
+    <thead class="thead-light">
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Inputs</th>
+            <th scope="col">Outputs</th>
+            <th scope="col">Conditions</th>
+            <th scope="col">Time</th>
+            <th scope="col">Enabled</th>
+            <th></th>
+        </tr>
+    </thead>
 
     <% for (let controller of controllers.values()){ %>
     <tr>
