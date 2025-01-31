@@ -2,7 +2,6 @@ import {doorguardObject} from "../doorguardObject/doorguardObject";
 import {container} from "tsyringe";
 import {Hardware} from "../hardware/hardware";
 import {Time} from "../tools/time";
-import { dbTest } from "../database/testdb";
 
 export enum OutputType {
     VIRTUAL = "virtual",
@@ -46,7 +45,6 @@ export class Output extends doorguardObject {
 
          switch (this.type){
              case OutputType.VIRTUAL:
-                 //dbTest();
                  break;
              case OutputType.AUDIO:
                  this.player.play("audio/" + this.wave);
