@@ -10,45 +10,45 @@
     To disable the condition upper limit, set it to 0.
 </p>
 
-<form action="/settings/controller/edit" method="post">
+<form action="/settings/controller/edit" metdod="post">
     <input type="hidden" id="id" name="id" value="<%= controller.id %>">
     <table>
         <tr>
-            <th>Id</th>
-            <th><%= controller.id %></th>
+            <td>Id</td>
+            <td><%= controller.id %></td>
         </tr>
         <tr>
-            <th><label for="name">Name</label></th>
-            <th><input type="text" id="name" name="name" value="<%= controller.name %>"></th>
+            <td><label for="name">Name</label></td>
+            <td><input type="text" id="name" name="name" value="<%= controller.name %>"></td>
         </tr>
         <tr>
-            <th><label for="description">Description</label></th>
-            <th><textarea id="description" name="description" rows="2" cols="40"><%= controller.description %></textarea></th>
+            <td><label for="description">Description</label></td>
+            <td><textarea id="description" name="description" rows="2" cols="40"><%= controller.description %></textarea></td>
         </tr>
         <tr>
-            <th><label for="inputs">Inputs (by id)</label></th>
-            <th><input type="text" id="inputs" name="inputs" value="<%= controller.inputs.join(",") %>"></th>
+            <td><label for="inputs">Inputs (by id)</label></td>
+            <td><input type="text" id="inputs" name="inputs" value="<%= controller.inputs.join(",") %>"></td>
         </tr>
         <tr>
-            <th><label for="outputs">Outputs (by id)</label></th>
-            <th><input type="text" id="outputs" name="outputs" value="<%= controller.outputs.join(",") %>"></th>
+            <td><label for="outputs">Outputs (by id)</label></td>
+            <td><input type="text" id="outputs" name="outputs" value="<%= controller.outputs.join(",") %>"></td>
         </tr>
         <tr>
-            <th><label for="conditionFrom">Conditions (from</label>/<label for="conditionTo">to</label>)</th>
-            <th>
+            <td><label for="conditionFrom">Conditions (from</label>/<label for="conditionTo">to</label>)</td>
+            <td>
                 <input type="number" id="conditionFrom" name="conditionFrom" min="1" value="<%= controller.conditionFrom %>">
                 &le;n&lt;
                 <input type="number" id="conditionTo" name="conditionTo" min="0" value="<%= controller.conditionTo %>">
-            </th>
+            </td>
         </tr>
         <tr>
-            <th><label for="timeFrom">Time (from</label>/<label for="timeTo">to)</label></th>
-            <th><input type="time" id="timeFrom" name="timeFrom" value="<%= controller.timeFrom.toString() %>"> -
-                <input type="time" id="timeTo" name="timeTo" value="<%= controller.timeTo.toString() %>"></th>
+            <td><label for="timeFrom">Time (from</label>/<label for="timeTo">to)</label></td>
+            <td><input type="time" id="timeFrom" name="timeFrom" value="<%= controller.timeFrom.toString() %>"> -
+                <input type="time" id="timeTo" name="timeTo" value="<%= controller.timeTo.toString() %>"></td>
         </tr>
         <tr>
-            <th><label for="enabled">Enabled</label></th>
-            <th><input type="checkbox" id="enabled" name="enabled" value="enabled" <%= controller.enabled ? 'checked="true"' : ""%>></th>
+            <td><label for="enabled">Enabled</label></td>
+            <td><input type="checkbox" id="enabled" name="enabled" value="enabled" <%= controller.enabled ? 'checked="true"' : ""%>></td>
         </tr>
 
     </table>
@@ -65,21 +65,21 @@
 </p>
 <table>
     <tr>
-        <th></th>
-        <th>Id</th>
-        <th>Name</th>
+        <td></td>
+        <td>Id</td>
+        <td>Name</td>
     </tr>
     <% for(let id of controller.inputs) { %>
         <tr>
-            <th>input</th>
-            <th><%= id %></th>
-            <th><%= inputs.get(id).name %></th>
+            <td>input</td>
+            <td><%= id %></td>
+            <td><%= inputs.get(id).name %></td>
         </tr>
     <% } for(let id of controller.outputs) { %>
         <tr>
-            <th>output</th>
-            <th><%= id %></th>
-            <th><%= outputs.get(id).name %></th>
+            <td>output</td>
+            <td><%= id %></td>
+            <td><%= outputs.get(id).name %></td>
         </tr>
     <% } %>
 

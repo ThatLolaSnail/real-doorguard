@@ -28,18 +28,18 @@
 
     <% for (let controller of controllers.values()){ %>
     <tr>
-        <th><%= controller.id %></th>
-        <th><%= controller.name %></th>
-        <th><%= controller.inputs %></th>
-        <th><%= controller.outputs %></th>
-        <th><%= controller.getConditionAsString() %></th>
-        <th><%= controller.getTimeAsString() %></th>
-        <th><%= controller.enabled ? 'Yes' : 'No' %></th>
-        <th>
+        <td><%= controller.id %></td>
+        <td><%= controller.name %></td>
+        <td><%= controller.inputs %></td>
+        <td><%= controller.outputs %></td>
+        <td><%= controller.getConditionAsString() %></td>
+        <td><%= controller.getTimeAsString() %></td>
+        <td><%= controller.enabled ? 'Yes' : 'No' %></td>
+        <td>
             <a href="/settings/controller/edit?id=<%= controller.id %>">Edit</a>
             <a href="/settings/controller/delete?id=<%= controller.id %>">Delete</a>
             <a href="/settings/controller/test?id=<%= controller.id %>">Test</a>
-        </th>
+        </td>
     </tr>
     <% } %>
 </table>

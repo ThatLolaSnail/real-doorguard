@@ -3,7 +3,7 @@
 <h1>Welcome to Doorguard</h1>
 
 <p>
-    <% if (!os.release().includes("rpi")) { %>
+    <% if (!raspberry) { %>
         This instance is running on a PC, not the doorguard hardware, so all hardware related features will be disabled.
     <% } %>
 </p>

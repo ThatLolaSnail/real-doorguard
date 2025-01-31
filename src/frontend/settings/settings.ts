@@ -4,6 +4,7 @@ import {input} from "./input";
 import {output} from "./output";
 import {container} from "tsyringe";
 import {DatabaseDoorGuard} from "../../business/database/database";
+import {dbTest} from "../../business/database/testdb";
 
 export function settings(app: Application) {
     app.get("/settings", (req: Request, res: Response) => {
@@ -14,10 +15,14 @@ export function settings(app: Application) {
         res.render("settings/advanced-settings", {});
     });
 
-    app.get("/settings/advanced/reset-database", (req: Request, res: Response) => {
-        console.log("AAAAA");
+    app.get("/settings/advanced/database-reset", (req: Request, res: Response) => {
         const newDb = container.resolve(DatabaseDoorGuard);
         newDb.dropAllTables();
+        res.redirect("/settings/advanced");
+    });
+
+    app.get("/settings/advanced/database-test", (req: Request, res: Response) => {
+        dbTest();
         res.redirect("/settings/advanced");
     });
 

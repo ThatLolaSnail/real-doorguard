@@ -11,7 +11,6 @@ export class Api {
     public readonly _waves: string[];
     constructor(private main: Main) {
         this._waves = this.fs.readdirSync("audio") as string[];
-        console.log(this._waves);
     }
 
     public get controllers(){

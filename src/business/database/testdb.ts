@@ -13,34 +13,47 @@ function logTestResult(description: string, result: any): void {
 }
 
 export function dbTest(): void {
+
     const db = container.resolve(DatabaseDoorGuard);
 
-    // Dgevent
-    const event1 = { type: 'bellring', timestamp: new Date() };
-    const event2 = { type: 'door', timestamp: new Date() };
-    const event3 = { type: 'error', timestamp: new Date() };
-    const events = [event1, event2, event3];
-
-    try {
-        // Insert multiple Events
-        const eventIds = events.map(event => db.insertEvent(event));
-        (events.length == eventIds.length) ? logTestResult('Insert Events', 'OK') : logTestResult('Insert Events:', 'ERROR!')
-
-        // Get single Event
-        const singleEvent = db.getEvent(eventIds[0]);
-        (event1.type == singleEvent?.type) ? logTestResult('Get Event', 'OK') : logTestResult('Get Event:', 'ERROR!')
-
-        // Update single Event
-        //singleEvent?.type = 'door';
 
 
-        // Get all Events
-        const allEvents = db.getEvents();
-        (events.length == allEvents.length) ? logTestResult('Get all Events', 'OK') : logTestResult('Get all Events:', 'ERROR!')
 
-    }  catch (error: unknown) {
-        logTestResult('ERROR Events', error);
-    }
+
+        // Dgevent
+        const event1 = { type: 'bellring', timestamp: new Date() };
+        const event2 = { type: 'door', timestamp: new Date() };
+        const event3 = { type: 'error', timestamp: new Date() };
+        const events = [event1, event2, event3];
+
+        try {
+            // Insert multiple Events
+            const eventIds = events.map(event => db.insertEvent(event));
+            (events.length == eventIds.length) ? logTestResult('Insert Events', 'OK') : logTestResult('Insert Events:', 'ERROR!')
+
+            // Get single Event
+            const singleEvent = db.getEvent(eventIds[0]);
+            (event1.type == singleEvent?.type) ? logTestResult('Get Event', 'OK') : logTestResult('Get Event:', 'ERROR!')
+
+            // Update single Event
+            //singleEvent?.type = 'door';
+
+
+            // Get all Events
+            const allEvents = db.getEvents();
+            (events.length == allEvents.length) ? logTestResult('Get all Events', 'OK') : logTestResult('Get all Events:', 'ERROR!')
+            logTestResult('Get all Events', allEvents);
+
+            const justTwoEvents = db.getEvents(2);
+            logTestResult('Get LIMIT Events', justTwoEvents);
+
+        }  catch (error: unknown) {
+            logTestResult('ERROR Events', error);
+        }
+
+
+    // Test Logs
+    /*
 
     // Setting
     const setting1 = { key: 'doorkey', value: 'square' };
@@ -111,7 +124,7 @@ export function dbTest(): void {
     } catch (error: unknown) {
         logTestResult('ERROR CONTROLLERS', error);
     }
-*/
+
 
     // Input
     const input1 = new Input(
@@ -183,7 +196,7 @@ export function dbTest(): void {
     } catch (error: unknown) {
         logTestResult('ERROR Outputs', error);
     }
-
+*/
     // Clean Up
     db.dropAllTables();
     db.close();

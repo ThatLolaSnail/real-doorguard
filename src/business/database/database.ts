@@ -17,7 +17,6 @@ export class DatabaseDoorGuard {
 
     // Constructor der die DB aufmacht und alle Tabellen erstellt falls noch nicht vorhanden
     constructor() {
-        console.log("database");
         this.db = new Database('database.db');
 
         // Create all Tables if they don't exist
@@ -111,9 +110,16 @@ export class DatabaseDoorGuard {
         return row ? { id: row.id, type: row.type, timestamp: new Date(row.timestamp) } : null;
     }
 
-    public getEvents(): Dgevent[] {
+    public getEvents(limit?: number): Dgevent[] {
+
+        let query = "";
+        if (limit === undefined || limit == 0) {
+            query = "SELECT id, type, timestamp FROM events ORDER BY timestamp DESC";
+        } else {
+            query = "SELECT id, type, timestamp FROM events  ORDER BY timestamp DESC LIMIT " + limit;
+        }
         const getData = this.db.prepare<Dgevent[]>(
-            "SELECT id, type, timestamp FROM events"
+            query
         );
         const rows = getData.all() as Dgevent[];
         return rows.map((row: Dgevent) => ({
@@ -471,6 +477,9 @@ export class DatabaseDoorGuard {
         this.insertOutput(new Output("9", "actual Buzzer", from, to, enabled, description, OutputType.HARDWARE, "", "OUT2", repeat, 4*duration));
 
         this.idService.registerId("9");
+
+
+        this.insertEvent({ type: 'defaultDataCreated', timestamp: new Date() });
     }
 
 }

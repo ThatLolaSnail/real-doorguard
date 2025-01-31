@@ -27,22 +27,22 @@
 
     <% for (let input of inputs.values()){ %>
     <tr>
-        <th><%= input.id %></th>
-        <th><%= input.name %></th>
-        <th><%= input.type %></th>
-        <th>
+        <td><%= input.id %></td>
+        <td><%= input.name %></td>
+        <td><%= input.type %></td>
+        <td>
             <% if (input.type === "hardware") { %>
                 pin <%= input.pin %>
             <% } %>
 
-        </th>
-        <th><%= input.getTimeAsString() %></th>
-        <th><%= input.enabled ? 'Yes' : 'No' %></th>
-        <th>
+        </td>
+        <td><%= input.getTimeAsString() %></td>
+        <td><%= input.enabled ? 'Yes' : 'No' %></td>
+        <td>
             <a href="/settings/input/edit?id=<%= input.id %>">Edit</a>
             <a href="/settings/input/delete?id=<%= input.id %>">Delete</a>
             <a href="/settings/input/test?id=<%= input.id %>">Test</a>
-        </th>
+        </td>
     </tr>
     <% } %>
 </table>

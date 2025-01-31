@@ -4,12 +4,12 @@
 
 <p>
     This system is currently running under the following OS:<br>
-    type: <%= os.type() %><br>
-    release: <%= os.release() %><br>
-    platform: <%= os.platform() %><br>
+    type: <%= type %><br>
+    release: <%= release %><br>
+    platform: <%= platform %><br>
 </p>
 <p>
-    <% if (os.release().includes("rpi")) { %>
+    <% if (raspberry) { %>
         This instance is running on the actual doorguard hardware, so every feature is available.
     <% } else { %>
         This instance is running on a PC, not the doorguard hardware, so all hardware related features will be disabled.

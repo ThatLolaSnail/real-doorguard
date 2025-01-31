@@ -1,9 +1,52 @@
 <%- include('template.ejs',{mode:"header"}); %>
 
-<h1>Log</h1>
+<!-- auswahlmenu -->
+<table>
+    <tr>
+        <th>
+            <a href="/log?nr=5"> last 5 </a>
+        </th>
+        <th>
+            <a href="/log?nr=20"> last 20 </a>
+        </th>
+        <th>
+            <a href="/log?nr=100"> last 100 </a>
+        </th>
+        <th>
+            <a href="/log?nr=0"> all logs </a>
+        </th>
+    </tr>
+</table>
+
+<hr>
+
+<!-- die Tabelle -->
 
 <p>
-    To do...
+    <% if(nr != 0){ %>
+        Last <%= nr %> events:
+    <% } else { %>
+        All events:
+    <% } %>
+
 </p>
+
+<table>
+    <tr>
+        <th>Timestamp</th>
+        <th>Type</th>
+    </tr>
+
+    <% for(let event of events){ %>
+        <tr>
+            <td>
+                <% let ts = event.timestamp %>
+                <%= ts.getUTCFullYear() %>.<%= ts.getUTCMonth() %>.<%= ts.getUTCDate() %>
+                <i><%= ts.toLocaleTimeString() %></i>
+            </td>
+            <td><%= event.type %></td>
+        </tr>
+    <% } %>
+</table>
 
 <%- include('template.ejs',{mode:"footer"}); %>
