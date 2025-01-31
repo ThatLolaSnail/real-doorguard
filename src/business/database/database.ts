@@ -114,7 +114,7 @@ export class DatabaseDoorGuard {
     public getEvents(limit?: number): Dgevent[] {
 
         let query = "";
-        if (limit === undefined) {
+        if (limit === undefined || limit == 0) {
             query = "SELECT id, type, timestamp FROM events ORDER BY timestamp DESC";
         } else {
             query = "SELECT id, type, timestamp FROM events  ORDER BY timestamp DESC LIMIT " + limit;
@@ -478,6 +478,9 @@ export class DatabaseDoorGuard {
         this.insertOutput(new Output("9", "actual Buzzer", from, to, enabled, description, OutputType.HARDWARE, "", "OUT2", repeat, 4*duration));
 
         this.idService.registerId("9");
+
+
+        this.insertEvent({ type: 'defaultDataCreated', timestamp: new Date() });
     }
 
 }

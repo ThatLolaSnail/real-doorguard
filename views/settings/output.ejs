@@ -27,10 +27,10 @@
 
     <% for (let output of outputs.values()){ %>
     <tr>
-        <th><%= output.id %></th>
-        <th><%= output.name %></th>
-        <th><%= output.type %></th>
-        <th>
+        <td><%= output.id %></td>
+        <td><%= output.name %></td>
+        <td><%= output.type %></td>
+        <td>
             <% if (output.type === "audio") { %>
                 <%= output.wave %>
             <% } else if (output.type === "hardware") { %>
@@ -39,14 +39,14 @@
                     <%= output.channel %>: "<%= output.message %>"
             <% } %>
 
-        </th>
-        <th><%= output.getTimeAsString() %></th>
-        <th><%= output.enabled ? 'Yes' : 'No' %></th>
-        <th>
+        </td>
+        <td><%= output.getTimeAsString() %></td>
+        <td><%= output.enabled ? 'Yes' : 'No' %></td>
+        <td>
             <a href="/settings/output/edit?id=<%= output.id %>">Edit</a>
             <a href="/settings/output/delete?id=<%= output.id %>">Delete</a>
             <a href="/settings/output/test?id=<%= output.id %>">Test</a>
-        </th>
+        </td>
     </tr>
     <% } %>
 </table>

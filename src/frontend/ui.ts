@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {settings} from "./settings/settings";
-import {log} from "node:util";
+import {log} from "./log/log";
 import {singleton} from "tsyringe";
 
 @singleton()
@@ -13,12 +13,19 @@ export class Ui {
 
         this.app.set('view engine', 'ejs');
 
+        const os = require('os');
+        const osType: string = os.type();
+        const osRelease: string = os.release();
+        const osPlatform: string = os.platform();
+        const osIsRaspberry: boolean = os.release().includes("rpi");
+
         this.app.get("/", (req: Request, res: Response) => {
-            res.render("index", {os: require('os')});
+            res.render("index", {raspberry: osIsRaspberry});
         });
 
         this.app.get("/about", (req: Request, res: Response) => {
-            res.render("about", {os: require('os')});
+
+            res.render("about", {type: osType, release: osRelease, platform: osPlatform, raspberry: osIsRaspberry });
         });
 
         settings(this.app);

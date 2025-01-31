@@ -34,45 +34,45 @@
     <input type="hidden" id="id" name="id" value="<%= input.id %>">
     <table>
         <tr>
-            <th>Id</th>
-            <th><%= input.id %></th>
+            <td>Id</td>
+            <td><%= input.id %></td>
         </tr>
         <tr>
-            <th><label for="name">Name</label></th>
-            <th><input type="text" id="name" name="name" value="<%= input.name %>"></th>
+            <td><label for="name">Name</label></td>
+            <td><input type="text" id="name" name="name" value="<%= input.name %>"></td>
         </tr>
         <tr>
-            <th><label for="description">Description</label></th>
-            <th><textarea id="description" name="description" rows="2" cols="40"><%= input.description %></textarea></th>
+            <td><label for="description">Description</label></td>
+            <td><textarea id="description" name="description" rows="2" cols="40"><%= input.description %></textarea></td>
         </tr>
         <tr>
-            <th><label for="type">Type</label></th>
-            <th>
+            <td><label for="type">Type</label></td>
+            <td>
                 <select id="type" name="type" onchange=onChange()>
                     <% for (let t of types) { %>
                         <option value="<%= t %>"><%= t %></option>
                     <% } %>
                 </select>
-            </th>
+            </td>
         </tr>
         <tr id="hardware_pin">
-            <th><label for="pin">Input pin:</label></th>
-            <th>
+            <td><label for="pin">Input pin:</label></td>
+            <td>
                 <select id="pin" name="pin">
                     <% for (let key of pins) { %>
                         <option value="<%= key %>"><%= key %></option>
                     <% } %>
                 </select>
-            </th>
+            </td>
         </tr>
         <tr>
-            <th><label for="timeFrom">Time (from</label>/<label for="timeTo">to)</label></th>
-            <th><input type="time" id="timeFrom" name="timeFrom" value="<%= input.timeFrom.toString() %>"> -
-                <input type="time" id="timeTo" name="timeTo" value="<%= input.timeTo.toString() %>"></th>
+            <td><label for="timeFrom">Time (from</label>/<label for="timeTo">to)</label></td>
+            <td><input type="time" id="timeFrom" name="timeFrom" value="<%= input.timeFrom.toString() %>"> -
+                <input type="time" id="timeTo" name="timeTo" value="<%= input.timeTo.toString() %>"></td>
         </tr>
         <tr>
-            <th><label for="enabled">Enabled</label></th>
-            <th><input type="checkbox" id="enabled" name="enabled" value="enabled" <%= input.enabled ? 'checked="true"' : ""%>></th>
+            <td><label for="enabled">Enabled</label></td>
+            <td><input type="checkbox" id="enabled" name="enabled" value="enabled" <%= input.enabled ? 'checked="true"' : ""%>></td>
         </tr>
 
     </table>
