@@ -111,9 +111,16 @@ export class DatabaseDoorGuard {
         return row ? { id: row.id, type: row.type, timestamp: new Date(row.timestamp) } : null;
     }
 
-    public getEvents(): Dgevent[] {
+    public getEvents(limit?: number): Dgevent[] {
+
+        let query = "";
+        if (limit === undefined) {
+            query = "SELECT id, type, timestamp FROM events ORDER BY timestamp DESC";
+        } else {
+            query = "SELECT id, type, timestamp FROM events  ORDER BY timestamp DESC LIMIT " + limit;
+        }
         const getData = this.db.prepare<Dgevent[]>(
-            "SELECT id, type, timestamp FROM events"
+            query
         );
         const rows = getData.all() as Dgevent[];
         return rows.map((row: Dgevent) => ({
