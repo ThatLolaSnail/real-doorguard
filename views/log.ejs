@@ -23,7 +23,12 @@
 <!-- die Tabelle -->
 
 <p>
-    Last <%= nr %> events:
+    <% if(nr != 0){ %>
+        Last <%= nr %> events:
+    <% } else { %>
+        All events:
+    <% } %>
+
 </p>
 
 <table>

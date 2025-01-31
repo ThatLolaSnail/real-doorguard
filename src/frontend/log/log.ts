@@ -14,7 +14,6 @@ export function log(app: Application) {
         if (typeof req.query.nr === 'string'){
             nr = parseInt(req.query.nr);
         }
-        console.log(nr);
         if (isNaN(nr)){
             res.redirect(`/log?nr=20`); //Default
             return;

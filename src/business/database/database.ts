@@ -17,7 +17,6 @@ export class DatabaseDoorGuard {
 
     // Constructor der die DB aufmacht und alle Tabellen erstellt falls noch nicht vorhanden
     constructor() {
-        console.log("database");
         this.db = new Database('database.db');
 
         // Create all Tables if they don't exist

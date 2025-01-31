@@ -49,7 +49,6 @@ export class Controller extends doorguardObject {
 
     public fire(){
         super.fire();
-        console.log(typeof this.outputs);
         for (let output of this.outputs){
 
             this.eventHandler.emit("ring", output);
