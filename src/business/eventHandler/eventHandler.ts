@@ -1,10 +1,23 @@
 import EventEmitter from "node:events";
-import {singleton} from "tsyringe";
+import {container, singleton} from "tsyringe";
+import {DatabaseDoorGuard} from "../database/database";
+
+/*
+    Types of events:
+    Event name    - Argument      -     Sender -> Receiver    - logged - description
+    --------------------------------------------------------------------------------
+    hardwareInput -           pin -   hardware -> input      - X - raw hardware input
+    input         -      input id -      input -> controller - X - doorguard input object fired (after time check)
+    controller    - controller id - controller -> none       - X - doorguard controller object fired (after all checks)
+    ring          -     output id - controller -> output     -   - The output event before final time check
+    output        -     output id -     output -> none       - X - doorguard output object fired (after time check)
+
+ */
 
 @singleton()
 export class EventHandler extends EventEmitter {
     public emit(eventName: string | symbol, ...args: any): boolean {
-        console.log("EventHandler emit: ", eventName, args);
+        //console.log("EventHandler emit: ", eventName, args);
         return super.emit(eventName, ...args);
     }
     public addListener(eventName: string, listener: (...args: any[]) => void): this {
@@ -16,14 +29,3 @@ export class EventHandler extends EventEmitter {
         return super.removeListener(eventName, listener);
     }
 }
-
-/*
-    Types of events:
-
-    input         - an input was fired, the time was checked. This can be used by the controllers
-    controller    - a controller was fired, n is correct, time was checked.
-    output        - an output was fired, the time was checked.
-    log           - useful info to be logged, for example a controller check status
-    ring          - a controller is telling an output to fire, the output will do its own checks if neccesary.
-    hardwareInput - a hardware input telling the input module that it was activated
- */

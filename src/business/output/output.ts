@@ -2,6 +2,7 @@ import {doorguardObject} from "../doorguardObject/doorguardObject";
 import {container} from "tsyringe";
 import {Hardware} from "../hardware/hardware";
 import {Time} from "../tools/time";
+import {Testing} from "../../testing";
 
 export enum OutputType {
     VIRTUAL = "virtual",
@@ -24,6 +25,9 @@ export class Output extends doorguardObject {
 
     private player = require('play-sound')();
     private hardware = container.resolve(Hardware);
+    private testing = container.resolve(Testing);
+
+    private readonly eventHandlerCallback : (id:string) => void;
 
     constructor(id?: string, name?: string, timeFrom?: Time, timeTo?: Time, enabled?: boolean, description?: string, type?: OutputType, wave?: string, pin?: string, repeat?: number, duration?: number) {
         super(id, name, timeFrom, timeTo, enabled, description);
@@ -33,11 +37,20 @@ export class Output extends doorguardObject {
         this._repeat = repeat ?? 1;
         this._duration = duration ?? 250;
 
-        this.eventHandler.addListener("ring", (id: string) => {
-            if (this.id == id){
-                this.fireIfEnabledAndInTimeframe();
-            }
-        });
+        this.eventHandlerCallback = (id: string) => this.handleRingEvent(id);
+        this.eventHandler.addListener("ring", this.eventHandlerCallback);
+    }
+
+    destructor(): void {
+        if (this.eventHandlerCallback){
+            this.eventHandler.removeListener("ring", this.eventHandlerCallback);
+        }
+    }
+
+    private handleRingEvent(id:string): void {
+        if (this.id == id){
+            this.fireIfEnabledAndInTimeframe();
+        }
     }
 
     public fire() {

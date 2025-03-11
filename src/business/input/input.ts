@@ -13,17 +13,27 @@ export class Input extends doorguardObject {
     protected doorguardObjectType = "input";
     private _type: InputType;
     private _pin: string;
+    private eventHandlerCallback: (pin: string) => void;
 
     constructor(id?: string, name?: string, timeFrom?: Time, timeTo?: Time, enabled?: boolean, description?: string, type?: InputType, pin?: string) {
         super(id, name, timeFrom, timeTo, enabled, description);
         this._type = type ?? InputType.VIRTUAL;
         this._pin = pin ?? "";
 
-        this.eventHandler.addListener("hardwareInput", (pin: string) => {
-            if (this.type === InputType.HARDWARE && pin === this.pin){
-                this.fireIfEnabledAndInTimeframe();
-            }
-        });
+        this.eventHandlerCallback = (pin: string) => this.handleInput(pin);
+        this.eventHandler.addListener("hardwareInput", this.eventHandlerCallback);
+    }
+
+    destructor(): void {
+        if (this.eventHandlerCallback){
+            this.eventHandler.removeListener("hardwareInput", this.eventHandlerCallback);
+        }
+    }
+
+    private handleInput(pin: string): void {
+        if (this.type === InputType.HARDWARE && pin === this.pin){
+            this.fireIfEnabledAndInTimeframe();
+        }
     }
 
     public set type(type: string) {
