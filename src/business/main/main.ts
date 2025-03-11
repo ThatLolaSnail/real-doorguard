@@ -46,6 +46,7 @@ export class Main {
         this.outputs.set("7", new Output("7", "mechanical Bell", from, to, enabled, description, OutputType.HARDWARE, "", "OUT1", repeat, duration));
         this.outputs.set("8", new Output("8", "loud Sound", from, to, enabled, description, OutputType.AUDIO, "long.wav", "", repeat, duration));
         this.outputs.set("9", new Output("9", "actual Buzzer", from, to, enabled, description, OutputType.HARDWARE, "", "OUT2", repeat, 4*duration));
+        this.outputs.set("10", new Output("10", "Unmute", from, to, enabled, "Turn on audio amplifier", OutputType.HARDWARE, "", "UNMUTE", 1, 4000));
 
         this.idService.registerId("9");
 
