@@ -1,22 +1,18 @@
 <%- include('template.ejs',{mode:"header"}); %>
 
 <!-- auswahlmenu -->
-<table>
-    <tr>
-        <th>
-            <a href="/log?nr=5"> last 5 </a>
-        </th>
-        <th>
-            <a href="/log?nr=20"> last 20 </a>
-        </th>
-        <th>
-            <a href="/log?nr=100"> last 100 </a>
-        </th>
-        <th>
-            <a href="/log?nr=0"> all logs </a>
-        </th>
-    </tr>
-</table>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="navbar-nav">
+            <a href="/log?nr=5" class="link-primary nav-item nav-link"> last 5 </a>
+
+            <a href="/log?nr=20" class="link-primary nav-item nav-link"> last 20 </a>
+
+            <a href="/log?nr=100" class="link-primary nav-item nav-link"> last 100 </a>
+
+            <a href="/log?nr=0" class="link-primary nav-item nav-link"> all logs </a>
+    </div>
+</nav>
+
 
 <hr>
 
@@ -31,11 +27,13 @@
 
 </p>
 
-<table>
-    <tr>
-        <th>Timestamp</th>
-        <th>Type</th>
-    </tr>
+<table class="table table-striped dgdatatable">
+    <thead class="thead-light">
+        <tr>
+            <th scope="col">Timestamp</th>
+            <th scope="col">Type</th>
+        </tr>
+    </thead>
 
     <% for(let event of events){ %>
         <tr>

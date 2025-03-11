@@ -28,6 +28,8 @@ export class Ui {
             res.render("about", {type: osType, release: osRelease, platform: osPlatform, raspberry: osIsRaspberry });
         });
 
+        //this.app.get("/css")
+
         settings(this.app);
         log(this.app);
 
