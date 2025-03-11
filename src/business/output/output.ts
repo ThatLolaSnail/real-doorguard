@@ -2,7 +2,6 @@ import {doorguardObject} from "../doorguardObject/doorguardObject";
 import {container} from "tsyringe";
 import {Hardware} from "../hardware/hardware";
 import {Time} from "../tools/time";
-import {Testing} from "../../testing";
 
 export enum OutputType {
     VIRTUAL = "virtual",
@@ -25,7 +24,6 @@ export class Output extends doorguardObject {
 
     private player = require('play-sound')();
     private hardware = container.resolve(Hardware);
-    private testing = container.resolve(Testing);
 
     private readonly eventHandlerCallback : (id:string) => void;
 
@@ -36,6 +34,7 @@ export class Output extends doorguardObject {
         this._pin = pin ?? "";
         this._repeat = repeat ?? 1;
         this._duration = duration ?? 250;
+        console.log("created output", this.id);
 
         this.eventHandlerCallback = (id: string) => this.handleRingEvent(id);
         this.eventHandler.addListener("ring", this.eventHandlerCallback);
@@ -49,6 +48,7 @@ export class Output extends doorguardObject {
 
     private handleRingEvent(id:string): void {
         if (this.id == id){
+            console.log("OUTPUT", this.id);
             this.fireIfEnabledAndInTimeframe();
         }
     }

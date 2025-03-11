@@ -21,11 +21,11 @@ export class EventHandler extends EventEmitter {
         return super.emit(eventName, ...args);
     }
     public addListener(eventName: string, listener: (...args: any[]) => void): this {
-        console.log("EventHandler listen:",eventName);
+        //console.log("EventHandler listen:",eventName);
         return super.addListener(eventName, listener);
     }
     public removeListener(eventName: string, listener: (...args: any[]) => void): this {
-        console.log("EventHandler removed:", eventName);
+        //console.log("EventHandler removed:", eventName);
         return super.removeListener(eventName, listener);
     }
 }

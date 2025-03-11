@@ -1,4 +1,4 @@
-import {Output, OutputType} from "./output";
+import {Output} from "./output";
 import {IdService} from "../tools/idService";
 import {container} from "tsyringe";
 import {DatabaseDoorGuard} from "../database/database";
@@ -9,6 +9,7 @@ export class OutputDictionary extends Map<string,Output> {
 
     constructor() {
         super();
+        console.log("OutputDictionary constructor");
 
         // Read outputs from database
         let outputs = this.db.getOutputs();
@@ -24,10 +25,18 @@ export class OutputDictionary extends Map<string,Output> {
 
         return this;
     }
+
     public delete(key: string){
         this.db.deleteOutput(key);
+        super.get(key)?.destructor();
 
         return super.delete(key);
+    }
+
+    public deleteAll():void{
+        for (let output of this.keys()){
+            this.delete(output);
+        }
     }
 
     public createNew(){

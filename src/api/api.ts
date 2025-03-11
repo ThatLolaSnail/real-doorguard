@@ -37,4 +37,8 @@ export class Api {
     public get allWaves() {
          return this._waves;
     }
+    public revertToDefaultData(){
+        this.main.revertToDefaultData();
+
+    }
 }

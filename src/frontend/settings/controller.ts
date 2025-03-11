@@ -46,6 +46,7 @@ export function controller(app: Application) {
     });
 
     app.post("/settings/controller/edit", urlencodedParser, (req: Request, res: Response) => {
+        console.log(req.body,"edit controller");
         let controller: Controller | null = null;
         if (typeof req.body.id === 'string'){
             controller = api.controllers.get(req.body.id) || null;
