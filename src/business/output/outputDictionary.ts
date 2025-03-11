@@ -9,6 +9,7 @@ export class OutputDictionary extends Map<string,Output> {
 
     constructor() {
         super();
+        console.log("OutputDictionary constructor");
 
         // Read outputs from database
         let outputs = this.db.getOutputs();
