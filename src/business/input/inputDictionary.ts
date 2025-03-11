@@ -1,4 +1,4 @@
-import {Input, InputType} from "./input";
+import {Input} from "./input";
 import {IdService} from "../tools/idService";
 import {container} from "tsyringe";
 import {DatabaseDoorGuard} from "../database/database";
@@ -25,10 +25,18 @@ export class InputDictionary extends Map<string,Input> {
 
         return this;
     }
+
     public delete(key: string){
         this.db.deleteInput(key);
+        super.get(key)?.destructor();
 
         return super.delete(key);
+    }
+
+    public deleteAll():void{
+        for (let input of this.keys()){
+            this.delete(input);
+        }
     }
 
     public createNew(){

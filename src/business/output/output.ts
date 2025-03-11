@@ -2,7 +2,6 @@ import {doorguardObject} from "../doorguardObject/doorguardObject";
 import {container} from "tsyringe";
 import {Hardware} from "../hardware/hardware";
 import {Time} from "../tools/time";
-import {Testing} from "../../testing";
 
 export enum OutputType {
     VIRTUAL = "virtual",
@@ -25,7 +24,6 @@ export class Output extends doorguardObject {
 
     private player = require('play-sound')();
     private hardware = container.resolve(Hardware);
-    private testing = container.resolve(Testing);
 
     private readonly eventHandlerCallback : (id:string) => void;
 

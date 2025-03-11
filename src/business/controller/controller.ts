@@ -1,8 +1,6 @@
 import {clearTimeout} from "node:timers";
 import {doorguardObject} from "../doorguardObject/doorguardObject";
 import {Time} from "../tools/time";
-import {container} from "tsyringe";
-import {Testing} from "../../testing";
 
 export class Controller extends doorguardObject {
     protected doorguardObjectType = "controller";
@@ -14,8 +12,6 @@ export class Controller extends doorguardObject {
 
     private numberOfPresses = 0;
     private lastPressTimer: NodeJS.Timeout | undefined;
-
-    private testing = container.resolve(Testing);
 
     private readonly eventHandlerCallback : (id:string) => void;
 

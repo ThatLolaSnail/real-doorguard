@@ -7,17 +7,12 @@ import {Time} from "../tools/time";
 import {Controller} from '../controller/controller';
 import {Input, InputType} from '../input/input';
 import {Output, OutputType} from '../output/output';
-import {IdService} from '../tools/idService'
 import {EventHandler} from "../eventHandler/eventHandler";
-import {Testing} from "../../testing";
 
 // Datenbanken Klasse zum create, update, get und delete von Daten
 @singleton()
 export class DatabaseDoorGuard {
-    private idService = container.resolve(IdService);
     private db: Database.Database;
-
-    private testing = container.resolve(Testing);
 
     // Constructor der die DB aufmacht und alle Tabellen erstellt falls noch nicht vorhanden
     constructor() {
@@ -47,14 +42,13 @@ export class DatabaseDoorGuard {
     }
 
     public insertController(controller: Controller): void {
-        this.testing.print("insert"+controller.id);
         const insertData = this.db.prepare(
             `INSERT INTO controllers (
         id, name, timeFrom, timeTo, enabled, description, 
         inputs, outputs, conditionFrom, conditionTo
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
         );
-        const result = insertData.run(
+        insertData.run(
             controller.id,
             controller.name,
             controller.timeFrom.toString(),
@@ -75,7 +69,7 @@ export class DatabaseDoorGuard {
         type, pin
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
         );
-        const result = insertData.run(
+        insertData.run(
             input.id,
             input.name,
             input.timeFrom.toString(),
@@ -94,7 +88,7 @@ export class DatabaseDoorGuard {
         type, wave, pin, repeat, duration
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
         );
-        const result = insertData.run(
+        insertData.run(
             output.id,
             output.name,
             output.timeFrom.toString(),
@@ -120,7 +114,7 @@ export class DatabaseDoorGuard {
 
     public getEvents(limit?: number): Dgevent[] {
 
-        let query = "";
+        let query: string;
         if (limit === undefined || limit == 0) {
             query = "SELECT id, type, timestamp FROM events ORDER BY timestamp DESC";
         } else {
@@ -162,7 +156,6 @@ export class DatabaseDoorGuard {
         );
         const row = getData.get(id) as {id:string,name:string,timeFrom:string,timeTo:string,enabled:boolean, description:string,inputs:string,outputs:string, conditionFrom:number,conditionTo:number};
 
-        this.testing.set("getController");
         return new Controller(row.id, row.name, Time.fromString(row.timeFrom), Time.fromString(row.timeTo), row.enabled, row.description, row.inputs.split(","), row.outputs.split(","), row.conditionFrom, row.conditionTo);
     }
 
@@ -176,7 +169,6 @@ export class DatabaseDoorGuard {
         console.log(rows.length);
 
         return rows.map(row => {
-            this.testing.set("getControllers");
             return new Controller(row.id, row.name, Time.fromString(row.timeFrom), Time.fromString(row.timeTo), row.enabled, row.description, row.inputs.split(","), row.outputs.split(","), row.conditionFrom, row.conditionTo)
         });
     }
@@ -392,7 +384,6 @@ export class DatabaseDoorGuard {
             this.createControllerTable();
             this.createInputTable();
             this.createOutputTable();
-            this.createDefaultData();
         }
     }
 
@@ -463,35 +454,6 @@ export class DatabaseDoorGuard {
                 duration INTEGER NOT NULL
             )`;
         this.db.exec(query);
-    }
-
-    private createDefaultData(){
-        console.log("createDefaultData");
-        const description = "default Description";
-        const enabled = true;
-        const from = new Time(0,0);
-        const to = new Time(23,59);
-
-        this.insertInput(new Input("1", "Button 1", from, to, enabled, description, InputType.HARDWARE, "IN1"));
-        this.insertInput(new Input("2", "Button 2", from, to, enabled, description, InputType.HARDWARE, "IN2"));
-        this.insertInput(new Input("3", "Button 3", from, to, enabled, description, InputType.VIRTUAL));
-
-        const inputs = ["1","2","3"];
-        this.testing.set("createDefaultData");
-        this.insertController(new Controller("4", "name", from, to, enabled, description, inputs, ["6","7"], 1, 3));
-        this.insertController(new Controller("5", "name", from, to, enabled, description, inputs, ["8","9"], 3, 0));
-
-        const repeat = 1;
-        const duration = 250;
-        this.insertOutput(new Output("6", "quiet Sound", from, to, enabled, description, OutputType.AUDIO, "bell.wav", "", repeat, duration));
-        this.insertOutput(new Output("7", "mechanical Bell", from, to, enabled, description, OutputType.HARDWARE, "", "OUT1", repeat, duration));
-        this.insertOutput(new Output("8", "loud Sound", from, to, enabled, description, OutputType.AUDIO, "long.wav", "", repeat, duration));
-        this.insertOutput(new Output("9", "actual Buzzer", from, to, enabled, description, OutputType.HARDWARE, "", "OUT2", repeat, 4*duration));
-
-        this.idService.registerId("9");
-
-
-        this.insertEvent({ type: 'defaultDataCreated', timestamp: new Date() });
     }
 
     private eventListeners() {

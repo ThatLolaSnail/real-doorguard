@@ -2,13 +2,10 @@ import {Controller} from "./controller";
 import {IdService} from "../tools/idService";
 import {container} from "tsyringe";
 import { DatabaseDoorGuard } from "../database/database";
-import {Testing} from "../../testing";
 
 export class ControllerDictionary extends Map<string,Controller> {
     private idService = container.resolve(IdService);
     private db = container.resolve(DatabaseDoorGuard);
-
-    private testing = container.resolve(Testing);
 
     constructor() {
         super();
@@ -28,6 +25,7 @@ export class ControllerDictionary extends Map<string,Controller> {
 
         return this;
     }
+
     public delete(key: string){
         this.db.deleteController(key);
         super.get(key)?.destructor();
@@ -35,9 +33,14 @@ export class ControllerDictionary extends Map<string,Controller> {
         return super.delete(key);
     }
 
+    public deleteAll():void{
+        for (let controler of this.keys()){
+            this.delete(controler);
+        }
+    }
+
     public createNew(){
         const id = this.idService.getNewId();
-        this.testing.set("createNew");
         const controller = new Controller(id);
         this.set(id, controller);
         return controller;
