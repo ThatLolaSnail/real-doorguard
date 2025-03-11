@@ -45,7 +45,6 @@ export function output(app: Application) {
     });
 
     app.post("/settings/output/edit", urlencodedParser, (req: Request, res: Response) => {
-        console.log(req.body,"edit output");
         let output: Output | null = null;
         if (typeof req.body.id === 'string'){
             output = api.outputs.get(req.body.id) || null;

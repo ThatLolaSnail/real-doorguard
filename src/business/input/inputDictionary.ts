@@ -9,7 +9,6 @@ export class InputDictionary extends Map<string,Input> {
 
     constructor() {
         super();
-        console.log("InputDictionary constructor");
 
         // Read inputs from database
         let inputs = this.db.getInputs();
