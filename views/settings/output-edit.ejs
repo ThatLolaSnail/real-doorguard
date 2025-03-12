@@ -89,11 +89,11 @@
         </tr>
         <tr id="hardware_repeat">
             <td><label for="repeat">Repeat:</label></td>
-            <td><input type="number" id="repeat" name="repeat" value="<%= output.repeat %>"></td>
+            <td><input type="number" id="repeat" name="repeat" value="<%= output.repeat %>" min="1" max="<%= MAX_REPEAT %>"></td>
         </tr>
         <tr id="hardware_duration">
             <td><label for="duration">Duration:</label></td>
-            <td><input type="number" id="duration" name="duration" value="<%= output.duration %>"></td>
+            <td><input type="number" id="duration" name="duration" value="<%= output.duration %>" min="0" max="<%= MAX_DURATION %>"></td>
         </tr>
         <tr>
             <td><label for="timeFrom">Time (from</label>/<label for="timeTo">to)</label></td>

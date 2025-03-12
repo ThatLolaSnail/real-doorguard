@@ -4,6 +4,7 @@ import {Output} from "../../business/output/output";
 import {container} from "tsyringe";
 import {DatabaseDoorGuard} from "../../business/database/database";
 import {Time} from "../../business/tools/time";
+import {Hardware} from "../../business/hardware/hardware";
 
 export function output(app: Application) {
     var api = container.resolve(Api);
@@ -23,7 +24,14 @@ export function output(app: Application) {
         if (!output) {
             output = new Output("new");
         }
-        res.render("settings/output-edit", {output: output, types: Object.values(api.outputType), pins: Array.from(api.hardwareOutputPins.keys()), waves: Array.from(api.allWaves)});
+        res.render("settings/output-edit", {
+            output: output,
+            types: Object.values(api.outputType),
+            pins: Array.from(api.hardwareOutputPins.keys()),
+            waves: Array.from(api.allWaves),
+            MAX_DURATION: Hardware.MAX_DURATION,
+            MAX_REPEAT: Hardware.MAX_REPEAT
+        });
     });
 
     app.get("/settings/output/delete", (req: Request, res: Response) => {
@@ -52,12 +60,16 @@ export function output(app: Application) {
         if (!output){
             output = api.outputs.createNew();
         }
+        const vol= parseInt(req.body.volume);
+        const repeat = parseInt(req.body.repeat);
+        const duration = parseInt(req.body.duration);
         output.name = String(req.body.name);
         output.type = String(req.body.type);
         output.wave = String(req.body.wave);
+        output.volume = Number.isNaN(vol) ? 100 : vol;
         output.pin = String(req.body.pin);
-        output.repeat = String(req.body.repeat);
-        output.duration = parseInt(req.body.duration);
+        output.repeat = Number.isNaN(repeat) ? 1 : repeat;
+        output.duration = Number.isNaN(duration) ? 250 : duration;
         output.description = String(req.body.description);
         output.timeFrom = Time.fromString(String(req.body.timeFrom));
         output.timeTo = Time.fromString(String(req.body.timeTo));
