@@ -1,4 +1,4 @@
-import {numToStringTwoDigits} from "./tools";
+import {constrainNumber, numToStringTwoDigits} from "./tools";
 
 describe('tools', () => {
     test('numToStringTwoDigits_calledWith2digitNumber_returnsThisNumberAsSring', async () => {
@@ -23,5 +23,44 @@ describe('tools', () => {
 
         // Assert
         expect(res).toStrictEqual("123");
+    });
+
+    test('constrainNumber_calledWithSmallerNumber_returnsMinimum', async () => {
+        //Arrange
+        const num = 1;
+        const min = 3;
+        const max = 7;
+
+        // Act
+        const res = constrainNumber(num, min, max);
+
+        // Assert
+        expect(res).toStrictEqual(min);
+    });
+
+    test('constrainNumber_calledWithInbetweenNumber_returnsTheNumber', async () => {
+        //Arrange
+        const num = 5;
+        const min = 3;
+        const max = 7;
+
+        // Act
+        const res = constrainNumber(num, min, max);
+
+        // Assert
+        expect(res).toStrictEqual(num);
+    });
+
+    test('constrainNumber_calledWithBiggerNumber_returnsMaximum', async () => {
+        //Arrange
+        const num = 9;
+        const min = 3;
+        const max = 7;
+
+        // Act
+        const res = constrainNumber(num, min, max);
+
+        // Assert
+        expect(res).toStrictEqual(max);
     });
 });
