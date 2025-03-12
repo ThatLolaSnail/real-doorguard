@@ -49,7 +49,7 @@ export class Main {
         this.outputs.set("9", new Output("9", "actual Buzzer", from, to, enabled, description, OutputType.HARDWARE, "", volume, "OUT2", repeat, 4*duration));
         this.outputs.set("10", new Output("10", "Unmute", from, to, enabled, "Turn on audio amplifier", OutputType.HARDWARE, "", volume, "UNMUTE", 1, 4000));
 
-        this.idService.registerId("9");
+        this.idService.registerId("10");
 
         this.db.insertEvent({ type: 'revertToDefaultData', timestamp: new Date() });
     }
