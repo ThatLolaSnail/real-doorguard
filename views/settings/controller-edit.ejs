@@ -9,84 +9,90 @@
     Don't forget to save after editing changes.<br>
     To disable the condition upper limit, set it to 0.
 </p>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <form action="/settings/controller/edit" method="post">
+                <input type="hidden" id="id" name="id" value="<%= controller.id %>" />
+                <table class="table dgdatatable">
+                    <tr>
+                        <td>Id</td>
+                        <td><%= controller.id %></td>
+                    </tr>
+                    <tr>
+                        <td><label for="name">Name</label></td>
+                        <td><input type="text" id="name" name="name" value="<%= controller.name %>"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="description">Description</label></td>
+                        <td><textarea id="description" name="description" rows="2" cols="40"><%= controller.description %></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><label for="inputs">Inputs (by id)</label></td>
+                        <td><input type="text" id="inputs" name="inputs" value="<%= controller.inputs.join(",") %>"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="outputs">Outputs (by id)</label></td>
+                        <td><input type="text" id="outputs" name="outputs" value="<%= controller.outputs.join(",") %>"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="conditionFrom">Conditions (from</label>/<label for="conditionTo">to</label>)</td>
+                        <td>
+                            <input type="number" id="conditionFrom" name="conditionFrom" min="1" value="<%= controller.conditionFrom %>">
+                            &le;n&lt;
+                            <input type="number" id="conditionTo" name="conditionTo" min="0" value="<%= controller.conditionTo %>">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label for="timeFrom">Time (from</label>/<label for="timeTo">to)</label></td>
+                        <td><input type="time" id="timeFrom" name="timeFrom" value="<%= controller.timeFrom.toString() %>"> -
+                            <input type="time" id="timeTo" name="timeTo" value="<%= controller.timeTo.toString() %>"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="enabled">Enabled</label></td>
+                        <td><input type="checkbox" id="enabled" name="enabled" value="enabled" <%= controller.enabled ? 'checked="true"' : ""%>></td>
+                    </tr>
 
-<form action="/settings/controller/edit" method="post">
-    <input type="hidden" id="id" name="id" value="<%= controller.id %>">
-    <table class="table dgdatatable">
-        <tr>
-            <td>Id</td>
-            <td><%= controller.id %></td>
-        </tr>
-        <tr>
-            <td><label for="name">Name</label></td>
-            <td><input type="text" id="name" name="name" value="<%= controller.name %>"></td>
-        </tr>
-        <tr>
-            <td><label for="description">Description</label></td>
-            <td><textarea id="description" name="description" rows="2" cols="40"><%= controller.description %></textarea></td>
-        </tr>
-        <tr>
-            <td><label for="inputs">Inputs (by id)</label></td>
-            <td><input type="text" id="inputs" name="inputs" value="<%= controller.inputs.join(",") %>"></td>
-        </tr>
-        <tr>
-            <td><label for="outputs">Outputs (by id)</label></td>
-            <td><input type="text" id="outputs" name="outputs" value="<%= controller.outputs.join(",") %>"></td>
-        </tr>
-        <tr>
-            <td><label for="conditionFrom">Conditions (from</label>/<label for="conditionTo">to</label>)</td>
-            <td>
-                <input type="number" id="conditionFrom" name="conditionFrom" min="1" value="<%= controller.conditionFrom %>">
-                &le;n&lt;
-                <input type="number" id="conditionTo" name="conditionTo" min="0" value="<%= controller.conditionTo %>">
-            </td>
-        </tr>
-        <tr>
-            <td><label for="timeFrom">Time (from</label>/<label for="timeTo">to)</label></td>
-            <td><input type="time" id="timeFrom" name="timeFrom" value="<%= controller.timeFrom.toString() %>"> -
-                <input type="time" id="timeTo" name="timeTo" value="<%= controller.timeTo.toString() %>"></td>
-        </tr>
-        <tr>
-            <td><label for="enabled">Enabled</label></td>
-            <td><input type="checkbox" id="enabled" name="enabled" value="enabled" <%= controller.enabled ? 'checked="true"' : ""%>></td>
-        </tr>
+                </table>
 
-    </table>
+                <p>
+                    <input type="submit" value="Submit">
+                    <a href="/settings/controller"> Cancel </a>
+                </p>
+            </form>
 
-    <p>
-        <input type="submit" value="Submit">
-        <a href="/settings/controller"> Cancel </a>
-    </p>
-</form>
+        </div>
+        <div class="col">
 
-<p>
-    Info:<br>
-    Currently, the following inputs and outputs are configured for this controller:
-</p>
-<table>
-    <table class="table table-striped dgdatatable">
-        <thead class="thead-light">
-    <tr>
-        <th></th>
-        <th>Id</th>
-        <th>Name</th>
-    </tr>
-        </thead>
-    <% for(let id of controller.inputs) { %>
-        <tr>
-            <td>input</td>
-            <td><%= id %></td>
-            <td><%= inputs.get(id).name %></td>
-        </tr>
-    <% } for(let id of controller.outputs) { %>
-        <tr>
-            <td>output</td>
-            <td><%= id %></td>
-            <td><%= outputs.get(id).name %></td>
-        </tr>
-    <% } %>
+            <p>
+                Current inputs and outputs for this controller:
+            </p>
 
-</table>
+                <table class="table table-striped dgdatatable">
+                    <thead class="thead-light">
+                <tr>
+                    <td></td>
+                    <td>Id</td>
+                    <td>Name</td>
+                </tr>
+                    </thead>
+                <% for(let id of controller.inputs) { %>
+                    <tr>
+                        <td>input</td>
+                        <td><%= id %></td>
+                        <td><%= inputs.get(id).name %></td>
+                    </tr>
+                <% } for(let id of controller.outputs) { %>
+                    <tr>
+                        <td>output</td>
+                        <td><%= id %></td>
+                        <td><%= outputs.get(id).name %></td>
+                    </tr>
+                <% } %>
 
+            </table>
+        </div>
+    </div>
+</div>
 
 <%- include('../template.ejs',{mode:"footer"}); %>
