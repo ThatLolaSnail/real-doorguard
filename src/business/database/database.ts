@@ -166,8 +166,6 @@ export class DatabaseDoorGuard {
 
         const rows = getData.all() as {id:string,name:string,timeFrom:string,timeTo:string,enabled:boolean, description:string,inputs:string,outputs:string, conditionFrom:number,conditionTo:number}[];
 
-        console.log(rows.length);
-
         return rows.map(row => {
             return new Controller(row.id, row.name, Time.fromString(row.timeFrom), Time.fromString(row.timeTo), row.enabled, row.description, row.inputs.split(","), row.outputs.split(","), row.conditionFrom, row.conditionTo)
         });

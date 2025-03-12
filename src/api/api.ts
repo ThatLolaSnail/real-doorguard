@@ -8,10 +8,7 @@ import {Hardware} from "../business/hardware/hardware";
 @singleton()
 export class Api {
     private readonly fs = require('fs');
-    public readonly _waves: string[];
-    constructor(private main: Main) {
-        this._waves = this.fs.readdirSync("audio") as string[];
-    }
+    constructor(private main: Main) {}
 
     public get controllers(){
         return this.main.controllers;
@@ -34,8 +31,8 @@ export class Api {
     public get hardwareOutputPins(){
         return Hardware.OUTPUT_PINS;
     }
-    public get allWaves() {
-         return this._waves;
+    public get allWaves():string[] {
+         return this.fs.readdirSync("audio") as string[];
     }
     public revertToDefaultData(){
         this.main.revertToDefaultData();

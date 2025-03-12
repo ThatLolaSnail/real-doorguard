@@ -1,6 +1,5 @@
 import EventEmitter from "node:events";
-import {container, singleton} from "tsyringe";
-import {DatabaseDoorGuard} from "../database/database";
+import {singleton} from "tsyringe";
 
 /*
     Types of events:
@@ -17,15 +16,12 @@ import {DatabaseDoorGuard} from "../database/database";
 @singleton()
 export class EventHandler extends EventEmitter {
     public emit(eventName: string | symbol, ...args: any): boolean {
-        //console.log("EventHandler emit: ", eventName, args);
         return super.emit(eventName, ...args);
     }
     public addListener(eventName: string, listener: (...args: any[]) => void): this {
-        //console.log("EventHandler listen:",eventName);
         return super.addListener(eventName, listener);
     }
     public removeListener(eventName: string, listener: (...args: any[]) => void): this {
-        //console.log("EventHandler removed:", eventName);
         return super.removeListener(eventName, listener);
     }
 }

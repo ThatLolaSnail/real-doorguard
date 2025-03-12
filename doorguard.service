@@ -1,0 +1,20 @@
+# Doorguard as a systemd service
+#
+# To run doorguard at boot, copy this file to `/etc/systemd/system/doorguard.service`
+# and enable the service by running `sudo systemd enable doorguard.service`.
+
+[Unit]
+Description=Doorguard
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=10
+User=pi
+WorkingDirectory=/home/pi/real-doorguard
+ExecStart=npm run start
+
+[Install]
+WantedBy=multi-user.target

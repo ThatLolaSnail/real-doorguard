@@ -21,7 +21,6 @@ export class Controller extends doorguardObject {
         this._outputs = outputs ?? [];
         this._conditionFrom = conditionFrom ?? 1;
         this._conditionTo = conditionTo ?? 0;
-        //console.log("created controller", this.id);
 
         this.eventHandlerCallback = (id: string) => this.handleInput(id);
         this.eventHandler.addListener("input", this.eventHandlerCallback);

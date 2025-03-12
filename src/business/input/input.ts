@@ -19,7 +19,6 @@ export class Input extends doorguardObject {
         super(id, name, timeFrom, timeTo, enabled, description);
         this._type = type ?? InputType.VIRTUAL;
         this._pin = pin ?? "";
-        console.log("created input", this.id);
 
         this.eventHandlerCallback = (pin: string) => this.handleInput(pin);
         this.eventHandler.addListener("hardwareInput", this.eventHandlerCallback);

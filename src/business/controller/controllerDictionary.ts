@@ -9,7 +9,6 @@ export class ControllerDictionary extends Map<string,Controller> {
 
     constructor() {
         super();
-        console.log("ControllerDictionary constructor");
 
         // Read controllers from database
         let controllers = this.db.getControllers();
