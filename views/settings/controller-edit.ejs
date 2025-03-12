@@ -38,9 +38,9 @@
                     <tr>
                         <td><label for="conditionFrom">Conditions (from</label>/<label for="conditionTo">to</label>)</td>
                         <td>
-                            <input type="number" id="conditionFrom" name="conditionFrom" min="1" value="<%= controller.conditionFrom %>">
+                            <input type="number" id="conditionFrom" name="conditionFrom" min="1" max="999" value="<%= controller.conditionFrom %>">
                             &le;n&lt;
-                            <input type="number" id="conditionTo" name="conditionTo" min="0" value="<%= controller.conditionTo %>">
+                            <input type="number"  id="conditionTo" name="conditionTo" min="0"  max="999" value="<%= controller.conditionTo %>">
                         </td>
                     </tr>
                     <tr>
