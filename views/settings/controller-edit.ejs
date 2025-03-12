@@ -9,7 +9,9 @@
     Don't forget to save after editing changes.<br>
     To disable the condition upper limit, set it to 0.
 </p>
-
+<div class="container">
+    <div class="row">
+        <div class="col">
 <form action="/settings/controller/edit" method="post">
     <input type="hidden" id="id" name="id" value="<%= controller.id %>">
     <table class="table dgdatatable">
@@ -59,17 +61,19 @@
     </p>
 </form>
 
+        </div>
+        <div class="col">
+
 <p>
-    Info:<br>
-    Currently, the following inputs and outputs are configured for this controller:
+    Current inputs and outputs for this controller:
 </p>
 <table>
     <table class="table table-striped dgdatatable">
         <thead class="thead-light">
     <tr>
-        <th></th>
-        <th>Id</th>
-        <th>Name</th>
+        <td></td>
+        <td>Id</td>
+        <td>Name</td>
     </tr>
         </thead>
     <% for(let id of controller.inputs) { %>
@@ -87,6 +91,7 @@
     <% } %>
 
 </table>
-
+        </div>
+    </div>
 
 <%- include('../template.ejs',{mode:"footer"}); %>
