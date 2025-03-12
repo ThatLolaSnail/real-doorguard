@@ -53,11 +53,13 @@ export function controller(app: Application) {
         if (!controller){
             controller = api.controllers.createNew();
         }
+        const from = parseInt(req.body.conditionFrom);
+        const to = parseInt(req.body.conditionTo);
         controller.name = String(req.body.name);
         controller.inputs = String(req.body.inputs);
         controller.outputs = String(req.body.outputs);
-        controller.conditionFrom = parseInt(req.body.conditionFrom);
-        controller.conditionTo = parseInt(req.body.conditionTo);
+        controller.conditionFrom = Number.isNaN(from) ? 1 : from;
+        controller.conditionTo = Number.isNaN(to) ? 0 : to;
         controller.timeFrom = Time.fromString(String(req.body.timeFrom));
         controller.timeTo = Time.fromString(String(req.body.timeTo));
         controller.enabled = req.body.enabled === "enabled";

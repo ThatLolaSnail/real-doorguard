@@ -85,8 +85,8 @@ export class DatabaseDoorGuard {
         const insertData = this.db.prepare(
             `INSERT INTO outputs (
         id, name, timeFrom, timeTo, enabled, description, 
-        type, wave, pin, repeat, duration
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        type, wave, volume, pin, repeat, duration
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
         );
         insertData.run(
             output.id,
@@ -97,6 +97,7 @@ export class DatabaseDoorGuard {
             output.description,
             output.type,
             output.wave,
+            output.volume,
             output.pin,
             output.repeat,
             output.duration
@@ -173,19 +174,19 @@ export class DatabaseDoorGuard {
 
     public getOutput(id: number): Output | null {
         const getData = this.db.prepare(
-            "SELECT id, name, timeFrom, timeTo, enabled, description, type, wave, pin, repeat, duration FROM outputs WHERE id = ?"
+            "SELECT id, name, timeFrom, timeTo, enabled, description, type, wave, volume, pin, repeat, duration FROM outputs WHERE id = ?"
         );
-        const row = getData.get(id) as {id:string, name:string, timeFrom:string, timeTo:string, enabled:boolean, description:string, type:string, wave:string, pin:string, repeat:number, duration:number};
+        const row = getData.get(id) as {id:string, name:string, timeFrom:string, timeTo:string, enabled:boolean, description:string, type:string, wave:string, volume:number, pin:string, repeat:number, duration:number};
 
-        return new Output(row.id, row.name, Time.fromString(row.timeFrom), Time.fromString(row.timeTo), row.enabled, row.description, row.type as OutputType, row.wave, row.pin, row.repeat, row.duration);
+        return new Output(row.id, row.name, Time.fromString(row.timeFrom), Time.fromString(row.timeTo), row.enabled, row.description, row.type as OutputType, row.wave, row.volume, row.pin, row.repeat, row.duration);
     }
 
     public getOutputs(): Output[] {
         const getData = this.db.prepare(
-            "SELECT id, name, timeFrom, timeTo, enabled, description, type, wave, pin, repeat, duration FROM outputs"
+            "SELECT id, name, timeFrom, timeTo, enabled, description, type, wave, volume, pin, repeat, duration FROM outputs"
         );
-        const rows = getData.all() as {id:string, name:string, timeFrom:string, timeTo:string, enabled:boolean, description:string, type:string, wave:string, pin:string, repeat:number, duration:number}[];
-        return rows.map(row => new Output(row.id, row.name, Time.fromString(row.timeFrom), Time.fromString(row.timeTo), row.enabled, row.description, row.type as OutputType, row.wave, row.pin, row.repeat, row.duration));
+        const rows = getData.all() as {id:string, name:string, timeFrom:string, timeTo:string, enabled:boolean, description:string, type:string, wave:string, volume:number, pin:string, repeat:number, duration:number}[];
+        return rows.map(row => new Output(row.id, row.name, Time.fromString(row.timeFrom), Time.fromString(row.timeTo), row.enabled, row.description, row.type as OutputType, row.wave, row.volume, row.pin, row.repeat, row.duration));
     }
 
     public getInput(id: number): Input | null {
@@ -266,7 +267,7 @@ export class DatabaseDoorGuard {
         const updateData = this.db.prepare(
             `UPDATE outputs SET 
             name = ?, timeFrom = ?, timeTo = ?, enabled = ?, description = ?, 
-            type = ?, wave = ?, pin = ?, repeat = ?, duration = ? 
+            type = ?, wave = ?, volume = ?, pin = ?, repeat = ?, duration = ? 
          WHERE id = ?`
         );
         updateData.run(
@@ -277,6 +278,7 @@ export class DatabaseDoorGuard {
             output.description,
             output.type,
             output.wave,
+            output.volume,
             output.pin,
             output.repeat,
             output.duration,
@@ -447,6 +449,7 @@ export class DatabaseDoorGuard {
                 description TEXT NOT NULL,
                 type TEXT NOT NULL,
                 wave TEXT NOT NULL,
+                volume INTEGER NOT NULL,
                 pin TEXT NOT NULL,
                 repeat INTEGER NOT NULL,
                 duration INTEGER NOT NULL
