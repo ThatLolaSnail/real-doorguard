@@ -4,6 +4,7 @@ import {Output} from "../../business/output/output";
 import {container} from "tsyringe";
 import {DatabaseDoorGuard} from "../../business/database/database";
 import {Time} from "../../business/tools/time";
+import {Hardware} from "../../business/hardware/hardware";
 
 export function output(app: Application) {
     var api = container.resolve(Api);
@@ -23,7 +24,14 @@ export function output(app: Application) {
         if (!output) {
             output = new Output("new");
         }
-        res.render("settings/output-edit", {output: output, types: Object.values(api.outputType), pins: Array.from(api.hardwareOutputPins.keys()), waves: Array.from(api.allWaves)});
+        res.render("settings/output-edit", {
+            output: output,
+            types: Object.values(api.outputType),
+            pins: Array.from(api.hardwareOutputPins.keys()),
+            waves: Array.from(api.allWaves),
+            MAX_DURATION: Hardware.MAX_DURATION,
+            MAX_REPEAT: Hardware.MAX_REPEAT
+        });
     });
 
     app.get("/settings/output/delete", (req: Request, res: Response) => {

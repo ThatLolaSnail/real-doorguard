@@ -1,10 +1,11 @@
 import {singleton} from "tsyringe";
 import {InputWatcher} from "./inputWatcher";
+import {constrainNumber} from "../tools/tools";
 
 @singleton()
 export class Hardware {
 
-    // use `cat /sys/kernel/debug/gpio` to find out the pin numbers of your specific hardware.
+    // use `cat /sys/kernel/debug/gpio` to find out the pin-numbers of your specific hardware.
     public static OUTPUT_PINS = new Map<string, number>([
         ["OUT1", 516],   // GPIO4
         ["OUT2", 529],   // GPIO17
@@ -14,6 +15,8 @@ export class Hardware {
         ["IN1", 514], // GPIO2
         ["IN2", 515], // GPIO3
     ]);
+    public static MAX_DURATION = 20000; // prevent doorbell and buzzer from catching on fire
+    public static MAX_REPEAT = 10;
 
     private outputs = new Map<string, any>();
     private inputs = new Map<string, any>();
@@ -52,6 +55,9 @@ export class Hardware {
         if (!this.isPi() || p === undefined || repeat <= 0 || duration <= 0) {
             return;
         }
+
+        duration = constrainNumber(duration, 0, Hardware.MAX_DURATION);
+        repeat = constrainNumber(repeat, 1, Hardware.MAX_REPEAT);
 
         p.writeSync(1);
         const ringing = setInterval(_ => {

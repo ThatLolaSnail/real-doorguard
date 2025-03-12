@@ -2,6 +2,7 @@ import {doorguardObject} from "../doorguardObject/doorguardObject";
 import {container} from "tsyringe";
 import {Hardware} from "../hardware/hardware";
 import {Time} from "../tools/time";
+import {constrainNumber} from "../tools/tools";
 
 export enum OutputType {
     VIRTUAL = "virtual",
@@ -88,17 +89,17 @@ export class Output extends doorguardObject {
     public get pin(): string {
         return this._pin;
     }
-    public set repeat(settings: number | string) {
-        if (typeof settings !== "number"){
-            settings = parseInt(settings);
+    public set repeat(repeat: number | string) {
+        if (typeof repeat !== "number"){
+            repeat = parseInt(repeat);
         }
-        this._repeat = settings;
+        this._repeat = constrainNumber(repeat, 1, Hardware.MAX_REPEAT);
     }
     public get repeat(): number {
         return this._repeat;
     }
-    public set duration(settings: number) {
-        this._duration = settings;
+    public set duration(duration: number) {
+        this._duration = constrainNumber(duration, 0, Hardware.MAX_DURATION);
     }
     public get duration(): number {
         return this._duration;
