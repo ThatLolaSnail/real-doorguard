@@ -37,8 +37,8 @@ export class Main {
         this.inputs.set("3", new Input("3", "Button 3", from, to, enabled, description, InputType.VIRTUAL));
 
         const inputs = ["1","2","3"];
-        this.controllers.set("4", new Controller("4", "name", from, to, enabled, description, inputs, ["6","7"], 1, 3));
-        this.controllers.set("5", new Controller("5", "name", from, to, enabled, description, inputs, ["8","9"], 3, 0));
+        this.controllers.set("4", new Controller("4", "name", from, to, enabled, description, inputs, ["6","7","10"], 1, 3));
+        this.controllers.set("5", new Controller("5", "name", from, to, enabled, description, inputs, ["8","9","10"], 3, 0));
 
         const repeat = 1;
         const duration = 250;

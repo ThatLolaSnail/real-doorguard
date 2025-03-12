@@ -62,36 +62,38 @@
             </form>
 
         </div>
-        <div class="col">
+        <% if (controller.inputs.length + controller.outputs.length > 0) { %>
+            <div class="col">
 
-            <p>
-                Current inputs and outputs for this controller:
-            </p>
+                <p>
+                    Current inputs and outputs for this controller:
+                </p>
 
-                <table class="table table-striped dgdatatable">
-                    <thead class="thead-light">
-                <tr>
-                    <td></td>
-                    <td>Id</td>
-                    <td>Name</td>
-                </tr>
-                    </thead>
-                <% for(let id of controller.inputs) { %>
+                    <table class="table table-striped dgdatatable">
+                        <thead class="thead-light">
                     <tr>
-                        <td>input</td>
-                        <td><%= id %></td>
-                        <td><%= inputs.get(id).name %></td>
+                        <td></td>
+                        <td>Id</td>
+                        <td>Name</td>
                     </tr>
-                <% } for(let id of controller.outputs) { %>
-                    <tr>
-                        <td>output</td>
-                        <td><%= id %></td>
-                        <td><%= outputs.get(id).name %></td>
-                    </tr>
-                <% } %>
+                        </thead>
+                    <% for(let id of controller.inputs) { %>
+                        <tr>
+                            <td>input</td>
+                            <td><%= id %></td>
+                            <td><%= inputs.get(id)?.name %></td>
+                        </tr>
+                    <% } for(let id of controller.outputs) { %>
+                        <tr>
+                            <td>output</td>
+                            <td><%= id %></td>
+                            <td><%= outputs.get(id)?.name %></td>
+                        </tr>
+                    <% } %>
 
-            </table>
-        </div>
+                </table>
+            </div>
+        <% } %>
     </div>
 </div>
 
