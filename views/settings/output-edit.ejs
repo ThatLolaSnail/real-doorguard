@@ -83,8 +83,8 @@
             <td><label for="volume">Audio volume</label></td>
             <td>
                 <div class="row">
-                    <div class="col"><input type="range" step="1" min="0" max="100" class="form-range" id="volume" name="volume" value="100" oninput="getElementById('volnr').value = this.value"></div>
-                    <div class="col"><output id="volnr">100</output></div>
+                    <div class="col"><input type="range" step="1" min="0" max="100" class="form-range" id="volume" name="volume" value="<%= output.volume %>" oninput="getElementById('volnr').value = this.value"></div>
+                    <div class="col"><output id="volnr"><%= output.volume %></output></div>
                 </div>
 
             </td>
