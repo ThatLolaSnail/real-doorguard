@@ -8,6 +8,7 @@ import {Controller} from "../controller/controller";
 import {Output, OutputType} from "../output/output";
 import {IdService} from "../tools/idService";
 import {DatabaseDoorGuard} from "../database/database";
+import {Logging} from "../database/logging";
 
 
 @singleton()
@@ -19,6 +20,7 @@ export class Main {
     private db = container.resolve(DatabaseDoorGuard);
 
     constructor() {
+        new Logging(this.controllers, this.inputs, this.outputs);
     }
 
     public revertToDefaultData(){
