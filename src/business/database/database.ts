@@ -1,5 +1,5 @@
 import Database from 'better-sqlite3';
-import {singleton, container} from "tsyringe";
+import {singleton} from "tsyringe";
 
 import {Dgevent} from "./interfaces/dgevent";
 import {Setting} from "./interfaces/setting";
@@ -7,7 +7,6 @@ import {Time} from "../tools/time";
 import {Controller} from '../controller/controller';
 import {Input, InputType} from '../input/input';
 import {Output, OutputType} from '../output/output';
-import {EventHandler} from "../eventHandler/eventHandler";
 
 // Datenbanken Klasse zum create, update, get und delete von Daten
 @singleton()
@@ -20,9 +19,6 @@ export class DatabaseDoorGuard {
 
         // Create all Tables if they don't exist
         this.createTablesIfNotExists();
-
-        // Listen to Events and add them to the database
-        this.eventListeners();
     }
 
     // Insert Methoden, alle geben die ID zurück außer Settings, da Setting nach key value geht
@@ -455,22 +451,5 @@ export class DatabaseDoorGuard {
                 duration INTEGER NOT NULL
             )`;
         this.db.exec(query);
-    }
-
-    private eventListeners() {
-        const eventHandler = container.resolve(EventHandler);
-        //Add listeners to store events to database
-        eventHandler.addListener("hardwareInput", (pin: string)=>{
-            this.insertEvent({type: "hardwareInput."+pin, timestamp: new Date()})
-        });
-        eventHandler.addListener("input", (id: string)=>{
-            this.insertEvent({type: "input."+id, timestamp: new Date()})
-        });
-        eventHandler.addListener("controller", (id: string)=>{
-            this.insertEvent({type: "controller."+id, timestamp: new Date()})
-        });
-        eventHandler.addListener("output", (id: string)=>{
-            this.insertEvent({type: "output."+id, timestamp: new Date()})
-        });
     }
 }

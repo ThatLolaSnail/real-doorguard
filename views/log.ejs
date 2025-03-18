@@ -39,8 +39,8 @@
         <tr>
             <td>
                 <% let ts = event.timestamp %>
-                <%= ts.getUTCFullYear() %>.<%= ts.getUTCMonth() %>.<%= ts.getUTCDate() %>
-                <i><%= ts.toLocaleTimeString() %></i>
+                <span class="fst-italic"><%= ts.getUTCFullYear() %>.<%= ts.getUTCMonth() %>.<%= ts.getUTCDate() %></span>
+                <span class="tshour fw-bold"><%= ts.toLocaleTimeString().split(":")[0] %></span>:<span class="tsminute fw-bold"><%= ts.toLocaleTimeString().split(":")[1] %></span>:<span class="tssecond"><%= ts.toLocaleTimeString().split(":")[2] %></span>
             </td>
             <td><%= event.type %></td>
         </tr>
