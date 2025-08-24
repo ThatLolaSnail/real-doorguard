@@ -115,7 +115,7 @@ export class DatabaseDoorGuard {
         if (limit === undefined || limit == 0) {
             query = "SELECT id, type, timestamp FROM events ORDER BY timestamp DESC";
         } else {
-            query = "SELECT id, type, timestamp FROM events  ORDER BY timestamp DESC LIMIT " + limit;
+            query = "SELECT id, type, timestamp FROM events ORDER BY timestamp DESC LIMIT " + limit;
         }
         const getData = this.db.prepare<Dgevent[]>(
             query
