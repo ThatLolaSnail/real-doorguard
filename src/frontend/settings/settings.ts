@@ -15,9 +15,13 @@ export function settings(app: Application) {
         res.render("settings/advanced-settings", {});
     });
 
+    app.get("/settings/advanced/reset", (req: Request, res: Response) => {
+        res.render("settings/reset", {});
+    });
+
     app.get("/settings/advanced/database-reset", (req: Request, res: Response) => {
         api.revertToDefaultData();
-        res.redirect("/settings/advanced");
+        res.redirect("/");
     });
 
     controller(app);

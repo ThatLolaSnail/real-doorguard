@@ -1,0 +1,22 @@
+<%- include('../template.ejs',{mode:"header"}); %>
+
+<h1>Settings: Advanced: Reset Database</h1>
+
+<%- include('settings-template.ejs'); %>
+<p class="text-danger fw-bold">
+    WARNING! Do you really want to delete ALL SETTINGS?
+</p>
+<p>
+    All Inputs, Outputs and Controllers will be deleted and defaults will be created!
+    <br>The logs will not be affected by this.
+</p>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="navbar-nav">
+        <a class="link-primary nav-item nav-link" href="/settings/advanced"> Cancel </a>
+        <a class="link-primary nav-item nav-link" href="/settings/advanced"> Cancel </a>
+        <a class="link-primary nav-item nav-link" href="/settings/advanced/database-reset"> Reset </a>
+        <a class="link-primary nav-item nav-link" href="/settings/advanced"> Cancel </a>
+    </div>
+</nav>
+
+<%- include('../template.ejs',{mode:"footer"}); %>
