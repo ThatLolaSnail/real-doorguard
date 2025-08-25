@@ -39,9 +39,7 @@
 <%- include('settings-template.ejs'); %>
 
 <p>
-    A Output is everything between a button press and a bell ring, so all the settings.<br>
-    Don't forget to save after editing changes.<br>
-    To disable the condition upper limit, set it to 0.
+    Don't forget to save after editing changes.
 </p>
 
 <form action="/settings/output/edit" method="post">
@@ -105,7 +103,7 @@
         </tr>
         <tr id="hardware_duration">
             <td><label for="duration">Duration:</label></td>
-            <td><input type="number" id="duration" name="duration" value="<%= output.duration %>" min="0" max="<%= MAX_DURATION %>"></td>
+            <td><input type="number" id="duration" name="duration" value="<%= output.duration %>" min="0" max="<%= MAX_DURATION %>"> ms </td>
         </tr>
         <tr>
             <td><label for="timeFrom">Time (from</label>/<label for="timeTo">to)</label></td>
